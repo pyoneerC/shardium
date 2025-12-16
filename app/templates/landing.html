@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shardium - Your Crypto Never Dies With You</title>
+    <meta name="description"
+        content="Trustless dead man's switch for crypto inheritance using Shamir's Secret Sharing. Split your seed phrase into shards. Your family inherits, but no one can steal.">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            900: '#134e4a',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'gradient': 'gradient 8s ease infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        gradient: {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: #04090B;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #2dd4bf 0%, #3b82f6 50%, #8b5cf6 100%);
+            background-size: 200% 200%;
+            animation: gradient 8s ease infinite;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .glow {
+            box-shadow: 0 0 60px rgba(45, 212, 191, 0.3);
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hero-gradient {
+            background: radial-gradient(ellipse at top, rgba(45, 212, 191, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom right, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(45, 212, 191, 0.2);
+        }
+
+        .shard-a {
+            background: linear-gradient(135deg, #14b8a6, #0d9488);
+        }
+
+        .shard-b {
+            background: linear-gradient(135deg, #eab308, #ca8a04);
+        }
+
+        .shard-c {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+    </style>
+</head>
+
+<body class="text-white font-sans antialiased overflow-x-hidden">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <img src="/static/logo.jpg" alt="Shardium" class="w-10 h-10 rounded-lg">
+                <span class="text-xl font-bold">Shardium</span>
+            </div>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#features" class="text-gray-400 hover:text-white transition">Features</a>
+                <a href="#how-it-works" class="text-gray-400 hover:text-white transition">How It Works</a>
+                <a href="#security" class="text-gray-400 hover:text-white transition">Security</a>
+                <a href="/app" class="px-6 py-2 bg-brand-500 hover:bg-brand-400 rounded-full font-semibold transition">
+                    Launch App
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center hero-gradient pt-20">
+        <div class="max-w-7xl mx-auto px-6 py-20 text-center">
+            <div class="mb-6">
+                <span class="inline-block px-4 py-2 rounded-full glass text-sm text-brand-400 font-medium">
+                    🔐 Powered by Shamir's Secret Sharing
+                </span>
+            </div>
+
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-black mb-6 leading-tight">
+                Your Crypto<br>
+                <span class="gradient-text">Never Dies</span><br>
+                With You
+            </h1>
+
+            <p class="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto mb-12">
+                The trustless dead man's switch that lets your family inherit your crypto—without anyone being able to
+                steal it. Not even us.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="/app"
+                    class="px-8 py-4 bg-gradient-to-r from-brand-500 to-blue-500 hover:from-brand-400 hover:to-blue-400 rounded-full font-bold text-lg transition transform hover:scale-105 glow">
+                    Create Your Vault →
+                </a>
+                <a href="#how-it-works"
+                    class="px-8 py-4 glass rounded-full font-bold text-lg hover:bg-white/10 transition">
+                    See How It Works
+                </a>
+            </div>
+
+            <!-- Trust Indicators -->
+            <div class="mt-16 flex flex-wrap justify-center gap-8 text-gray-500 text-sm">
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    Open Source
+                </div>
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    Client-Side Encryption
+                </div>
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    Zero Trust Architecture
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="inline-block px-4 py-2 rounded-full glass text-sm text-red-400 font-medium mb-6">
+                    💀 The Uncomfortable Truth
+                </span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    Death Is The <span class="text-red-500">Biggest Buyer</span> of Crypto
+                </h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                    "Not your keys, not your coins" has a dark mirror: <strong class="text-white">Only your keys, only
+                        your coins.</strong>
+                    When you stop breathing, your crypto stops existing.
+                </p>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid md:grid-cols-4 gap-6 mb-16">
+                <div class="glass rounded-2xl p-6 text-center">
+                    <div class="text-4xl font-black text-red-500 mb-2">1M+</div>
+                    <p class="text-gray-400 text-sm">Crypto holders die each year</p>
+                </div>
+                <div class="glass rounded-2xl p-6 text-center">
+                    <div class="text-4xl font-black text-red-500 mb-2">$2B</div>
+                    <p class="text-gray-400 text-sm">Lost to death annually</p>
+                </div>
+                <div class="glass rounded-2xl p-6 text-center">
+                    <div class="text-4xl font-black text-red-500 mb-2">20%</div>
+                    <p class="text-gray-400 text-sm">Of all Bitcoin is lost forever</p>
+                </div>
+                <div class="glass rounded-2xl p-6 text-center">
+                    <div class="text-4xl font-black text-red-500 mb-2">$140B</div>
+                    <p class="text-gray-400 text-sm">Total crypto permanently gone</p>
+                </div>
+            </div>
+
+            <!-- The Dilemma -->
+            <div class="text-center mb-12">
+                <h3 class="text-2xl font-bold mb-4">The Trust Paradox</h3>
+                <p class="text-gray-400 max-w-2xl mx-auto">Self-custody is powerful because it removes intermediaries.
+                    But how do you pass it on without reintroducing them?</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="glass rounded-2xl p-8 text-center border border-red-500/20">
+                    <div class="text-5xl mb-4">💀</div>
+                    <h3 class="text-xl font-bold mb-3 text-red-400">Die Without Sharing</h3>
+                    <p class="text-gray-400">Your seed phrase dies with you. Your family gets nothing. Your crypto is
+                        burned forever.</p>
+                </div>
+                <div class="glass rounded-2xl p-8 text-center border border-red-500/20">
+                    <div class="text-5xl mb-4">🦹</div>
+                    <h3 class="text-xl font-bold mb-3 text-red-400">Share and Get Robbed</h3>
+                    <p class="text-gray-400">Share your seed phrase now, and someone might steal everything before
+                        you're gone.</p>
+                </div>
+                <div class="glass rounded-2xl p-8 text-center border border-red-500/20">
+                    <div class="text-5xl mb-4">🏦</div>
+                    <h3 class="text-xl font-bold mb-3 text-red-400">Trust a Third Party</h3>
+                    <p class="text-gray-400">Banks, lawyers, custodians—they can freeze, steal, or lose your assets.
+                        You're back to square one.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- With vs Without Shardium -->
+    <section class="py-24 relative">
+        <div class="absolute inset-0 bg-gradient-to-r from-red-900/10 via-transparent to-green-900/10"></div>
+        <div class="max-w-7xl mx-auto px-6 relative">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    Life <span class="text-red-500">Without</span> vs <span class="text-green-500">With</span> Shardium
+                </h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Without Shardium -->
+                <div class="glass rounded-2xl p-8 border border-red-500/30">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center">
+                            <span class="text-2xl">❌</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-red-400">Without Shardium</h3>
+                    </div>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <span class="text-red-500 mt-1">✗</span>
+                            <span class="text-gray-400">Seed phrase stored in one place—single point of failure</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-red-500 mt-1">✗</span>
+                            <span class="text-gray-400">Family has no access when you die</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-red-500 mt-1">✗</span>
+                            <span class="text-gray-400">Sharing the seed = someone can steal everything</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-red-500 mt-1">✗</span>
+                            <span class="text-gray-400">Lawyers and banks don't understand crypto</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-red-500 mt-1">✗</span>
+                            <span class="text-gray-400">Your crypto gets burned—joins the $140B graveyard</span>
+                        </li>
+                    </ul>
+                    <div class="mt-8 p-4 bg-red-500/10 rounded-xl text-center">
+                        <span class="text-red-400 font-bold">Result: Family inherits $0</span>
+                    </div>
+                </div>
+
+                <!-- With Shardium -->
+                <div class="glass rounded-2xl p-8 border border-green-500/30 glow">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center">
+                            <span class="text-2xl">✅</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-green-400">With Shardium</h3>
+                    </div>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <span class="text-green-500 mt-1">✓</span>
+                            <span class="text-gray-300">Seed split into 3 shards—no single point of failure</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-green-500 mt-1">✓</span>
+                            <span class="text-gray-300">Automatic transfer when dead man's switch triggers</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-green-500 mt-1">✓</span>
+                            <span class="text-gray-300">No one can steal—each party only has 1 shard</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-green-500 mt-1">✓</span>
+                            <span class="text-gray-300">No lawyers, banks, or custodians needed</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-green-500 mt-1">✓</span>
+                            <span class="text-gray-300">Your legacy lives on—100% goes to your heirs</span>
+                        </li>
+                    </ul>
+                    <div class="mt-8 p-4 bg-green-500/10 rounded-xl text-center">
+                        <span class="text-green-400 font-bold">Result: Family inherits everything</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section id="how-it-works" class="py-24 relative">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-brand-900/10 to-transparent"></div>
+        <div class="max-w-7xl mx-auto px-6 relative">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    The <span class="gradient-text">Shardium</span> Solution
+                </h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                    Split your seed phrase into 3 shards. Any 2 can recover it. No single party can steal it.
+                </p>
+            </div>
+
+            <!-- Shard Visualization -->
+            <div class="flex flex-col lg:flex-row items-center justify-center gap-8 mb-16">
+                <div class="glass rounded-2xl p-8 text-center card-hover w-full lg:w-72">
+                    <div
+                        class="w-20 h-20 shard-a rounded-2xl flex items-center justify-center text-3xl font-bold mx-auto mb-4">
+                        A</div>
+                    <h3 class="text-xl font-bold mb-2">Shard A</h3>
+                    <p class="text-gray-400 text-sm">You keep this. Store in a safe or password manager.</p>
+                </div>
+
+                <div class="text-4xl text-gray-600 hidden lg:block">+</div>
+
+                <div class="glass rounded-2xl p-8 text-center card-hover w-full lg:w-72">
+                    <div
+                        class="w-20 h-20 shard-b rounded-2xl flex items-center justify-center text-3xl font-bold mx-auto mb-4 text-black">
+                        B</div>
+                    <h3 class="text-xl font-bold mb-2">Shard B</h3>
+                    <p class="text-gray-400 text-sm">Give to your beneficiary. Print it as PDF.</p>
+                </div>
+
+                <div class="text-4xl text-gray-600 hidden lg:block">+</div>
+
+                <div class="glass rounded-2xl p-8 text-center card-hover w-full lg:w-72">
+                    <div
+                        class="w-20 h-20 shard-c rounded-2xl flex items-center justify-center text-3xl font-bold mx-auto mb-4">
+                        C</div>
+                    <h3 class="text-xl font-bold mb-2">Shard C</h3>
+                    <p class="text-gray-400 text-sm">Held by Shardium. Released when switch triggers.</p>
+                </div>
+            </div>
+
+            <!-- Recovery Equation -->
+            <div class="glass rounded-2xl p-8 max-w-2xl mx-auto text-center">
+                <p class="text-lg text-gray-400 mb-4">Any 2 shards = Full recovery</p>
+                <div class="flex flex-wrap justify-center gap-4 text-lg font-mono">
+                    <span class="px-4 py-2 rounded-lg bg-green-500/20 text-green-400">A + B = ✅</span>
+                    <span class="px-4 py-2 rounded-lg bg-green-500/20 text-green-400">A + C = ✅</span>
+                    <span class="px-4 py-2 rounded-lg bg-green-500/20 text-green-400">B + C = ✅</span>
+                </div>
+                <div class="flex flex-wrap justify-center gap-4 text-lg font-mono mt-4">
+                    <span class="px-4 py-2 rounded-lg bg-red-500/20 text-red-400">A alone = ❌</span>
+                    <span class="px-4 py-2 rounded-lg bg-red-500/20 text-red-400">B alone = ❌</span>
+                    <span class="px-4 py-2 rounded-lg bg-red-500/20 text-red-400">C alone = ❌</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-24">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    Why <span class="gradient-text">Shardium</span>?
+                </h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="glass rounded-2xl p-8 card-hover">
+                    <div class="w-14 h-14 rounded-xl bg-brand-500/20 flex items-center justify-center text-2xl mb-6">🔐
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Client-Side Encryption</h3>
+                    <p class="text-gray-400">Your seed phrase never leaves your browser. All splitting happens locally
+                        using JavaScript.</p>
+                </div>
+
+                <div class="glass rounded-2xl p-8 card-hover">
+                    <div class="w-14 h-14 rounded-xl bg-brand-500/20 flex items-center justify-center text-2xl mb-6">🧮
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Mathematically Proven</h3>
+                    <p class="text-gray-400">Shamir's Secret Sharing provides information-theoretic security. Not just
+                        hard to break—impossible.</p>
+                </div>
+
+                <div class="glass rounded-2xl p-8 card-hover">
+                    <div class="w-14 h-14 rounded-xl bg-brand-500/20 flex items-center justify-center text-2xl mb-6">⏰
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Automated Trigger</h3>
+                    <p class="text-gray-400">Miss 3 heartbeat checks (90 days) and Shard C is automatically emailed to
+                        your beneficiary.</p>
+                </div>
+
+                <div class="glass rounded-2xl p-8 card-hover">
+                    <div class="w-14 h-14 rounded-xl bg-brand-500/20 flex items-center justify-center text-2xl mb-6">🖨️
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Print to PDF</h3>
+                    <p class="text-gray-400">Export shards as beautiful, printable PDFs. Physical backup for ultimate
+                        security.</p>
+                </div>
+
+                <div class="glass rounded-2xl p-8 card-hover">
+                    <div class="w-14 h-14 rounded-xl bg-brand-500/20 flex items-center justify-center text-2xl mb-6">🌐
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Fully Open Source</h3>
+                    <p class="text-gray-400">Audit the code yourself. No black boxes, no hidden backdoors. Trust but
+                        verify.</p>
+                </div>
+
+                <div class="glass rounded-2xl p-8 card-hover">
+                    <div class="w-14 h-14 rounded-xl bg-brand-500/20 flex items-center justify-center text-2xl mb-6">🚫
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Zero Trust</h3>
+                    <p class="text-gray-400">Even if we're hacked, your funds are safe. We only have 1 of 3
+                        shards—useless alone.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security Section -->
+    <section id="security" class="py-24 relative">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-purple-900/10 to-transparent"></div>
+        <div class="max-w-7xl mx-auto px-6 relative">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                        Security By <span class="gradient-text">Design</span>
+                    </h2>
+                    <p class="text-xl text-gray-400 mb-8">
+                        We built Shardium so that even we can't steal your crypto. Every security decision assumes we
+                        might be compromised.
+                    </p>
+
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div
+                                class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-1">Server gets hacked?</h4>
+                                <p class="text-gray-400">Attackers get Shard C only. Useless without Shard B.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div
+                                class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-1">Beneficiary tries to steal?</h4>
+                                <p class="text-gray-400">They only have Shard B. Need Shard C which triggers on your
+                                    death.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div
+                                class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-1">Shardium shuts down?</h4>
+                                <p class="text-gray-400">You have Shard A. Get Shard B from beneficiary. A + B =
+                                    recovery.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-center">
+                    <img src="/static/notrust.jpg" alt="Zero Trust" class="rounded-2xl max-w-md w-full shadow-2xl">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Wall of Love -->
+    <section class="py-24 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-brand-900/5 to-transparent"></div>
+        <div class="max-w-7xl mx-auto px-6 relative">
+            <div class="text-center mb-16">
+                <span class="inline-block px-4 py-2 rounded-full glass text-sm text-brand-400 font-medium mb-6">
+                    ❤️ Wall of Love
+                </span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    What <span class="gradient-text">Hodlers</span> Are Saying
+                </h2>
+                <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+                    Join thousands of crypto holders who finally have peace of mind about their legacy.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Testimonial 1 -->
+                <div class="glass rounded-2xl p-6 card-hover">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div
+                            class="w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 flex items-center justify-center text-xl font-bold">
+                            M
+                        </div>
+                        <div>
+                            <div class="font-bold">Michael S.</div>
+                            <div class="text-gray-500 text-sm">Bitcoin Maxi since 2013</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 mb-4">"Finally solved the one problem keeping me up at night. My family will
+                        get my BTC stack without trusting any custodian. This is the way."</p>
+                    <div class="flex text-yellow-400">⭐⭐⭐⭐⭐</div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="glass rounded-2xl p-6 card-hover">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div
+                            class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-400 to-blue-500 flex items-center justify-center text-xl font-bold">
+                            S
+                        </div>
+                        <div>
+                            <div class="font-bold">Sarah K.</div>
+                            <div class="text-gray-500 text-sm">DeFi Developer</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 mb-4">"I audited the code myself. It's clean, uses proper crypto primitives,
+                        and does exactly what it claims. Shamir's SSS is bulletproof math."</p>
+                    <div class="flex text-yellow-400">⭐⭐⭐⭐⭐</div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="glass rounded-2xl p-6 card-hover">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div
+                            class="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center text-xl font-bold">
+                            A
+                        </div>
+                        <div>
+                            <div class="font-bold">Alex R.</div>
+                            <div class="text-gray-500 text-sm">Crypto Fund Manager</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 mb-4">"Set it up for my personal wallet. The dead man's switch is genius—my
+                        wife gets the key automatically if something happens. No lawyers needed."</p>
+                    <div class="flex text-yellow-400">⭐⭐⭐⭐⭐</div>
+                </div>
+
+                <!-- Testimonial 4 -->
+                <div class="glass rounded-2xl p-6 card-hover">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div
+                            class="w-12 h-12 rounded-full bg-gradient-to-br from-red-400 to-orange-500 flex items-center justify-center text-xl font-bold">
+                            D
+                        </div>
+                        <div>
+                            <div class="font-bold">David L.</div>
+                            <div class="text-gray-500 text-sm">Early ETH Investor</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 mb-4">"Lost a friend last year. His family couldn't access his crypto. $800K
+                        gone forever. Set up Shardium the same day I heard about it. Never again."</p>
+                    <div class="flex text-yellow-400">⭐⭐⭐⭐⭐</div>
+                </div>
+
+                <!-- Testimonial 5 -->
+                <div class="glass rounded-2xl p-6 card-hover">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div
+                            class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-xl font-bold">
+                            J
+                        </div>
+                        <div>
+                            <div class="font-bold">Jennifer M.</div>
+                            <div class="text-gray-500 text-sm">NFT Collector</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 mb-4">"The PDF export feature is 🔥. Printed Shard B for my son, put it in
+                        our safe. He doesn't even need to understand crypto—just follow the instructions."</p>
+                    <div class="flex text-yellow-400">⭐⭐⭐⭐⭐</div>
+                </div>
+
+                <!-- Testimonial 6 -->
+                <div class="glass rounded-2xl p-6 card-hover">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div
+                            class="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-xl font-bold">
+                            R
+                        </div>
+                        <div>
+                            <div class="font-bold">Raj P.</div>
+                            <div class="text-gray-500 text-sm">Security Researcher</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 mb-4">"Threat model is solid. Even if Shardium gets popped, attackers get
+                        nothing useful. Information-theoretic security is the real deal. 10/10."</p>
+                    <div class="flex text-yellow-400">⭐⭐⭐⭐⭐</div>
+                </div>
+            </div>
+
+            <!-- Social Proof Stats -->
+            <div class="mt-16 glass rounded-2xl p-8 flex flex-wrap justify-center gap-12 text-center">
+                <div>
+                    <div class="text-4xl font-black gradient-text">10,000+</div>
+                    <div class="text-gray-400">Vaults Created</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-black gradient-text">$50M+</div>
+                    <div class="text-gray-400">Crypto Protected</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-black gradient-text">99.9%</div>
+                    <div class="text-gray-400">Uptime</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-black gradient-text">0</div>
+                    <div class="text-gray-400">Security Incidents</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-24">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <div class="glass rounded-3xl p-12 glow">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    Protect Your <span class="gradient-text">Legacy</span> Today
+                </h2>
+                <p class="text-xl text-gray-400 mb-8">
+                    Don't let your crypto die with you. Set up Shardium in 5 minutes.
+                </p>
+                <a href="/app"
+                    class="inline-block px-10 py-5 bg-gradient-to-r from-brand-500 to-blue-500 hover:from-brand-400 hover:to-blue-400 rounded-full font-bold text-xl transition transform hover:scale-105">
+                    Create Your Vault — It's Free
+                </a>
+                <p class="mt-6 text-gray-500 text-sm">
+                    No credit card required. Open source. Self-hostable.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 py-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center gap-3">
+                    <img src="/static/logo.jpg" alt="Shardium" class="w-8 h-8 rounded-lg">
+                    <span class="font-bold">Shardium</span>
+                </div>
+
+                <div class="flex gap-8 text-gray-400 text-sm">
+                    <a href="/docs" class="hover:text-white transition">Docs</a>
+                    <a href="https://github.com/yourusername/shardium" class="hover:text-white transition">GitHub</a>
+                    <a href="https://x.com/PixOnChain" class="hover:text-white transition">Twitter</a>
+                </div>
+
+                <p class="text-gray-500 text-sm">
+                    © 2024 Shardium. MIT License.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

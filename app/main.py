@@ -5,6 +5,8 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
+import markdown
+from pathlib import Path
 
 from .database import SessionLocal, engine, Base
 from .models import User
@@ -13,7 +15,8 @@ from .services import send_email
 # Create database tables
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="Shardium")
+# Move OpenAPI docs to /api-docs so we can use /docs for our documentation
+app = FastAPI(title="Shardium", docs_url="/api-docs", redoc_url="/api-redoc")
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
@@ -27,8 +30,61 @@ def get_db():
         db.close()
 
 @app.get("/", response_class=HTMLResponse)
-async def read_root(request: Request):
+async def landing_page(request: Request):
+    """Marketing landing page"""
+    return templates.TemplateResponse("landing.html", {"request": request})
+
+@app.get("/app", response_class=HTMLResponse)
+async def app_page(request: Request):
+    """Main application - create vault"""
     return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/docs", response_class=HTMLResponse)
+async def docs_index(request: Request):
+    """Documentation index"""
+    return await render_docs(request, "README")
+
+@app.get("/docs/{doc_name}", response_class=HTMLResponse)
+async def docs_page(request: Request, doc_name: str):
+    """Documentation pages"""
+    return await render_docs(request, doc_name)
+
+async def render_docs(request: Request, doc_name: str):
+    """Helper to render markdown documentation"""
+    docs_path = Path("docs")
+    
+    # Map doc names to files
+    doc_files = {
+        "README": "README.md",
+        "getting-started": "getting-started.md",
+        "how-it-works": "how-it-works.md",
+        "security": "security.md",
+        "faq": "faq.md",
+    }
+    
+    filename = doc_files.get(doc_name, f"{doc_name}.md")
+    file_path = docs_path / filename
+    
+    if not file_path.exists():
+        # Return 404 page or redirect
+        return templates.TemplateResponse("docs.html", {
+            "request": request,
+            "content": "<h1>Page Not Found</h1><p>This documentation page doesn't exist.</p>",
+            "current_doc": doc_name
+        })
+    
+    # Read and convert markdown to HTML
+    md_content = file_path.read_text(encoding="utf-8")
+    html_content = markdown.markdown(
+        md_content, 
+        extensions=['tables', 'fenced_code', 'toc']
+    )
+    
+    return templates.TemplateResponse("docs.html", {
+        "request": request,
+        "content": html_content,
+        "current_doc": "index" if doc_name == "README" else doc_name
+    })
 
 @app.post("/vault/create", response_class=HTMLResponse)
 async def create_vault(

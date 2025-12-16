@@ -6,3 +6,4 @@ sqlalchemy
 python-dotenv
 email-validator
 httpx
+markdown

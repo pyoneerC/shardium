@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 py-12">
+
+    <!-- Docs Header -->
+    <div class="mb-12">
+        <h1 class="text-4xl font-bold mb-4">📚 Documentation</h1>
+        <p class="text-gray-400 text-lg">Everything you need to know about Shardium.</p>
+    </div>
+
+    <div class="grid md:grid-cols-4 gap-8">
+        <!-- Sidebar -->
+        <aside class="md:col-span-1">
+            <nav class="sticky top-24 space-y-2">
+                <a href="/docs"
+                    class="block px-4 py-2 rounded-lg {% if current_doc == 'index' %}bg-brand-500/20 text-brand-400{% else %}text-gray-400 hover:bg-white/5{% endif %} transition">
+                    🏠 Overview
+                </a>
+                <a href="/docs/getting-started"
+                    class="block px-4 py-2 rounded-lg {% if current_doc == 'getting-started' %}bg-brand-500/20 text-brand-400{% else %}text-gray-400 hover:bg-white/5{% endif %} transition">
+                    🚀 Getting Started
+                </a>
+                <a href="/docs/how-it-works"
+                    class="block px-4 py-2 rounded-lg {% if current_doc == 'how-it-works' %}bg-brand-500/20 text-brand-400{% else %}text-gray-400 hover:bg-white/5{% endif %} transition">
+                    ⚙️ How It Works
+                </a>
+                <a href="/docs/security"
+                    class="block px-4 py-2 rounded-lg {% if current_doc == 'security' %}bg-brand-500/20 text-brand-400{% else %}text-gray-400 hover:bg-white/5{% endif %} transition">
+                    🔒 Security
+                </a>
+                <a href="/docs/faq"
+                    class="block px-4 py-2 rounded-lg {% if current_doc == 'faq' %}bg-brand-500/20 text-brand-400{% else %}text-gray-400 hover:bg-white/5{% endif %} transition">
+                    ❓ FAQ
+                </a>
+
+                <div class="pt-4 mt-4 border-t border-white/10">
+                    <a href="/api-docs" target="_blank"
+                        class="block px-4 py-2 rounded-lg text-gray-400 hover:bg-white/5 transition">
+                        📡 API Reference ↗
+                    </a>
+                    <a href="https://github.com/yourusername/shardium" target="_blank"
+                        class="block px-4 py-2 rounded-lg text-gray-400 hover:bg-white/5 transition">
+                        🐙 GitHub ↗
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="md:col-span-3">
+            <div class="glass-panel rounded-2xl p-8">
+                <article class="docs-content">
+                    {{ content | safe }}
+                </article>
+            </div>
+        </main>
+    </div>
+</div>
+
+<style>
+    /* Markdown content styling */
+    .docs-content h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .docs-content h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: white;
+        margin-top: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .docs-content h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: white;
+        margin-top: 2rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .docs-content h4 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: white;
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .docs-content p {
+        color: #d1d5db;
+        line-height: 1.75;
+        margin-bottom: 1rem;
+    }
+
+    .docs-content ul,
+    .docs-content ol {
+        color: #d1d5db;
+        margin-bottom: 1rem;
+        padding-left: 1.5rem;
+    }
+
+    .docs-content ul {
+        list-style-type: disc;
+    }
+
+    .docs-content ol {
+        list-style-type: decimal;
+    }
+
+    .docs-content li {
+        margin-bottom: 0.5rem;
+        line-height: 1.6;
+    }
+
+    .docs-content li::marker {
+        color: #14b8a6;
+    }
+
+    .docs-content a {
+        color: #2dd4bf;
+        text-decoration: none;
+    }
+
+    .docs-content a:hover {
+        text-decoration: underline;
+    }
+
+    .docs-content code {
+        background: rgba(0, 0, 0, 0.5);
+        color: #2dd4bf;
+        padding: 0.2rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.9em;
+    }
+
+    .docs-content pre {
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0.5rem;
+        padding: 1rem;
+        overflow-x: auto;
+        margin-bottom: 1rem;
+    }
+
+    .docs-content pre code {
+        background: transparent;
+        padding: 0;
+        color: #e5e7eb;
+    }
+
+    .docs-content strong {
+        color: white;
+        font-weight: 600;
+    }
+
+    .docs-content em {
+        font-style: italic;
+    }
+
+    .docs-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1.5rem;
+    }
+
+    .docs-content th,
+    .docs-content td {
+        padding: 0.75rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: left;
+    }
+
+    .docs-content th {
+        background: rgba(255, 255, 255, 0.05);
+        color: white;
+        font-weight: 600;
+    }
+
+    .docs-content td {
+        color: #d1d5db;
+    }
+
+    .docs-content blockquote {
+        border-left: 4px solid #14b8a6;
+        padding-left: 1rem;
+        margin-left: 0;
+        margin-bottom: 1rem;
+        color: #94a3b8;
+        font-style: italic;
+    }
+
+    .docs-content hr {
+        border: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        margin: 2rem 0;
+    }
+</style>
+{% endblock %}

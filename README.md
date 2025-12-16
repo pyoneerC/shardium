@@ -1,4 +1,10 @@
+<p align="center">
+  <img src="app/static/banner.jpg" alt="Shardium Banner" width="100%">
+</p>
+
 # Shardium
+
+### 🔐 Trustless dead man's switch for crypto inheritance using Shamir's Secret Sharing
 
 ## The "Trustless Dead Man's Switch"
 

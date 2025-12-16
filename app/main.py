@@ -1,5 +1,4 @@
 import secrets
-import logging
 from fastapi import FastAPI, Request, Depends, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates

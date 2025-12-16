@@ -113,7 +113,7 @@ async def create_vault(
 
     # In a real app, we might email the user a confirmation link first.
     # Here we simulate the 'welcome' email which might include the first heartbeat link.
-    send_email(email, "Welcome to Shardium", f"Your vault is active. We will check on you in 30 days. Your heartbeat link: http://localhost:8000/heartbeat/{new_user.id}/{heartbeat_token}")
+    send_email(email, "Welcome to Shardium", f"Your vault is active. We will check on you in 30 days. Your heartbeat link: https://shardium.maxcomperatore.com/heartbeat/{new_user.id}/{heartbeat_token}")
     
     # Ideally User should have Shard B printed/PDFd. The form should have handled showing that.
     # The server just acknowledges receipt of Shard C.

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 py-12">
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold mb-4">Recover Key</h1>
+        <p class="text-gray-400">
+            Enter 2 of the 3 shards to reconstruct your original seed phrase.
+            <br>
+            <span class="text-sm text-gray-500">This happens entirely in your browser.</span>
+        </p>
+    </div>
+
+    <div class="glass-panel p-8 rounded-2xl shadow-xl space-y-6">
+        <div>
+            <label class="block text-sm font-bold text-gray-300 mb-2">Shard 1</label>
+            <input type="text" id="shard-1"
+                class="w-full bg-black/50 border border-white/10 rounded-lg p-3 font-mono text-sm text-white focus:border-brand-500 outline-none"
+                placeholder="801...">
+        </div>
+
+        <div>
+            <label class="block text-sm font-bold text-gray-300 mb-2">Shard 2</label>
+            <input type="text" id="shard-2"
+                class="w-full bg-black/50 border border-white/10 rounded-lg p-3 font-mono text-sm text-white focus:border-brand-500 outline-none"
+                placeholder="802...">
+        </div>
+
+        <button onclick="recoverSeed()"
+            class="w-full py-4 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl transition shadow-lg shadow-brand-900/20">
+            Reconstruct Seed Phrase
+        </button>
+
+        <div id="result-container" class="hidden mt-8 pt-8 border-t border-white/10">
+            <h3 class="text-lg font-bold text-white mb-4">Recovered Seed Phrase:</h3>
+            <div class="bg-black/80 p-6 rounded-xl border border-brand-500/30 relative">
+                <p id="recovered-seed" class="font-mono text-brand-300 break-words text-lg"></p>
+                <div class="absolute top-0 right-0 p-2">
+                    <span class="text-xs text-green-500 font-bold px-2 py-1 bg-green-900/20 rounded">SUCCESS</span>
+                </div>
+            </div>
+            <p class="text-xs text-red-500 mt-4 text-center">
+                Warning: Once recovered, move your funds immediately. This seed has been exposed.
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function recoverSeed() {
+        const s1 = document.getElementById('shard-1').value.trim();
+        const s2 = document.getElementById('shard-2').value.trim();
+
+        if (!s1 || !s2) {
+            alert("Please enter two shards.");
+            return;
+        }
+
+        try {
+            // secrets.combine( shares )
+            const hex = secrets.combine([s1, s2]);
+            const seed = secrets.hex2str(hex);
+
+            document.getElementById('recovered-seed').innerText = seed;
+            document.getElementById('result-container').classList.remove('hidden');
+        } catch (e) {
+            console.error(e);
+            alert("Reconstruction failed. Are these valid shards from the same set?");
+        }
+    }
+</script>
+{% endblock %}

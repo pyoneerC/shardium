@@ -1,0 +1,557 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-12">
+
+    <!-- Hero Section -->
+    <div class="text-center mb-16">
+        <h1 class="text-5xl font-bold mb-4 tracking-tight">
+            The <span class="gradient-text">Trustless</span> Dead Man's Switch.
+        </h1>
+        <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+            Secure your crypto legacy. We never see your seed phrase.
+            Split your key into 3 shards using Shamir's Secret Sharing.
+        </p>
+    </div>
+
+    <!-- Error/Messages -->
+    {% if error %}
+    <div class="bg-red-500/10 border border-red-500/50 text-red-200 p-4 rounded-lg mb-8 text-center">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <!-- Vault Creation Interface -->
+    <div class="glass-panel rounded-2xl p-8 shadow-2xl relative overflow-hidden">
+        <!-- Decoration -->
+        <div
+            class="absolute top-0 right-0 w-64 h-64 bg-brand-500/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none">
+        </div>
+
+        <div id="step-1">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span
+                    class="bg-brand-500 text-black w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                Enter Your Secret
+            </h2>
+
+            <div class="space-y-4">
+                <p class="text-gray-400 text-sm">
+                    Enter your 12 or 24 word seed phrase.
+                    <span class="text-brand-400 font-bold">Disconnect your internet now</span> for maximum security.
+                    Your seed will be split locally in your browser.
+                </p>
+
+                <textarea id="seed-input" rows="4"
+                    class="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-brand-100 font-mono focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition outline-none placeholder-gray-600"
+                    placeholder="witch collapse practice feed shame open despair creek road again ice least..."></textarea>
+
+                <div class="flex gap-3">
+                    <button onclick="generateExampleSeed(12)"
+                        class="flex-1 py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 font-medium rounded-xl transition text-sm">
+                        🎲 Example 12-word
+                    </button>
+                    <button onclick="generateExampleSeed(24)"
+                        class="flex-1 py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 font-medium rounded-xl transition text-sm">
+                        🎲 Example 24-word
+                    </button>
+                </div>
+
+                <button onclick="splitSecret()"
+                    class="w-full py-4 bg-gradient-to-r from-brand-600 to-blue-600 hover:from-brand-500 hover:to-blue-500 text-white font-bold rounded-xl transition shadow-lg shadow-brand-500/20">
+                    Encrypt & Split Key
+                </button>
+            </div>
+        </div>
+
+        <div id="step-2" class="hidden animate-fade-in">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span
+                    class="bg-brand-500 text-black w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                Save Your Shards
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <!-- Shard A -->
+                <div class="bg-black/40 p-6 rounded-xl border border-white/10">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-brand-300">Shard A (Your Master Backup)</h3>
+                        <span class="text-xs bg-brand-900 text-brand-300 px-2 py-1 rounded">Keep Safe</span>
+                    </div>
+                    <p class="text-xs text-gray-500 mb-2">Store this securely (Password Manager / Physical).</p>
+                    <div class="relative group">
+                        <code id="display-shard-a"
+                            class="block bg-black p-3 rounded text-xs text-gray-300 break-all font-mono min-h-[3rem]"></code>
+                        <button onclick="copyToClipboard('display-shard-a')"
+                            class="absolute top-2 right-2 text-xs text-gray-500 hover:text-white">Copy</button>
+                    </div>
+                    <button onclick="printShardA()"
+                        class="w-full mt-3 py-2 bg-brand-600/20 hover:bg-brand-600/30 border border-brand-500/30 text-brand-300 font-medium rounded-lg transition text-sm flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
+                            </path>
+                        </svg>
+                        Print Shard A as PDF
+                    </button>
+                </div>
+
+                <!-- Shard B -->
+                <div class="bg-black/40 p-6 rounded-xl border border-white/10">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-yellow-300">Shard B (Beneficiary)</h3>
+                        <span class="text-xs bg-yellow-900 text-yellow-300 px-2 py-1 rounded">Give to Heir</span>
+                    </div>
+                    <p class="text-xs text-gray-500 mb-2">Print this or save to USB. Give to your beneficiary.</p>
+                    <div class="relative group">
+                        <code id="display-shard-b"
+                            class="block bg-black p-3 rounded text-xs text-gray-300 break-all font-mono min-h-[3rem]"></code>
+                        <button onclick="copyToClipboard('display-shard-b')"
+                            class="absolute top-2 right-2 text-xs text-gray-500 hover:text-white">Copy</button>
+                    </div>
+                    <button onclick="printShardB()"
+                        class="w-full mt-3 py-2 bg-yellow-600/20 hover:bg-yellow-600/30 border border-yellow-500/30 text-yellow-300 font-medium rounded-lg transition text-sm flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
+                            </path>
+                        </svg>
+                        Print Shard B as PDF
+                    </button>
+                </div>
+            </div>
+
+            <!-- Shard C Display -->
+            <div class="bg-purple-500/10 border border-purple-500/30 p-4 rounded-xl mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <h4 class="font-bold text-purple-300 text-sm">Shard C (Server Shard) - For Transparency</h4>
+                    <span class="text-xs bg-purple-900/50 text-purple-300 px-2 py-1 rounded">Sent to Shardium</span>
+                </div>
+                <p class="text-xs text-purple-200/60 mb-2">This is the shard that will be stored on our server and
+                    released to your beneficiary when the dead man's switch triggers.</p>
+                <code id="display-shard-c"
+                    class="block bg-black/50 p-3 rounded text-xs text-purple-200 break-all font-mono min-h-[3rem]"></code>
+            </div>
+
+            <div class="bg-blue-500/10 border border-blue-500/30 p-4 rounded-xl mb-6">
+                <h4 class="font-bold text-blue-300 text-sm mb-1">How it works:</h4>
+                <p class="text-xs text-blue-200/70">
+                    We will send <strong>Shard C</strong> to our server in the next step.
+                    We cannot access your funds because we only have 1 shard.
+                    Your beneficiary needs Shard B + Shard C (emailed upon death) to unlock.
+                </p>
+            </div>
+
+            <button onclick="proceedToFinal()"
+                class="w-full py-4 bg-white/10 hover:bg-white/20 border border-white/10 text-white font-bold rounded-xl transition">
+                I have saved Shards A & B. Continue &rarr;
+            </button>
+        </div>
+
+        <div id="step-3" class="hidden animate-fade-in">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span
+                    class="bg-brand-500 text-black w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                Activate Switch
+            </h2>
+
+            <form action="/vault/create" method="POST" class="space-y-4">
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">Your Email (for 30-day checks)</label>
+                    <input type="email" name="email" required
+                        class="w-full bg-black/30 border border-white/10 rounded-lg p-3 text-white focus:border-brand-500 outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">Beneficiary Email (receives Shard C on
+                        death)</label>
+                    <input type="email" name="beneficiary_email" required
+                        class="w-full bg-black/30 border border-white/10 rounded-lg p-3 text-white focus:border-brand-500 outline-none">
+                </div>
+
+                <input type="hidden" name="shard_c" id="input-shard-c">
+
+                <div class="pt-4">
+                    <button type="submit"
+                        class="w-full py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold rounded-xl transition shadow-lg shadow-green-900/20 flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                            </path>
+                        </svg>
+                        Activate Shardium
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // BIP39 Word List (first 256 words - enough for demo purposes)
+    const BIP39_WORDS = [
+        "abandon", "ability", "able", "about", "above", "absent", "absorb", "abstract", "absurd", "abuse",
+        "access", "accident", "account", "accuse", "achieve", "acid", "acoustic", "acquire", "across", "act",
+        "action", "actor", "actress", "actual", "adapt", "add", "addict", "address", "adjust", "admit",
+        "adult", "advance", "advice", "aerobic", "affair", "afford", "afraid", "again", "age", "agent",
+        "agree", "ahead", "aim", "air", "airport", "aisle", "alarm", "album", "alcohol", "alert",
+        "alien", "all", "alley", "allow", "almost", "alone", "alpha", "already", "also", "alter",
+        "always", "amateur", "amazing", "among", "amount", "amused", "analyst", "anchor", "ancient", "anger",
+        "angle", "angry", "animal", "ankle", "announce", "annual", "another", "answer", "antenna", "antique",
+        "anxiety", "any", "apart", "apology", "appear", "apple", "approve", "april", "arch", "arctic",
+        "area", "arena", "argue", "arm", "armed", "armor", "army", "around", "arrange", "arrest",
+        "arrive", "arrow", "art", "artefact", "artist", "artwork", "ask", "aspect", "assault", "asset",
+        "assist", "assume", "asthma", "athlete", "atom", "attack", "attend", "attitude", "attract", "auction",
+        "audit", "august", "aunt", "author", "auto", "autumn", "average", "avocado", "avoid", "awake",
+        "aware", "away", "awesome", "awful", "awkward", "axis", "baby", "bachelor", "bacon", "badge",
+        "bag", "balance", "balcony", "ball", "bamboo", "banana", "banner", "bar", "barely", "bargain",
+        "barrel", "base", "basic", "basket", "battle", "beach", "bean", "beauty", "because", "become",
+        "beef", "before", "begin", "behave", "behind", "believe", "below", "belt", "bench", "benefit",
+        "best", "betray", "better", "between", "beyond", "bicycle", "bid", "bike", "bind", "biology",
+        "bird", "birth", "bitter", "black", "blade", "blame", "blanket", "blast", "bleak", "bless",
+        "blind", "blood", "blossom", "blouse", "blue", "blur", "blush", "board", "boat", "body",
+        "boil", "bomb", "bone", "bonus", "book", "boost", "border", "boring", "borrow", "boss",
+        "bottom", "bounce", "box", "boy", "bracket", "brain", "brand", "brass", "brave", "bread",
+        "breeze", "brick", "bridge", "brief", "bright", "bring", "brisk", "broccoli", "broken", "bronze",
+        "broom", "brother", "brown", "brush", "bubble", "buddy", "budget", "buffalo", "build", "bulb",
+        "bulk", "bullet", "bundle", "bunker", "burden", "burger", "burst", "bus", "business", "busy",
+        "butter", "buyer", "cabbage", "cabin", "cable", "cactus"
+    ];
+
+    function generateExampleSeed(wordCount) {
+        const words = [];
+        for (let i = 0; i < wordCount; i++) {
+            const randomIndex = Math.floor(Math.random() * BIP39_WORDS.length);
+            words.push(BIP39_WORDS[randomIndex]);
+        }
+        document.getElementById('seed-input').value = words.join(' ');
+    }
+
+    function splitSecret() {
+        const seed = document.getElementById('seed-input').value;
+        if (!seed || seed.length < 10) {
+            alert("Please enter a valid seed phrase");
+            return;
+        }
+
+        try {
+            // secrets.share(secret, numShares, threshold)
+            // We convert string to hex first usually, but secrets.share handles strings? 
+            // secrets.js-grempe works with Hex strings by default.
+            // We need to convert text to hex.
+            const seedHex = secrets.str2hex(seed);
+            const shares = secrets.share(seedHex, 3, 2);
+
+            // Shard A
+            document.getElementById('display-shard-a').innerText = shares[0];
+
+            // Shard B
+            document.getElementById('display-shard-b').innerText = shares[1];
+
+            // Shard C (Ready for server + display for transparency)
+            document.getElementById('input-shard-c').value = shares[2];
+            document.getElementById('display-shard-c').innerText = shares[2];
+
+            // UI Transitions
+            document.getElementById('step-1').classList.add('hidden');
+            document.getElementById('step-2').classList.remove('hidden');
+        } catch (e) {
+            console.error(e);
+            alert("Error splitting secret: " + e.message);
+        }
+    }
+
+    function proceedToFinal() {
+        document.getElementById('step-2').classList.add('hidden');
+        document.getElementById('step-3').classList.remove('hidden');
+    }
+
+    function copyToClipboard(id) {
+        const text = document.getElementById(id).innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            alert("Copied directly to clipboard!");
+        });
+    }
+
+    function printShardA() {
+        const shardA = document.getElementById('display-shard-a').innerText;
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Shardium - Shard A (Master Backup)</title>
+                <style>
+                    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono&display=swap');
+                    body {
+                        font-family: 'Inter', sans-serif;
+                        padding: 40px;
+                        max-width: 700px;
+                        margin: 0 auto;
+                        color: #1a1a1a;
+                    }
+                    .header {
+                        text-align: center;
+                        border-bottom: 3px solid #14b8a6;
+                        padding-bottom: 20px;
+                        margin-bottom: 30px;
+                    }
+                    .logo {
+                        font-size: 28px;
+                        font-weight: 700;
+                        color: #0d9488;
+                    }
+                    .title {
+                        font-size: 22px;
+                        font-weight: 600;
+                        color: #0d9488;
+                        margin-top: 10px;
+                    }
+                    .warning {
+                        background: #ccfbf1;
+                        border: 2px solid #14b8a6;
+                        border-radius: 8px;
+                        padding: 15px;
+                        margin-bottom: 25px;
+                    }
+                    .warning h3 {
+                        color: #0d9488;
+                        margin: 0 0 8px 0;
+                    }
+                    .warning p {
+                        margin: 0;
+                        font-size: 14px;
+                        color: #134e4a;
+                    }
+                    .shard-box {
+                        background: #f8fafc;
+                        border: 2px dashed #64748b;
+                        border-radius: 8px;
+                        padding: 20px;
+                        margin-bottom: 25px;
+                    }
+                    .shard-label {
+                        font-weight: 600;
+                        color: #475569;
+                        margin-bottom: 10px;
+                    }
+                    .shard-value {
+                        font-family: 'JetBrains Mono', monospace;
+                        font-size: 11px;
+                        word-break: break-all;
+                        line-height: 1.6;
+                        color: #1e293b;
+                    }
+                    .instructions {
+                        background: #f0fdfa;
+                        border: 1px solid #14b8a6;
+                        border-radius: 8px;
+                        padding: 15px;
+                    }
+                    .instructions h3 {
+                        color: #0d9488;
+                        margin: 0 0 10px 0;
+                    }
+                    .instructions ul {
+                        margin: 0;
+                        padding-left: 20px;
+                        color: #134e4a;
+                        font-size: 14px;
+                    }
+                    .instructions li {
+                        margin-bottom: 8px;
+                    }
+                    .footer {
+                        text-align: center;
+                        margin-top: 30px;
+                        font-size: 12px;
+                        color: #94a3b8;
+                    }
+                    @media print {
+                        body { padding: 20px; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <div class="logo">🔐 Shardium</div>
+                    <div class="title">SHARD A - Master Backup Key</div>
+                </div>
+                
+                <div class="warning">
+                    <h3>🔒 YOUR MASTER BACKUP - KEEP EXTREMELY SAFE</h3>
+                    <p>This is YOUR personal backup shard. Combined with ANY other shard (B or C), it can recover the full seed phrase. Store this in a secure location (safe, password manager, bank deposit box).</p>
+                </div>
+                
+                <div class="shard-box">
+                    <div class="shard-label">SHARD A VALUE:</div>
+                    <div class="shard-value">${shardA}</div>
+                </div>
+                
+                <div class="instructions">
+                    <h3>📋 Storage Recommendations</h3>
+                    <ul>
+                        <li>Store in a password manager (1Password, Bitwarden, etc.)</li>
+                        <li>Print and store in a fireproof safe</li>
+                        <li>Keep a copy in a bank safety deposit box</li>
+                        <li>NEVER share this with anyone - it's YOUR master key</li>
+                        <li>With this + Shard B or C, you can recover anytime</li>
+                    </ul>
+                </div>
+                
+                <div class="footer">
+                    Generated by Shardium • Trustless Dead Man's Switch<br>
+                    Date: ${new Date().toLocaleDateString()}
+                </div>
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.focus();
+        setTimeout(() => {
+            printWindow.print();
+        }, 250);
+    }
+
+    function printShardB() {
+        const shardB = document.getElementById('display-shard-b').innerText;
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Shardium - Shard B (Beneficiary)</title>
+                <style>
+                    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono&display=swap');
+                    body {
+                        font-family: 'Inter', sans-serif;
+                        padding: 40px;
+                        max-width: 700px;
+                        margin: 0 auto;
+                        color: #1a1a1a;
+                    }
+                    .header {
+                        text-align: center;
+                        border-bottom: 3px solid #f59e0b;
+                        padding-bottom: 20px;
+                        margin-bottom: 30px;
+                    }
+                    .logo {
+                        font-size: 28px;
+                        font-weight: 700;
+                        color: #0d9488;
+                    }
+                    .title {
+                        font-size: 22px;
+                        font-weight: 600;
+                        color: #b45309;
+                        margin-top: 10px;
+                    }
+                    .warning {
+                        background: #fef3c7;
+                        border: 2px solid #f59e0b;
+                        border-radius: 8px;
+                        padding: 15px;
+                        margin-bottom: 25px;
+                    }
+                    .warning h3 {
+                        color: #b45309;
+                        margin: 0 0 8px 0;
+                    }
+                    .warning p {
+                        margin: 0;
+                        font-size: 14px;
+                        color: #92400e;
+                    }
+                    .shard-box {
+                        background: #f8fafc;
+                        border: 2px dashed #64748b;
+                        border-radius: 8px;
+                        padding: 20px;
+                        margin-bottom: 25px;
+                    }
+                    .shard-label {
+                        font-weight: 600;
+                        color: #475569;
+                        margin-bottom: 10px;
+                    }
+                    .shard-value {
+                        font-family: 'JetBrains Mono', monospace;
+                        font-size: 11px;
+                        word-break: break-all;
+                        line-height: 1.6;
+                        color: #1e293b;
+                    }
+                    .instructions {
+                        background: #ecfdf5;
+                        border: 1px solid #10b981;
+                        border-radius: 8px;
+                        padding: 15px;
+                    }
+                    .instructions h3 {
+                        color: #047857;
+                        margin: 0 0 10px 0;
+                    }
+                    .instructions ol {
+                        margin: 0;
+                        padding-left: 20px;
+                        color: #065f46;
+                        font-size: 14px;
+                    }
+                    .instructions li {
+                        margin-bottom: 8px;
+                    }
+                    .footer {
+                        text-align: center;
+                        margin-top: 30px;
+                        font-size: 12px;
+                        color: #94a3b8;
+                    }
+                    @media print {
+                        body { padding: 20px; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <div class="logo">🔐 Shardium</div>
+                    <div class="title">SHARD B - Beneficiary Recovery Key</div>
+                </div>
+                
+                <div class="warning">
+                    <h3>⚠️ IMPORTANT - KEEP THIS SAFE</h3>
+                    <p>This is one half of the recovery key. You will need this document PLUS "Shard C" (which will be emailed to you) to recover the crypto wallet. Store this document securely.</p>
+                </div>
+                
+                <div class="shard-box">
+                    <div class="shard-label">SHARD B VALUE:</div>
+                    <div class="shard-value">${shardB}</div>
+                </div>
+                
+                <div class="instructions">
+                    <h3>📋 Recovery Instructions</h3>
+                    <ol>
+                        <li>When you receive "Shard C" via email, go to the Shardium website</li>
+                        <li>Click "Recover Key" in the navigation</li>
+                        <li>Enter both Shard B (this document) and Shard C</li>
+                        <li>The original seed phrase will be reconstructed</li>
+                        <li>Use the seed phrase to access the crypto wallet</li>
+                    </ol>
+                </div>
+                
+                <div class="footer">
+                    Generated by Shardium • Trustless Dead Man's Switch<br>
+                    Date: ${new Date().toLocaleDateString()}
+                </div>
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.focus();
+        setTimeout(() => {
+            printWindow.print();
+        }, 250);
+    }
+</script>
+{% endblock %}

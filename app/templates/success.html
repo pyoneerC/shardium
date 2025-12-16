@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-24 text-center">
+    <div
+        class="w-24 h-24 bg-green-500/20 text-green-400 rounded-full flex items-center justify-center mx-auto mb-8 animate-bounce">
+        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+    </div>
+
+    <h1 class="text-4xl font-bold mb-4">Vault Activated.</h1>
+    <p class="text-xl text-gray-400 mb-8">
+        We have received Shard C. Your beneficiary is safe.<br>
+        We will check on you in 30 days via email.
+    </p>
+
+    <div class="bg-gray-900 p-6 rounded-xl border border-white/10 text-left mb-8">
+        <h3 class="font-bold text-lg mb-2 text-white">Next Steps:</h3>
+        <ul class="list-disc list-inside space-y-2 text-gray-400">
+            <li>Check your email for the confirmation.</li>
+            <li>Ensure your beneficiary knows where Shard B is.</li>
+            <li>Relax. Your crypto is now trustlessly backed up.</li>
+        </ul>
+    </div>
+
+    <a href="/" class="text-brand-400 hover:text-brand-300 font-medium">&larr; Back to Home</a>
+</div>
+{% endblock %}

@@ -311,12 +311,37 @@
         }
 
         try {
-            // secrets.share(secret, numShares, threshold)
-            // We convert string to hex first usually, but secrets.share handles strings? 
-            // secrets.js-grempe works with Hex strings by default.
-            // We need to convert text to hex.
+            // Convert string to hex (secrets.js works with hex)
             const seedHex = secrets.str2hex(seed);
             const shares = secrets.share(seedHex, 3, 2);
+
+            // ========== VERIFIABLE SECRET SHARING ==========
+            // Verify ALL combinations can reconstruct before proceeding
+            // This prevents the "bad share" disaster
+
+            const verifyAB = secrets.combine([shares[0], shares[1]]);
+            const verifyBC = secrets.combine([shares[1], shares[2]]);
+            const verifyAC = secrets.combine([shares[0], shares[2]]);
+
+            // Check all combinations reconstruct to original
+            if (verifyAB !== seedHex) {
+                throw new Error("Verification failed: A+B does not reconstruct seed");
+            }
+            if (verifyBC !== seedHex) {
+                throw new Error("Verification failed: B+C does not reconstruct seed");
+            }
+            if (verifyAC !== seedHex) {
+                throw new Error("Verification failed: A+C does not reconstruct seed");
+            }
+
+            // Double-check: convert back to string and compare
+            const reconstructed = secrets.hex2str(verifyAB);
+            if (reconstructed !== seed) {
+                throw new Error("Verification failed: Reconstructed seed doesn't match original");
+            }
+
+            console.log("✅ All shard combinations verified successfully!");
+            // ================================================
 
             // Shard A
             document.getElementById('display-shard-a').innerText = shares[0];
@@ -328,13 +353,25 @@
             document.getElementById('input-shard-c').value = shares[2];
             document.getElementById('display-shard-c').innerText = shares[2];
 
+            // Show verification success message
+            showVerificationSuccess();
+
             // UI Transitions
             document.getElementById('step-1').classList.add('hidden');
             document.getElementById('step-2').classList.remove('hidden');
         } catch (e) {
             console.error(e);
-            alert("Error splitting secret: " + e.message);
+            alert("❌ CRITICAL ERROR: " + e.message + "\n\nDo NOT proceed. Please refresh and try again.");
         }
+    }
+
+    function showVerificationSuccess() {
+        // Flash a verification success message
+        const toast = document.createElement('div');
+        toast.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-xl shadow-lg z-50 animate-pulse';
+        toast.innerHTML = '✅ All 3 shard combinations verified!';
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
     }
 
     function proceedToFinal() {

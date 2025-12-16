@@ -19,6 +19,8 @@
 
 Shardium is a SaaS concept that uses **Shamir's Secret Sharing** to split a crypto seed phrase into 3 shards. It ensures that no single entity (including the server) has the full key, solving the "Trust Paradox."
 
+> 💡 *Inspired by [@PixOnChain](https://x.com/PixOnChain/status/2000589935980458262)*
+
 ## ✨ Features
 
 - 🔐 **Client-Side Encryption** - Your seed phrase never leaves your browser unencrypted

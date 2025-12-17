@@ -250,85 +250,99 @@ async def check_heartbeats(db: Session = Depends(get_db)):
     2. Sends 60-day warning emails
     3. Triggers death at 90 days (sends Shard C to beneficiary)
     """
-    now = datetime.now()
-    results = {"reminders_30d": [], "warnings_60d": [], "deaths_90d": []}
-    
-    # Get all active (not dead) users
-    active_users = db.query(User).filter(User.is_dead == False).all()
-    
-    for user in active_users:
-        days_since_heartbeat = (now - user.last_heartbeat).days
+    try:
+        now = datetime.now()
+        results = {"reminders_30d": [], "warnings_60d": [], "deaths_90d": [], "errors": []}
         
-        # 30-day reminder (between 29-31 days to catch it)
-        if 29 <= days_since_heartbeat <= 31:
-            send_email(
-                user.email,
-                "🔔 Shardium Check-In Required",
-                f"""
-                <h2>It's been 30 days!</h2>
-                <p>Click the link below to confirm you're still with us:</p>
-                <p><a href="https://shardium.maxcomperatore.com/heartbeat/{user.id}/{user.heartbeat_token}">✅ I'm Still Here</a></p>
-                <p>If we don't hear from you in 60 more days, Shard C will be sent to your beneficiary.</p>
-                """
-            )
-            results["reminders_30d"].append(user.email)
+        # Get all active (not dead) users
+        active_users = db.query(User).filter(User.is_dead == False).all()
         
-        # 60-day warning
-        elif 59 <= days_since_heartbeat <= 61:
-            send_email(
-                user.email,
-                "⚠️ URGENT: Shardium - 30 Days Left",
-                f"""
-                <h2>Final Warning!</h2>
-                <p>We haven't heard from you in 60 days.</p>
-                <p><strong>In 30 days, Shard C will be sent to your beneficiary.</strong></p>
-                </p><a href="https://shardium.maxcomperatore.com/heartbeat/{user.id}/{user.heartbeat_token}">✅ Click Here to Confirm You're OK</a></p>
-                """
-            )
-            results["warnings_60d"].append(user.email)
-        
-        # 90-day death trigger
-        elif days_since_heartbeat >= 90:
-            # INTEGRITY CHECK: Verify config hasn't been tampered with
-            if user.config_hash and user.created_at:
-                expected_config = f"{user.beneficiary_email}|{user.shard_c}|{user.created_at.isoformat()}"
-                expected_hash = hashlib.sha256(expected_config.encode()).hexdigest()
+        for user in active_users:
+            try:
+                # Handle timezone-aware vs naive datetime
+                last_hb = user.last_heartbeat
+                if last_hb is None:
+                    continue
+                if hasattr(last_hb, 'replace') and last_hb.tzinfo is not None:
+                    last_hb = last_hb.replace(tzinfo=None)
+                days_since_heartbeat = (now - last_hb).days
                 
-                if expected_hash != user.config_hash:
-                    # TAMPERING DETECTED! Log and skip this user
-                    results["tampering_detected"] = results.get("tampering_detected", [])
-                    results["tampering_detected"].append(user.email)
-                    continue  # Do NOT send shard to potentially fake beneficiary
-            
-            user.is_dead = True
-            send_email(
-                user.beneficiary_email,
-                "🔐 Shardium Activation - Recovery Key Inside",
-                f"""
-                <h2>Important: Crypto Recovery Key</h2>
-                <p>We have not heard from <strong>{user.email}</strong> for 90 days.</p>
-                <p>As instructed, here is <strong>Shard C</strong>:</p>
-                <div style="background:#f0f0f0; padding:15px; font-family:monospace; word-break:break-all;">
-                    {user.shard_c}
-                </div>
-                <h3>Next Steps:</h3>
-                <ol>
-                    <li>Locate Shard B (the printed document you received)</li>
-                    <li>Go to <a href="https://shardium.maxcomperatore.com/recover">shardium.maxcomperatore.com/recover</a></li>
-                    <li>Enter both Shard B and Shard C</li>
-                    <li>The original seed phrase will be recovered</li>
-                </ol>
-                <p>Our condolences. 💐</p>
-                """
-            )
-            results["deaths_90d"].append(user.email)
+                # 30-day reminder
+                if 29 <= days_since_heartbeat <= 31:
+                    send_email(
+                        user.email,
+                        "🔔 Shardium Check-In Required",
+                        f"""
+                        <h2>It's been 30 days!</h2>
+                        <p>Click the link below to confirm you're still with us:</p>
+                        <p><a href="https://shardium.maxcomperatore.com/heartbeat/{user.id}/{user.heartbeat_token}">✅ I'm Still Here</a></p>
+                        <p>If we don't hear from you in 60 more days, Shard C will be sent to your beneficiary.</p>
+                        """
+                    )
+                    results["reminders_30d"].append(user.email)
+                
+                # 60-day warning
+                elif 59 <= days_since_heartbeat <= 61:
+                    send_email(
+                        user.email,
+                        "⚠️ URGENT: Shardium - 30 Days Left",
+                        f"""
+                        <h2>Final Warning!</h2>
+                        <p>We haven't heard from you in 60 days.</p>
+                        <p><strong>In 30 days, Shard C will be sent to your beneficiary.</strong></p>
+                        <p><a href="https://shardium.maxcomperatore.com/heartbeat/{user.id}/{user.heartbeat_token}">✅ Click Here to Confirm You're OK</a></p>
+                        """
+                    )
+                    results["warnings_60d"].append(user.email)
+                
+                # 90-day death trigger
+                elif days_since_heartbeat >= 90:
+                    # INTEGRITY CHECK
+                    if user.config_hash and user.created_at:
+                        created_str = user.created_at.isoformat() if hasattr(user.created_at, 'isoformat') else str(user.created_at)
+                        if user.created_at.tzinfo is not None:
+                            created_str = user.created_at.replace(tzinfo=None).isoformat()
+                        expected_config = f"{user.beneficiary_email}|{user.shard_c}|{created_str}"
+                        expected_hash = hashlib.sha256(expected_config.encode()).hexdigest()
+                        
+                        if expected_hash != user.config_hash:
+                            results["errors"].append(f"{user.email}: tampering detected")
+                            continue
+                    
+                    user.is_dead = True
+                    send_email(
+                        user.beneficiary_email,
+                        "🔐 Shardium Activation - Recovery Key Inside",
+                        f"""
+                        <h2>Important: Crypto Recovery Key</h2>
+                        <p>We have not heard from <strong>{user.email}</strong> for 90 days.</p>
+                        <p>As instructed, here is <strong>Shard C</strong>:</p>
+                        <div style="background:#f0f0f0; padding:15px; font-family:monospace; word-break:break-all;">
+                            {user.shard_c}
+                        </div>
+                        <h3>Next Steps:</h3>
+                        <ol>
+                            <li>Locate Shard B (the printed document you received)</li>
+                            <li>Go to <a href="https://shardium.maxcomperatore.com/recover">shardium.maxcomperatore.com/recover</a></li>
+                            <li>Enter both Shard B and Shard C</li>
+                            <li>The original seed phrase will be recovered</li>
+                        </ol>
+                        <p>Our condolences. 💐</p>
+                        """
+                    )
+                    results["deaths_90d"].append(user.email)
+                    
+            except Exception as e:
+                results["errors"].append(f"{user.email}: {str(e)}")
+                continue
+        
+        db.commit()
+        return {"status": "ok", "processed": results}
     
-    db.commit()
-    return {"status": "ok", "processed": results}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 
 # Keep old endpoint for manual testing
 @app.post("/simulate/cron/check-deaths")
 async def simulate_check_deaths(db: Session = Depends(get_db)):
     return await check_heartbeats(db)
-
-

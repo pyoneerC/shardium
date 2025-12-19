@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto px-4 py-12">
+<div class="max-w-4xl mx-auto px-6 py-12">
 
     <!-- Hero Section -->
-    <div class="text-center mb-16">
-        <h1 class="text-5xl font-bold mb-4 tracking-tight">
-            The <span class="gradient-text">Trustless</span> Dead Man's Switch.
+    <div class="text-center mb-12">
+        <div class="text-xs font-mono text-zinc-500 mb-4">// CREATE VAULT</div>
+        <h1 class="text-3xl md:text-4xl font-bold mb-4 tracking-tight text-white">
+            Split Your Seed Phrase
         </h1>
-        <p class="text-xl text-gray-400 max-w-2xl mx-auto">
-            Secure your crypto legacy. We never see your seed phrase.
-            Split your key into 3 shards using Shamir's Secret Sharing.
+        <p class="text-zinc-400 max-w-xl mx-auto">
+            Client-side encryption using Shamir's Secret Sharing. Your seed never leaves this device.
         </p>
     </div>
 
@@ -22,11 +22,8 @@
     {% endif %}
 
     <!-- Vault Creation Interface -->
-    <div class="glass-panel rounded-2xl p-8 shadow-2xl relative overflow-hidden">
-        <!-- Decoration -->
-        <div
-            class="absolute top-0 right-0 w-64 h-64 bg-brand-500/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none">
-        </div>
+    <div class="border-gradient rounded-xl p-8 relative">
+        <!-- Clean industrial design - no decoration -->
 
         <!-- Offline Mode Banner -->
         <div id="connection-status" class="mb-6 rounded-xl p-4 transition-all duration-300">
@@ -34,191 +31,147 @@
         </div>
 
         <div id="step-1">
-            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+            <h2 class="text-xl font-semibold mb-6 flex items-center gap-3 text-white">
                 <span
-                    class="bg-brand-500 text-black w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">1</span>
-                Enter Your Secret
+                    class="bg-accent text-black w-7 h-7 rounded flex items-center justify-center text-sm font-mono">01</span>
+                Enter Your Seed Phrase
             </h2>
 
             <div class="space-y-4">
-                <p class="text-gray-400 text-sm">
+                <p class="text-zinc-500 text-sm">
                     Enter your 12 or 24 word seed phrase.
-                    <span class="text-brand-400 font-bold">Go offline now</span> for maximum security.
-                    Your seed is split 100% locally in your browser using pure JavaScript.
+                    <span class="text-accent font-medium">Go offline</span> for maximum security.
                 </p>
 
                 <!-- Offline Benefits -->
-                <div id="offline-benefits"
-                    class="hidden bg-green-500/10 border border-green-500/30 rounded-lg p-3 text-sm">
-                    <div class="flex items-center gap-2 text-green-400 font-bold mb-1">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                clip-rule="evenodd" />
-                        </svg>
-                        Maximum Security Mode Active
+                <div id="offline-benefits" class="hidden bg-accent/10 border border-accent/30 rounded-lg p-3 text-sm">
+                    <div class="flex items-center gap-2">
+                        <span class="text-accent font-mono text-xs">SECURE</span>
+                        <span class="text-accent/70">Client-side only. Your seed never leaves this device.</span>
                     </div>
-                    <p class="text-green-300/80">You're offline. We literally <em>cannot</em> see what you type. The
-                        split happens entirely in your browser using pure JavaScript. Your seed phrase never touches the
-                        network.</p>
                 </div>
 
-                <textarea id="seed-input" rows="4"
-                    class="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-brand-100 font-mono focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition outline-none placeholder-gray-600"
+                <textarea id="seed-input" rows="3"
+                    class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-4 text-white font-mono text-sm focus:border-accent outline-none transition placeholder-zinc-600"
                     placeholder="witch collapse practice feed shame open despair creek road again ice least..."></textarea>
 
                 <div class="flex gap-3">
                     <button onclick="generateExampleSeed(12)"
-                        class="flex-1 py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 font-medium rounded-xl transition text-sm">
-                        🎲 Example 12-word
+                        class="flex-1 py-2 border border-zinc-700 text-zinc-400 font-medium rounded-lg transition text-sm hover:border-zinc-500 hover:text-white">
+                        Example 12-word
                     </button>
                     <button onclick="generateExampleSeed(24)"
-                        class="flex-1 py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 font-medium rounded-xl transition text-sm">
-                        🎲 Example 24-word
+                        class="flex-1 py-2 border border-zinc-700 text-zinc-400 font-medium rounded-lg transition text-sm hover:border-zinc-500 hover:text-white">
+                        Example 24-word
                     </button>
                 </div>
 
                 <button onclick="splitSecret()"
-                    class="w-full py-4 bg-gradient-to-r from-brand-600 to-blue-600 hover:from-brand-500 hover:to-blue-500 text-white font-bold rounded-xl transition shadow-lg shadow-brand-500/20">
-                    Encrypt & Split Key <span id="split-location" class="text-sm font-normal opacity-75">(100%
-                        Local)</span>
+                    class="w-full py-3 bg-accent hover:bg-emerald-400 text-black font-semibold rounded-lg transition">
+                    Split Seed Phrase
                 </button>
             </div>
         </div>
 
         <div id="step-2" class="hidden animate-fade-in">
-            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+            <h2 class="text-xl font-semibold mb-6 flex items-center gap-3 text-white">
                 <span
-                    class="bg-brand-500 text-black w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                    class="bg-accent text-black w-7 h-7 rounded flex items-center justify-center text-sm font-mono">02</span>
                 Save Your Shards
             </h2>
 
             <div class="grid md:grid-cols-2 gap-6 mb-8">
                 <!-- Shard A -->
-                <div class="bg-black/40 p-6 rounded-xl border border-white/10">
+                <div class="border-gradient rounded-lg p-6">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-bold text-brand-300">Shard A (Your Master Backup)</h3>
-                        <span class="text-xs bg-brand-900 text-brand-300 px-2 py-1 rounded">Keep Safe</span>
+                        <h3 class="font-semibold text-accent">Shard A</h3>
+                        <span class="text-xs font-mono text-zinc-500">YOUR BACKUP</span>
                     </div>
-                    <p class="text-xs text-gray-500 mb-2">Store this securely (Password Manager / Physical).</p>
-                    <div class="relative group">
+                    <p class="text-xs text-zinc-500 mb-3">Store securely. Password manager or physical.</p>
+                    <div class="relative">
                         <code id="display-shard-a"
-                            class="block bg-black p-3 rounded text-xs text-gray-300 break-all font-mono min-h-[3rem]"></code>
+                            class="block bg-zinc-900 p-3 rounded text-xs text-zinc-300 break-all font-mono min-h-[3rem] border border-zinc-800"></code>
                         <button onclick="copyToClipboard('display-shard-a')"
-                            class="absolute top-2 right-2 text-xs text-gray-500 hover:text-white">Copy</button>
+                            class="absolute top-2 right-2 text-xs text-zinc-500 hover:text-white">Copy</button>
                     </div>
                     <button onclick="printShardA()"
-                        class="w-full mt-3 py-2 bg-brand-600/20 hover:bg-brand-600/30 border border-brand-500/30 text-brand-300 font-medium rounded-lg transition text-sm flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
-                            </path>
-                        </svg>
-                        Print Shard A as PDF
+                        class="w-full mt-3 py-2 border border-zinc-700 text-zinc-400 font-medium rounded-lg transition text-sm hover:border-accent hover:text-accent">
+                        Print as PDF
                     </button>
                 </div>
 
                 <!-- Shard B -->
-                <div class="bg-black/40 p-6 rounded-xl border border-white/10">
+                <div class="border-gradient rounded-lg p-6">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-bold text-yellow-300">Shard B (Beneficiary)</h3>
-                        <span class="text-xs bg-yellow-900 text-yellow-300 px-2 py-1 rounded">Give to Heir</span>
+                        <h3 class="font-semibold text-yellow-400">Shard B</h3>
+                        <span class="text-xs font-mono text-zinc-500">FOR BENEFICIARY</span>
                     </div>
-                    <p class="text-xs text-gray-500 mb-2">Print this or save to USB. Give to your beneficiary.</p>
-                    <div class="relative group">
+                    <p class="text-xs text-zinc-500 mb-3">Print or USB. Give to your heir.</p>
+                    <div class="relative">
                         <code id="display-shard-b"
-                            class="block bg-black p-3 rounded text-xs text-gray-300 break-all font-mono min-h-[3rem]"></code>
+                            class="block bg-zinc-900 p-3 rounded text-xs text-zinc-300 break-all font-mono min-h-[3rem] border border-zinc-800"></code>
                         <button onclick="copyToClipboard('display-shard-b')"
-                            class="absolute top-2 right-2 text-xs text-gray-500 hover:text-white">Copy</button>
+                            class="absolute top-2 right-2 text-xs text-zinc-500 hover:text-white">Copy</button>
                     </div>
                     <button onclick="printShardB()"
-                        class="w-full mt-3 py-2 bg-yellow-600/20 hover:bg-yellow-600/30 border border-yellow-500/30 text-yellow-300 font-medium rounded-lg transition text-sm flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
-                            </path>
-                        </svg>
-                        Print Shard B as PDF
+                        class="w-full mt-3 py-2 border border-zinc-700 text-zinc-400 font-medium rounded-lg transition text-sm hover:border-yellow-400 hover:text-yellow-400">
+                        Print as PDF
                     </button>
                 </div>
             </div>
 
             <!-- Shard C Display -->
-            <div class="bg-purple-500/10 border border-purple-500/30 p-4 rounded-xl mb-6">
+            <div class="border-gradient rounded-lg p-4 mb-6">
                 <div class="flex justify-between items-center mb-2">
-                    <h4 class="font-bold text-purple-300 text-sm">Shard C (Server Shard) - For Transparency</h4>
-                    <span class="text-xs bg-purple-900/50 text-purple-300 px-2 py-1 rounded">Sent to Shardium</span>
+                    <h4 class="font-semibold text-zinc-400 text-sm">Shard C</h4>
+                    <span class="text-xs font-mono text-zinc-600">SERVER SHARD</span>
                 </div>
-                <p class="text-xs text-purple-200/60 mb-2">This is the shard that will be stored on our server and
-                    released to your beneficiary when the dead man's switch triggers.</p>
-                <code id="display-shard-c"
-                    class="block bg-black/50 p-3 rounded text-xs text-purple-200 break-all font-mono min-h-[3rem]"></code>
-            </div>
-
-            <div class="bg-blue-500/10 border border-blue-500/30 p-4 rounded-xl mb-6">
-                <h4 class="font-bold text-blue-300 text-sm mb-1">How it works:</h4>
-                <p class="text-xs text-blue-200/70">
-                    We will send <strong>Shard C</strong> to our server in the next step.
-                    We cannot access your funds because we only have 1 shard.
-                    Your beneficiary needs Shard B + Shard C (emailed upon death) to unlock.
+                <p class="text-xs text-zinc-500 mb-2">Stored encrypted. Released to beneficiary when switch triggers.
                 </p>
+                <code id="display-shard-c"
+                    class="block bg-zinc-900 p-3 rounded text-xs text-zinc-400 break-all font-mono min-h-[3rem] border border-zinc-800"></code>
             </div>
 
             <button onclick="proceedToFinal()"
-                class="w-full py-4 bg-white/10 hover:bg-white/20 border border-white/10 text-white font-bold rounded-xl transition">
-                I have saved Shards A & B. Continue &rarr;
+                class="w-full py-3 border border-zinc-700 text-white font-medium rounded-lg transition hover:border-accent hover:text-accent">
+                I saved both shards. Continue →
             </button>
         </div>
 
         <div id="step-3" class="hidden animate-fade-in">
-            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+            <h2 class="text-xl font-semibold mb-6 flex items-center gap-3 text-white">
                 <span
-                    class="bg-brand-500 text-black w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                    class="bg-accent text-black w-7 h-7 rounded flex items-center justify-center text-sm font-mono">03</span>
                 Activate Switch
             </h2>
 
             <!-- Reconnect Reminder -->
-            <div id="reconnect-reminder" class="hidden bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 mb-6">
+            <div id="reconnect-reminder" class="hidden border-gradient rounded-lg p-4 mb-6">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="font-bold text-blue-400">📶 Reconnect to Internet Now</div>
-                        <div class="text-sm text-blue-300/70">Your seed is already split. You need internet to submit
-                            the form and receive confirmation emails.</div>
-                    </div>
+                    <div class="text-accent font-mono text-xs">RECONNECT</div>
+                    <div class="text-sm text-zinc-400">You need internet to submit the form.</div>
                 </div>
             </div>
 
             <form action="/vault/create" method="POST" class="space-y-4">
                 <div>
-                    <label class="block text-sm text-gray-400 mb-1">Your Email (for 30-day checks)</label>
+                    <label class="block text-xs font-mono text-zinc-500 mb-2">YOUR EMAIL</label>
                     <input type="email" name="email" required
-                        class="w-full bg-black/30 border border-white/10 rounded-lg p-3 text-white focus:border-brand-500 outline-none">
+                        class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-3 text-white focus:border-accent outline-none transition">
                 </div>
 
                 <div>
-                    <label class="block text-sm text-gray-400 mb-1">Beneficiary Email (receives Shard C on
-                        death)</label>
+                    <label class="block text-xs font-mono text-zinc-500 mb-2">BENEFICIARY EMAIL</label>
                     <input type="email" name="beneficiary_email" required
-                        class="w-full bg-black/30 border border-white/10 rounded-lg p-3 text-white focus:border-brand-500 outline-none">
+                        class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-3 text-white focus:border-accent outline-none transition">
                 </div>
 
                 <input type="hidden" name="shard_c" id="input-shard-c">
 
                 <div class="pt-4">
                     <button type="submit"
-                        class="w-full py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold rounded-xl transition shadow-lg shadow-green-900/20 flex items-center justify-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
-                            </path>
-                        </svg>
-                        Activate Shardium
+                        class="w-full py-3 bg-accent hover:bg-emerald-400 text-black font-semibold rounded-lg transition">
+                        Activate Switch
                     </button>
                 </div>
             </form>
@@ -228,48 +181,32 @@
 </div>
 
 <script>
-    // ===== OFFLINE DETECTION - THE KILLER FEATURE =====
+    // ===== OFFLINE DETECTION =====
     function updateConnectionStatus() {
         const statusEl = document.getElementById('connection-status');
         const benefitsEl = document.getElementById('offline-benefits');
 
         if (navigator.onLine) {
-            // ONLINE - Show warning
             statusEl.innerHTML = `
-                <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4">
+                <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-yellow-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-                            <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="font-bold text-yellow-400">🌐 You're Online</div>
-                            <div class="text-sm text-yellow-300/70">For maximum security, <strong>disconnect your internet</strong> before entering your seed phrase. The split works 100% offline!</div>
-                        </div>
+                        <div class="text-yellow-400 font-mono text-xs">ONLINE</div>
+                        <div class="text-sm text-yellow-300/70">Disconnect internet for maximum security.</div>
                     </div>
                 </div>
             `;
-            statusEl.className = 'mb-6 rounded-xl transition-all duration-300';
+            statusEl.className = 'mb-6 rounded-lg transition-all duration-300';
             if (benefitsEl) benefitsEl.classList.add('hidden');
         } else {
-            // OFFLINE - Show success
             statusEl.innerHTML = `
-                <div class="bg-green-500/10 border border-green-500/30 rounded-xl p-4">
+                <div class="bg-accent/10 border border-accent/30 rounded-lg p-4">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0 animate-pulse">
-                            <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="font-bold text-green-400">✈️ Airplane Mode Active - Maximum Security!</div>
-                            <div class="text-sm text-green-300/70">Perfect! We <em>literally cannot</em> see what you type. Your seed phrase never touches the network.</div>
-                        </div>
+                        <div class="text-accent font-mono text-xs">OFFLINE</div>
+                        <div class="text-sm text-accent/70">Maximum security. Your seed never touches the network.</div>
                     </div>
                 </div>
             `;
-            statusEl.className = 'mb-6 rounded-xl transition-all duration-300';
+            statusEl.className = 'mb-6 rounded-lg transition-all duration-300';
             if (benefitsEl) benefitsEl.classList.remove('hidden');
         }
     }

@@ -1,104 +1,83 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="max-w-3xl mx-auto px-4 py-12">
-    <div class="text-center mb-12">
-        <h1 class="text-4xl font-bold mb-4">Recover Key</h1>
-        <p class="text-gray-400">
-            Enter 2 of the 3 shards to reconstruct your original seed phrase.
-            <br>
-            <span class="text-sm text-gray-500">This happens entirely in your browser.</span>
+<div class="max-w-2xl mx-auto px-6 py-12">
+    <div class="text-center mb-10">
+        <div class="text-xs font-mono text-zinc-500 mb-4">// RECOVER</div>
+        <h1 class="text-3xl font-bold mb-4 text-white">Reconstruct Seed Phrase</h1>
+        <p class="text-zinc-400">
+            Enter any 2 of the 3 shards. Client-side only.
         </p>
     </div>
 
-    <div class="glass-panel p-8 rounded-2xl shadow-xl space-y-6">
+    <div class="border-gradient rounded-xl p-8 space-y-6">
 
         <!-- Offline Mode Banner -->
-        <div id="connection-status" class="rounded-xl transition-all duration-300">
+        <div id="connection-status" class="rounded-lg transition-all duration-300">
             <!-- Filled by JavaScript -->
         </div>
 
         <div>
-            <label class="block text-sm font-bold text-gray-300 mb-2">Shard 1</label>
+            <label class="block text-xs font-mono text-zinc-500 mb-2">SHARD 1</label>
             <input type="text" id="shard-1"
-                class="w-full bg-black/50 border border-white/10 rounded-lg p-3 font-mono text-sm text-white focus:border-brand-500 outline-none"
+                class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-3 font-mono text-sm text-white focus:border-accent outline-none transition"
                 placeholder="801...">
         </div>
 
         <div>
-            <label class="block text-sm font-bold text-gray-300 mb-2">Shard 2</label>
+            <label class="block text-xs font-mono text-zinc-500 mb-2">SHARD 2</label>
             <input type="text" id="shard-2"
-                class="w-full bg-black/50 border border-white/10 rounded-lg p-3 font-mono text-sm text-white focus:border-brand-500 outline-none"
+                class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-3 font-mono text-sm text-white focus:border-accent outline-none transition"
                 placeholder="802...">
         </div>
 
         <button onclick="recoverSeed()"
-            class="w-full py-4 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl transition shadow-lg shadow-brand-900/20">
-            🔓 Reconstruct Seed Phrase <span class="text-sm font-normal opacity-75">(100% Local)</span>
+            class="w-full py-3 bg-accent hover:bg-emerald-400 text-black font-semibold rounded-lg transition">
+            Reconstruct Seed Phrase
         </button>
 
-        <div id="result-container" class="hidden mt-8 pt-8 border-t border-white/10">
-            <h3 class="text-lg font-bold text-white mb-4">Recovered Seed Phrase:</h3>
-            <div class="bg-black/80 p-6 rounded-xl border border-brand-500/30 relative">
-                <p id="recovered-seed" class="font-mono text-brand-300 break-words text-lg"></p>
-                <div class="absolute top-0 right-0 p-2">
-                    <span class="text-xs text-green-500 font-bold px-2 py-1 bg-green-900/20 rounded">SUCCESS</span>
-                </div>
+        <div id="result-container" class="hidden mt-8 pt-8 border-t border-zinc-800">
+            <div class="flex items-center gap-2 mb-4">
+                <span class="text-xs font-mono text-accent">// RECOVERED</span>
+                <span class="text-xs px-2 py-0.5 bg-accent/20 text-accent rounded">SUCCESS</span>
             </div>
-            <p class="text-xs text-red-500 mt-4 text-center">
-                ⚠️ Warning: Once recovered, move your funds immediately. This seed has been exposed.
+            <div class="bg-zinc-900 p-4 rounded-lg border border-zinc-700">
+                <p id="recovered-seed" class="font-mono text-accent break-words"></p>
+            </div>
+            <p class="text-xs text-red-500 mt-4">
+                Warning: Move your funds immediately. This seed has been exposed.
             </p>
         </div>
     </div>
 </div>
 
 <script>
-    // ===== OFFLINE DETECTION =====
     function updateConnectionStatus() {
         const statusEl = document.getElementById('connection-status');
 
         if (navigator.onLine) {
-            // ONLINE - Show warning
             statusEl.innerHTML = `
-                <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4">
+                <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-yellow-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-                            <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="font-bold text-yellow-400">🌐 You're Online</div>
-                            <div class="text-sm text-yellow-300/70">For maximum security, <strong>disconnect your internet</strong> before entering your shards. Recovery works 100% offline!</div>
-                        </div>
+                        <div class="text-yellow-400 font-mono text-xs">ONLINE</div>
+                        <div class="text-sm text-yellow-300/70">Disconnect internet for maximum security.</div>
                     </div>
                 </div>
             `;
         } else {
-            // OFFLINE - Show success
             statusEl.innerHTML = `
-                <div class="bg-green-500/10 border border-green-500/30 rounded-xl p-4">
+                <div class="bg-accent/10 border border-accent/30 rounded-lg p-4">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0 animate-pulse">
-                            <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="font-bold text-green-400">✈️ Airplane Mode - Maximum Security!</div>
-                            <div class="text-sm text-green-300/70">Perfect! Your seed phrase recovery happens 100% locally. Nothing touches the network.</div>
-                        </div>
+                        <div class="text-accent font-mono text-xs">OFFLINE</div>
+                        <div class="text-sm text-accent/70">Maximum security. Recovery is 100% local.</div>
                     </div>
                 </div>
             `;
         }
     }
 
-    // Listen for online/offline events
     window.addEventListener('online', updateConnectionStatus);
     window.addEventListener('offline', updateConnectionStatus);
-
-    // Initial check
     document.addEventListener('DOMContentLoaded', updateConnectionStatus);
 
     function recoverSeed() {
@@ -106,20 +85,18 @@
         const s2 = document.getElementById('shard-2').value.trim();
 
         if (!s1 || !s2) {
-            alert("Please enter two shards.");
+            alert("Enter two shards.");
             return;
         }
 
         try {
-            // secrets.combine( shares )
             const hex = secrets.combine([s1, s2]);
             const seed = secrets.hex2str(hex);
-
             document.getElementById('recovered-seed').innerText = seed;
             document.getElementById('result-container').classList.remove('hidden');
         } catch (e) {
             console.error(e);
-            alert("❌ Reconstruction failed. Are these valid shards from the same set?");
+            alert("Reconstruction failed. Invalid shards.");
         }
     }
 </script>

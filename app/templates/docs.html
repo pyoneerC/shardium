@@ -1,47 +1,48 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="max-w-5xl mx-auto px-4 py-12">
+<div class="max-w-5xl mx-auto px-6 py-12">
 
     <!-- Docs Header -->
-    <div class="mb-12">
-        <h1 class="text-4xl font-bold mb-4">📚 Documentation</h1>
-        <p class="text-gray-400 text-lg">Everything you need to know about Shardium.</p>
+    <div class="mb-10">
+        <div class="text-xs font-mono text-zinc-500 mb-4">// DOCUMENTATION</div>
+        <h1 class="text-3xl font-bold text-white mb-2">Shardium Docs</h1>
+        <p class="text-zinc-400">Technical documentation and guides.</p>
     </div>
 
     <div class="grid md:grid-cols-4 gap-8">
         <!-- Sidebar -->
         <aside class="md:col-span-1">
-            <nav class="sticky top-24 space-y-2">
+            <nav class="sticky top-20 space-y-1">
                 <a href="/docs"
-                    class="block px-4 py-2 rounded-lg {% if current_doc == 'index' %}bg-brand-500/20 text-brand-400{% else %}text-gray-400 hover:bg-white/5{% endif %} transition">
-                    🏠 Overview
+                    class="block px-3 py-2 rounded text-sm {% if current_doc == 'index' %}bg-accent/10 text-accent border-l-2 border-accent{% else %}text-zinc-400 hover:text-white{% endif %} transition">
+                    Overview
                 </a>
                 <a href="/docs/getting-started"
-                    class="block px-4 py-2 rounded-lg {% if current_doc == 'getting-started' %}bg-brand-500/20 text-brand-400{% else %}text-gray-400 hover:bg-white/5{% endif %} transition">
-                    🚀 Getting Started
+                    class="block px-3 py-2 rounded text-sm {% if current_doc == 'getting-started' %}bg-accent/10 text-accent border-l-2 border-accent{% else %}text-zinc-400 hover:text-white{% endif %} transition">
+                    Getting Started
                 </a>
                 <a href="/docs/how-it-works"
-                    class="block px-4 py-2 rounded-lg {% if current_doc == 'how-it-works' %}bg-brand-500/20 text-brand-400{% else %}text-gray-400 hover:bg-white/5{% endif %} transition">
-                    ⚙️ How It Works
+                    class="block px-3 py-2 rounded text-sm {% if current_doc == 'how-it-works' %}bg-accent/10 text-accent border-l-2 border-accent{% else %}text-zinc-400 hover:text-white{% endif %} transition">
+                    How It Works
                 </a>
                 <a href="/docs/security"
-                    class="block px-4 py-2 rounded-lg {% if current_doc == 'security' %}bg-brand-500/20 text-brand-400{% else %}text-gray-400 hover:bg-white/5{% endif %} transition">
-                    🔒 Security
+                    class="block px-3 py-2 rounded text-sm {% if current_doc == 'security' %}bg-accent/10 text-accent border-l-2 border-accent{% else %}text-zinc-400 hover:text-white{% endif %} transition">
+                    Security
                 </a>
                 <a href="/docs/faq"
-                    class="block px-4 py-2 rounded-lg {% if current_doc == 'faq' %}bg-brand-500/20 text-brand-400{% else %}text-gray-400 hover:bg-white/5{% endif %} transition">
-                    ❓ FAQ
+                    class="block px-3 py-2 rounded text-sm {% if current_doc == 'faq' %}bg-accent/10 text-accent border-l-2 border-accent{% else %}text-zinc-400 hover:text-white{% endif %} transition">
+                    FAQ
                 </a>
 
-                <div class="pt-4 mt-4 border-t border-white/10">
+                <div class="pt-4 mt-4 border-t border-zinc-800">
                     <a href="/api-docs" target="_blank"
-                        class="block px-4 py-2 rounded-lg text-gray-400 hover:bg-white/5 transition">
-                        📡 API Reference ↗
+                        class="block px-3 py-2 rounded text-sm text-zinc-500 hover:text-white transition">
+                        API Reference →
                     </a>
                     <a href="https://github.com/pyoneerC/shardium" target="_blank"
-                        class="block px-4 py-2 rounded-lg text-gray-400 hover:bg-white/5 transition">
-                        🐙 GitHub ↗
+                        class="block px-3 py-2 rounded text-sm text-zinc-500 hover:text-white transition">
+                        GitHub →
                     </a>
                 </div>
             </nav>
@@ -49,7 +50,7 @@
 
         <!-- Main Content -->
         <main class="md:col-span-3">
-            <div class="glass-panel rounded-2xl p-8">
+            <div class="border-gradient rounded-xl p-8">
                 <article class="docs-content">
                     {{ content | safe }}
                 </article>
@@ -59,25 +60,16 @@
 </div>
 
 <style>
-    /* Markdown content styling */
     .docs-content h1 {
-        font-size: 2rem;
+        font-size: 1.75rem;
         font-weight: 700;
         color: white;
         margin-bottom: 1.5rem;
         padding-bottom: 1rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid #27272a;
     }
 
     .docs-content h2 {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: white;
-        margin-top: 2.5rem;
-        margin-bottom: 1rem;
-    }
-
-    .docs-content h3 {
         font-size: 1.25rem;
         font-weight: 600;
         color: white;
@@ -85,7 +77,7 @@
         margin-bottom: 0.75rem;
     }
 
-    .docs-content h4 {
+    .docs-content h3 {
         font-size: 1.1rem;
         font-weight: 600;
         color: white;
@@ -94,16 +86,16 @@
     }
 
     .docs-content p {
-        color: #d1d5db;
-        line-height: 1.75;
+        color: #a1a1aa;
+        line-height: 1.7;
         margin-bottom: 1rem;
     }
 
     .docs-content ul,
     .docs-content ol {
-        color: #d1d5db;
+        color: #a1a1aa;
         margin-bottom: 1rem;
-        padding-left: 1.5rem;
+        padding-left: 1.25rem;
     }
 
     .docs-content ul {
@@ -120,11 +112,11 @@
     }
 
     .docs-content li::marker {
-        color: #14b8a6;
+        color: #10b981;
     }
 
     .docs-content a {
-        color: #2dd4bf;
+        color: #10b981;
         text-decoration: none;
     }
 
@@ -133,16 +125,17 @@
     }
 
     .docs-content code {
-        background: rgba(0, 0, 0, 0.5);
-        color: #2dd4bf;
-        padding: 0.2rem 0.5rem;
+        background: #18181b;
+        color: #10b981;
+        padding: 0.15rem 0.4rem;
         border-radius: 0.25rem;
-        font-size: 0.9em;
+        font-size: 0.875em;
+        font-family: 'JetBrains Mono', monospace;
     }
 
     .docs-content pre {
-        background: rgba(0, 0, 0, 0.5);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: #18181b;
+        border: 1px solid #27272a;
         border-radius: 0.5rem;
         padding: 1rem;
         overflow-x: auto;
@@ -152,16 +145,12 @@
     .docs-content pre code {
         background: transparent;
         padding: 0;
-        color: #e5e7eb;
+        color: #d4d4d8;
     }
 
     .docs-content strong {
         color: white;
         font-weight: 600;
-    }
-
-    .docs-content em {
-        font-style: italic;
     }
 
     .docs-content table {
@@ -173,32 +162,31 @@
     .docs-content th,
     .docs-content td {
         padding: 0.75rem;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid #27272a;
         text-align: left;
     }
 
     .docs-content th {
-        background: rgba(255, 255, 255, 0.05);
+        background: #18181b;
         color: white;
         font-weight: 600;
     }
 
     .docs-content td {
-        color: #d1d5db;
+        color: #a1a1aa;
     }
 
     .docs-content blockquote {
-        border-left: 4px solid #14b8a6;
+        border-left: 2px solid #10b981;
         padding-left: 1rem;
         margin-left: 0;
         margin-bottom: 1rem;
-        color: #94a3b8;
-        font-style: italic;
+        color: #71717a;
     }
 
     .docs-content hr {
         border: none;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-top: 1px solid #27272a;
         margin: 2rem 0;
     }
 </style>

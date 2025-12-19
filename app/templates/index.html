@@ -168,11 +168,30 @@
 
                 <input type="hidden" name="shard_c" id="input-shard-c">
 
+                <!-- Terms of Service Checkbox -->
+                <div class="border-gradient rounded-lg p-4 mt-4">
+                    <label class="flex items-start gap-3 cursor-pointer">
+                        <input type="checkbox" id="tos-checkbox" required
+                            class="mt-1 w-4 h-4 rounded border-zinc-700 bg-zinc-900 text-accent focus:ring-accent focus:ring-offset-0">
+                        <span class="text-sm text-zinc-400">
+                            I have read and agree to the
+                            <a href="/terms" target="_blank" class="text-accent hover:underline">Terms of Service</a>.
+                            I understand that Shardium's liability is limited to the amount of subscription fees I have
+                            paid,
+                            and that Shardium is not responsible for any loss of cryptocurrency or digital assets.
+                        </span>
+                    </label>
+                </div>
+
                 <div class="pt-4">
                     <button type="submit"
-                        class="w-full py-3 bg-accent hover:bg-emerald-400 text-black font-semibold rounded-lg transition">
+                        class="w-full py-3 bg-accent hover:bg-emerald-400 text-black font-semibold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
                         Activate Switch
                     </button>
+                    <p class="text-xs text-zinc-600 text-center mt-2">
+                        By clicking "Activate Switch", you agree to our <a href="/terms"
+                            class="text-zinc-500 hover:text-white">Terms of Service</a>.
+                    </p>
                 </div>
             </form>
         </div>

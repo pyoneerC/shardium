@@ -46,6 +46,11 @@ async def app_page(request: Request):
     """Main application - create vault"""
     return templates.TemplateResponse("index.html", {"request": request})
 
+@app.get("/terms", response_class=HTMLResponse)
+async def terms_page(request: Request):
+    """Terms of Service"""
+    return templates.TemplateResponse("terms.html", {"request": request})
+
 @app.get("/docs", response_class=HTMLResponse)
 async def docs_index(request: Request):
     """Documentation index"""

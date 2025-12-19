@@ -135,7 +135,7 @@ async def create_vault(
             .section h3 {{ color: #14b8a6; margin-top: 0; }}
             .btn {{ display: inline-block; background: linear-gradient(to right, #14b8a6, #0ea5e9); color: #000; font-weight: bold; padding: 14px 28px; border-radius: 8px; text-decoration: none; margin: 20px 0; }}
             .timeline {{ border-left: 3px solid #14b8a6; padding-left: 20px; margin: 20px 0; }}
-            .timeline-item {{ margin-bottom: 15px; }}
+            .timeline-item {{ margin-bottom: 15px; color: #cbd5e1; }}
             .timeline-day {{ color: #14b8a6; font-weight: bold; }}
             .warning {{ background: #422006; border: 1px solid #f59e0b; border-radius: 8px; padding: 15px; margin: 20px 0; }}
             .warning-title {{ color: #fbbf24; font-weight: bold; margin-bottom: 5px; }}

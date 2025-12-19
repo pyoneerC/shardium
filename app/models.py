@@ -8,7 +8,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True)
     beneficiary_email = Column(String)
-    shard_c = Column(String)  # Stored encrypted shard
+    shard_c = Column(String)  # AES-GCM encrypted, key derived from heartbeat_token
     
     # IMMUTABILITY PROTECTION: Hash of original config
     # Hash = SHA256(beneficiary_email + shard_c + created_at)

@@ -8,3 +8,4 @@ email-validator
 httpx
 markdown
 psycopg2-binary
+cryptography

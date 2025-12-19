@@ -12,6 +12,7 @@ from pathlib import Path
 from .database import SessionLocal, engine, Base
 from .models import User
 from .services import send_email
+from .crypto import encrypt_shard, decrypt_shard
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -114,10 +115,13 @@ async def create_vault(
     config_string = f"{beneficiary_email}|{shard_c}|{created_timestamp.isoformat()}"
     config_hash = hashlib.sha256(config_string.encode()).hexdigest()
     
+    # Encrypt shard_c before storing (key derived from heartbeat_token)
+    encrypted_shard = encrypt_shard(shard_c, heartbeat_token)
+    
     new_user = User(
         email=email,
         beneficiary_email=beneficiary_email,
-        shard_c=shard_c,
+        shard_c=encrypted_shard,  # Now actually encrypted!
         config_hash=config_hash,  # Immutable commitment
         heartbeat_token=heartbeat_token,
         last_heartbeat=created_timestamp
@@ -324,7 +328,7 @@ async def check_heartbeats(db: Session = Depends(get_db)):
                         <p>We have not heard from <strong>{user.email}</strong> for 90 days.</p>
                         <p>As instructed, here is <strong>Shard C</strong>:</p>
                         <div style="background:#f0f0f0; padding:15px; font-family:monospace; word-break:break-all;">
-                            {user.shard_c}
+                            {decrypt_shard(user.shard_c, user.heartbeat_token)}
                         </div>
                         <h3>Next Steps:</h3>
                         <ol>

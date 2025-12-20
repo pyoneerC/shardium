@@ -1,5 +1,7 @@
 import secrets
 import hashlib
+import re
+import os
 from fastapi import FastAPI, Request, Depends, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse, FileResponse
 from fastapi.templating import Jinja2Templates
@@ -50,6 +52,133 @@ async def app_page(request: Request):
 async def terms_page(request: Request):
     """Terms of Service"""
     return templates.TemplateResponse("terms.html", {"request": request})
+
+# ========== BLOG ==========
+
+def parse_blog_frontmatter(content: str) -> dict:
+    """Parse YAML frontmatter from markdown file"""
+    if not content.startswith('---'):
+        return {}, content
+    
+    parts = content.split('---', 2)
+    if len(parts) < 3:
+        return {}, content
+    
+    frontmatter = {}
+    for line in parts[1].strip().split('\n'):
+        if ':' in line:
+            key, value = line.split(':', 1)
+            frontmatter[key.strip()] = value.strip().strip('"\'')
+    
+    return frontmatter, parts[2]
+
+def get_all_blog_posts() -> list:
+    """Get all blog posts from the blog directory"""
+    blog_dir = Path("blog")
+    if not blog_dir.exists():
+        return []
+    
+    posts = []
+    for file in blog_dir.glob("*.md"):
+        content = file.read_text(encoding="utf-8")
+        meta, _ = parse_blog_frontmatter(content)
+        if meta.get('title'):
+            # Parse tags
+            tags = meta.get('tags', '')
+            tags_list = [t.strip() for t in tags.split(',')] if tags else []
+            
+            # Format date
+            date_str = meta.get('date', '')
+            try:
+                date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+                date_formatted = date_obj.strftime('%B %d, %Y')
+            except:
+                date_formatted = date_str
+            
+            posts.append({
+                'title': meta.get('title', ''),
+                'slug': meta.get('slug', file.stem),
+                'description': meta.get('description', ''),
+                'author': meta.get('author', 'Shardium Team'),
+                'date': date_str,
+                'date_formatted': date_formatted,
+                'tags': tags,
+                'tags_list': tags_list,
+                'image': meta.get('image', '/static/favicon.png')
+            })
+    
+    # Sort by date descending
+    posts.sort(key=lambda x: x['date'], reverse=True)
+    return posts
+
+@app.get("/blog", response_class=HTMLResponse)
+async def blog_index(request: Request):
+    """Blog listing page"""
+    posts = get_all_blog_posts()
+    return templates.TemplateResponse("blog_index.html", {
+        "request": request,
+        "posts": posts
+    })
+
+@app.get("/blog/{slug}", response_class=HTMLResponse)
+async def blog_post(request: Request, slug: str):
+    """Individual blog post"""
+    blog_dir = Path("blog")
+    
+    # Find the post file
+    post_file = blog_dir / f"{slug}.md"
+    if not post_file.exists():
+        # Try to find by slug in frontmatter
+        for file in blog_dir.glob("*.md"):
+            content = file.read_text(encoding="utf-8")
+            meta, _ = parse_blog_frontmatter(content)
+            if meta.get('slug') == slug:
+                post_file = file
+                break
+        else:
+            raise HTTPException(status_code=404, detail="Post not found")
+    
+    content = post_file.read_text(encoding="utf-8")
+    meta, body = parse_blog_frontmatter(content)
+    
+    # Convert markdown to HTML
+    html_content = markdown.markdown(body, extensions=['tables', 'fenced_code', 'toc'])
+    
+    # Parse tags
+    tags = meta.get('tags', '')
+    tags_list = [t.strip() for t in tags.split(',')] if tags else []
+    
+    # Format date
+    date_str = meta.get('date', '')
+    try:
+        date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+        date_formatted = date_obj.strftime('%B %d, %Y')
+    except:
+        date_formatted = date_str
+    
+    # Estimate reading time (200 words per minute)
+    word_count = len(body.split())
+    reading_time = max(1, round(word_count / 200))
+    
+    # Get related posts (exclude current)
+    all_posts = get_all_blog_posts()
+    related_posts = [p for p in all_posts if p['slug'] != slug][:2]
+    
+    return templates.TemplateResponse("blog_post.html", {
+        "request": request,
+        "title": meta.get('title', 'Blog Post'),
+        "description": meta.get('description', ''),
+        "author": meta.get('author', 'Shardium Team'),
+        "date": date_str,
+        "date_formatted": date_formatted,
+        "tags": tags,
+        "tags_list": tags_list,
+        "image": meta.get('image', '/static/favicon.png'),
+        "slug": slug,
+        "content": html_content,
+        "reading_time": reading_time,
+        "related_posts": related_posts
+    })
 
 @app.get("/docs", response_class=HTMLResponse)
 async def docs_index(request: Request):

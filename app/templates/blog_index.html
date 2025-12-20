@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog | Shardium - Crypto Inheritance & Security</title>
+    <meta name="description"
+        content="Learn about cryptocurrency inheritance, Shamir's Secret Sharing, dead man switches, and how to protect your digital assets for future generations.">
+    <meta name="keywords"
+        content="crypto inheritance, bitcoin inheritance, seed phrase backup, shamir secret sharing, dead mans switch, crypto security">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://shardium.maxcomperatore.com/blog">
+    <meta property="og:title" content="Shardium Blog - Crypto Inheritance & Security">
+    <meta property="og:description"
+        content="Learn about cryptocurrency inheritance, Shamir's Secret Sharing, and how to protect your digital assets.">
+    <meta property="og:image" content="https://shardium.maxcomperatore.com/static/favicon.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@shardiumhq">
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://shardium.maxcomperatore.com/blog">
+
+    <!-- Schema.org Blog -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Blog",
+        "name": "Shardium Blog",
+        "description": "Learn about cryptocurrency inheritance, Shamir's Secret Sharing, and secure digital asset management.",
+        "url": "https://shardium.maxcomperatore.com/blog",
+        "publisher": {
+            "@type": "Organization",
+            "name": "Shardium",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://shardium.maxcomperatore.com/static/favicon.png"
+            }
+        }
+    }
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="/static/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        zinc: {
+                            950: '#09090b',
+                            900: '#18181b',
+                            800: '#27272a',
+                            700: '#3f3f46',
+                            600: '#52525b',
+                            400: '#a1a1aa',
+                            300: '#d4d4d8',
+                        },
+                        accent: '#10b981',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: #09090b;
+        }
+
+        .border-gradient {
+            border: 1px solid transparent;
+            background: linear-gradient(#09090b, #09090b) padding-box,
+                linear-gradient(135deg, #27272a, #18181b) border-box;
+        }
+    </style>
+</head>
+
+<body class="text-zinc-300 font-sans antialiased">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800">
+        <div class="max-w-6xl mx-auto px-6 h-16 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <a href="/" class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded overflow-hidden">
+                        <img src="/static/favicon.png" alt="Shardium" class="w-full h-full object-cover">
+                    </div>
+                    <span class="font-semibold text-white tracking-tight">Shardium</span>
+                </a>
+            </div>
+            <div class="flex items-center gap-4 md:gap-6">
+                <a href="/blog" class="text-sm text-white font-medium">Blog</a>
+                <a href="/docs" class="text-sm text-zinc-500 hover:text-white transition">Docs</a>
+                <a href="/app"
+                    class="text-sm px-4 py-2 bg-white text-black font-medium rounded hover:bg-zinc-200 transition">
+                    Launch App
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="pt-24 pb-12 border-b border-zinc-800">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-xs font-mono text-zinc-500 mb-4">// BLOG</div>
+            <h1 class="text-4xl font-bold text-white mb-4">Crypto Inheritance & Security</h1>
+            <p class="text-zinc-400 max-w-2xl">
+                Learn about protecting your digital assets, Shamir's Secret Sharing, dead man switches,
+                and everything you need to know about crypto inheritance.
+            </p>
+        </div>
+    </header>
+
+    <!-- Blog Posts -->
+    <main class="py-16">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for post in posts %}
+                <article class="border-gradient rounded-xl overflow-hidden hover:border-zinc-600 transition group">
+                    <a href="/blog/{{ post.slug }}" class="block">
+                        <div class="aspect-video bg-zinc-800 relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-br from-accent/20 to-transparent"></div>
+                            <div class="absolute bottom-4 left-4">
+                                <span class="px-2 py-1 bg-zinc-900/80 text-xs text-zinc-300 rounded">{{
+                                    post.tags_list[0] if post.tags_list else 'crypto' }}</span>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <time class="text-xs text-zinc-500 mb-2 block" datetime="{{ post.date }}">{{
+                                post.date_formatted }}</time>
+                            <h2 class="text-lg font-semibold text-white mb-2 group-hover:text-accent transition">{{
+                                post.title }}</h2>
+                            <p class="text-zinc-400 text-sm line-clamp-2">{{ post.description }}</p>
+                        </div>
+                    </a>
+                </article>
+                {% endfor %}
+            </div>
+
+            <!-- Empty State -->
+            {% if not posts %}
+            <div class="text-center py-16">
+                <div class="text-4xl mb-4">📝</div>
+                <h2 class="text-xl font-semibold text-white mb-2">Coming Soon</h2>
+                <p class="text-zinc-500">We're working on some great content. Check back soon!</p>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <!-- Newsletter CTA -->
+    <section class="py-16 border-t border-zinc-800 bg-zinc-900/30">
+        <div class="max-w-2xl mx-auto px-6 text-center">
+            <h2 class="text-2xl font-bold text-white mb-4">Stay Updated</h2>
+            <p class="text-zinc-400 mb-6">Get notified about new articles on crypto inheritance and security.</p>
+            <div class="flex gap-2 max-w-md mx-auto">
+                <input type="email" placeholder="your@email.com"
+                    class="flex-1 bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-zinc-500 focus:border-accent outline-none">
+                <button class="px-6 py-3 bg-accent text-black font-semibold rounded-lg hover:bg-emerald-400 transition">
+                    Subscribe
+                </button>
+            </div>
+            <p class="text-zinc-600 text-xs mt-3">No spam. Unsubscribe anytime.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 border-t border-zinc-800">
+        <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-6 h-6 rounded overflow-hidden">
+                    <img src="/static/favicon.png" alt="Shardium" class="w-full h-full object-cover">
+                </div>
+                <span class="text-sm text-zinc-500">Shardium</span>
+            </div>
+            <div class="flex gap-6 text-sm text-zinc-500">
+                <a href="/blog" class="text-white">Blog</a>
+                <a href="/docs" class="hover:text-white transition">Docs</a>
+                <a href="/terms" class="hover:text-white transition">Terms</a>
+                <a href="https://github.com/pyoneerC/shardium" class="hover:text-white transition">GitHub</a>
+            </div>
+            <div class="text-xs text-zinc-600">
+                Open Source · MIT License
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

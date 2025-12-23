@@ -3,7 +3,7 @@ import hashlib
 import re
 import os
 from fastapi import FastAPI, Request, Depends, Form, HTTPException
-from fastapi.responses import HTMLResponse, RedirectResponse, FileResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, FileResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
@@ -12,7 +12,7 @@ import markdown
 from pathlib import Path
 
 from .database import SessionLocal, engine, Base
-from .models import User
+from .models import User, PaymentToken
 from .services import send_email
 from .crypto import encrypt_shard, decrypt_shard
 
@@ -85,10 +85,71 @@ async def landing_page(request: Request):
     """Marketing landing page"""
     return templates.TemplateResponse("landing.html", {"request": request})
 
-@app.get("/app", response_class=HTMLResponse)
-async def app_page(request: Request):
-    """Main application - create vault"""
-    return templates.TemplateResponse("index.html", {"request": request})
+@app.get("/app")
+async def app_page(request: Request, db: Session = Depends(get_db)):
+    """After payment succeeds, generate one-time token and return JSON redirect.
+    
+    Flow:
+    1. x402 middleware handles payment verification
+    2. If payment succeeds, this endpoint runs
+    3. Generate unique temp_id token
+    4. Return JSON: {"message": "congrats payment succeeded", "redirect": "/app/{temp_id}"}
+    """
+    # Generate a unique one-time token
+    temp_id = secrets.token_urlsafe(32)
+    expires_at = datetime.now() + timedelta(hours=1)  # Token valid for 1 hour
+    
+    # Store the token
+    payment_token = PaymentToken(
+        temp_id=temp_id,
+        is_consumed=False,
+        expires_at=expires_at
+    )
+    db.add(payment_token)
+    db.commit()
+    
+    # Return JSON with redirect URL
+    return JSONResponse({
+        "message": "Congrats! Payment succeeded. Please proceed to the link below to create your vault.",
+        "redirect": f"https://shardium.xyz/app/{temp_id}",
+        "expires_in": "1 hour"
+    })
+
+
+@app.get("/app/{temp_id}", response_class=HTMLResponse)
+async def app_page_with_token(request: Request, temp_id: str, db: Session = Depends(get_db)):
+    """Vault creation page - requires valid one-time token.
+    
+    The token is consumed when the vault is created (not on page load),
+    allowing users to refresh the page without losing access.
+    """
+    # Find the token
+    token = db.query(PaymentToken).filter(PaymentToken.temp_id == temp_id).first()
+    
+    if not token:
+        raise HTTPException(
+            status_code=404, 
+            detail="Invalid access token. This link does not exist."
+        )
+    
+    if token.is_consumed:
+        raise HTTPException(
+            status_code=410,  # 410 Gone - resource no longer available
+            detail="This access token has already been used. Vault already created."
+        )
+    
+    if token.expires_at and datetime.now() > token.expires_at.replace(tzinfo=None):
+        raise HTTPException(
+            status_code=410,
+            detail="This access token has expired. Please make a new payment."
+        )
+    
+    # Token is valid - show the vault creation page
+    # Pass the temp_id to the template so the form can include it
+    return templates.TemplateResponse("index.html", {
+        "request": request,
+        "temp_id": temp_id  # Include token in form for consumption on submit
+    })
 
 @app.get("/terms", response_class=HTMLResponse)
 async def terms_page(request: Request):
@@ -276,12 +337,43 @@ async def create_vault(
     email: str = Form(...),
     beneficiary_email: str = Form(...),
     shard_c: str = Form(...),
+    temp_id: str = Form(...),  # Required: one-time payment token
     db: Session = Depends(get_db)
 ):
+    # FIRST: Validate and consume the payment token
+    token = db.query(PaymentToken).filter(PaymentToken.temp_id == temp_id).first()
+    
+    if not token:
+        raise HTTPException(
+            status_code=403,
+            detail="Invalid payment token. Access denied."
+        )
+    
+    if token.is_consumed:
+        raise HTTPException(
+            status_code=410,
+            detail="This payment token has already been used. Cannot create another vault."
+        )
+    
+    if token.expires_at and datetime.now() > token.expires_at.replace(tzinfo=None):
+        raise HTTPException(
+            status_code=410,
+            detail="This payment token has expired. Please make a new payment."
+        )
+    
+    # Token is valid - CONSUME IT NOW (before any other operations)
+    token.is_consumed = True
+    token.consumed_at = datetime.now()
+    db.commit()  # Commit immediately to prevent race conditions
+    
     # Check if user exists
     user = db.query(User).filter(User.email == email).first()
     if user:
-        return templates.TemplateResponse("index.html", {"request": request, "error": "User already exists with this email."})
+        return templates.TemplateResponse("index.html", {
+            "request": request, 
+            "error": "User already exists with this email.",
+            "temp_id": temp_id  # Token is consumed, but show error
+        })
 
     heartbeat_token = secrets.token_urlsafe(32)
     created_timestamp = datetime.now()

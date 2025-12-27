@@ -48,6 +48,72 @@ templates = Jinja2Templates(directory="app/templates")
 async def favicon():
     return FileResponse("app/static/favicon.png", media_type="image/png")
 
+# Robots.txt
+@app.get("/robots.txt", include_in_schema=False)
+async def robots():
+    return FileResponse("robots.txt", media_type="text/plain")
+
+# Sitemap.xml
+@app.get("/sitemap.xml", include_in_schema=False)
+async def sitemap():
+    from fastapi.responses import Response
+    
+    # Get all blog posts
+    blog_dir = Path("blog")
+    blog_posts = []
+    if blog_dir.exists():
+        for file in blog_dir.glob("*.md"):
+            slug = file.stem
+            blog_posts.append(f"https://shardium.xyz/blog/{slug}")
+    
+    sitemap_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://shardium.xyz/</loc>
+        <lastmod>{datetime.now().strftime('%Y-%m-%d')}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>https://shardium.xyz/app</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://shardium.xyz/docs</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://shardium.xyz/blog</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://shardium.xyz/tools/death-calculator</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://shardium.xyz/tools/crypto-loss-calculator</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://shardium.xyz/tools/shamir-playground</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    {"".join([f'''
+    <url>
+        <loc>{post}</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>''' for post in blog_posts])}
+</urlset>"""
+    
+    return Response(content=sitemap_xml, media_type="application/xml")
+
 # Dependency
 def get_db():
     db = SessionLocal()

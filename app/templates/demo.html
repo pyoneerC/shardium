@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shardium Demo - Screen Recording</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: #09090b;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-up {
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .border-gradient {
+            border: 1px solid #27272a;
+            background: linear-gradient(to bottom, #18181b, #09090b);
+        }
+
+        .grid-bg {
+            background-image:
+                linear-gradient(to right, #18181b 1px, transparent 1px),
+                linear-gradient(to bottom, #18181b 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen grid-bg">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+
+        <!-- Step 1: Enter Seed -->
+        <div id="step-1" class="fade-in">
+            <div class="text-center mb-12">
+                <div class="inline-block px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-lg mb-4">
+                    <span class="text-emerald-400 font-semibold text-sm">STEP 1 OF 4</span>
+                </div>
+                <h1 class="text-5xl font-bold text-white mb-4">Split Your Seed Phrase</h1>
+                <p class="text-zinc-400 text-lg">Client-side encryption. Your seed never leaves this device.</p>
+            </div>
+
+            <div class="border-gradient rounded-2xl p-8 max-w-2xl mx-auto">
+                <label class="block text-sm font-medium text-zinc-400 mb-3">Your 12 or 24 Word Seed Phrase</label>
+                <textarea id="seed-input" rows="4"
+                    class="w-full bg-black/50 border border-zinc-700 rounded-xl px-5 py-4 text-white font-mono text-base focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none transition"
+                    placeholder="witch collapse practice feed shame open despair creek road again ice least..."></textarea>
+
+                <div class="flex gap-3 mt-4">
+                    <button onclick="generateRandomSeed()"
+                        class="flex-1 py-3 border border-zinc-700 text-zinc-300 font-medium rounded-xl hover:border-emerald-500 hover:text-emerald-400 transition">
+                        🎲 Generate Random Seed
+                    </button>
+                </div>
+
+                <button onclick="splitSeed()"
+                    class="w-full mt-6 py-4 bg-emerald-500 text-black font-bold rounded-xl hover:bg-emerald-400 transition text-lg shadow-lg shadow-emerald-500/25">
+                    Split Into 3 Shards →
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 2: View Shards -->
+        <div id="step-2" class="hidden">
+            <div class="text-center mb-12 slide-up">
+                <div class="inline-block px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-lg mb-4">
+                    <span class="text-emerald-400 font-semibold text-sm">STEP 2 OF 4</span>
+                </div>
+                <h1 class="text-5xl font-bold text-white mb-4">Your Shards Are Ready</h1>
+                <p class="text-zinc-400 text-lg">Save these securely. You need any 2 to recover.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <!-- Shard A -->
+                <div class="border-gradient rounded-2xl p-6 slide-up" style="animation-delay: 0.1s">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-emerald-400 text-lg">Shard A</h3>
+                        <span class="text-xs font-mono text-zinc-500">YOUR BACKUP</span>
+                    </div>
+                    <p class="text-xs text-zinc-500 mb-3">Store in password manager or print</p>
+                    <code id="shard-a"
+                        class="block bg-black/70 p-4 rounded-xl text-xs text-zinc-300 break-all font-mono border border-zinc-800 min-h-[4rem]"></code>
+                </div>
+
+                <!-- Shard B -->
+                <div class="border-gradient rounded-2xl p-6 slide-up" style="animation-delay: 0.2s">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-yellow-400 text-lg">Shard B</h3>
+                        <span class="text-xs font-mono text-zinc-500">FOR BENEFICIARY</span>
+                    </div>
+                    <p class="text-xs text-zinc-500 mb-3">Give to your heir (USB or print)</p>
+                    <code id="shard-b"
+                        class="block bg-black/70 p-4 rounded-xl text-xs text-zinc-300 break-all font-mono border border-zinc-800 min-h-[4rem]"></code>
+                </div>
+            </div>
+
+            <!-- Shard C -->
+            <div class="border-gradient rounded-2xl p-6 mb-8 slide-up" style="animation-delay: 0.3s">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-bold text-zinc-400">Shard C</h4>
+                    <span class="text-xs font-mono text-zinc-600">SERVER SHARD</span>
+                </div>
+                <p class="text-xs text-zinc-500 mb-3">Stored encrypted. Released to beneficiary when switch triggers.
+                </p>
+                <code id="shard-c"
+                    class="block bg-black/70 p-4 rounded-xl text-xs text-zinc-400 break-all font-mono border border-zinc-800 min-h-[4rem]"></code>
+            </div>
+
+            <button onclick="proceedToRecovery()"
+                class="w-full py-4 bg-emerald-500 text-black font-bold rounded-xl hover:bg-emerald-400 transition text-lg shadow-lg shadow-emerald-500/25 slide-up"
+                style="animation-delay: 0.4s">
+                Test Recovery →
+            </button>
+        </div>
+
+        <!-- Step 3: Test Recovery -->
+        <div id="step-3" class="hidden">
+            <div class="text-center mb-12 slide-up">
+                <div class="inline-block px-4 py-2 bg-blue-500/10 border border-blue-500/30 rounded-lg mb-4">
+                    <span class="text-blue-400 font-semibold text-sm">STEP 3 OF 4 - RECOVERY TEST</span>
+                </div>
+                <h1 class="text-5xl font-bold text-white mb-4">Recover Your Seed Phrase</h1>
+                <p class="text-zinc-400 text-lg">Enter any 2 of your 3 shards to recover.</p>
+            </div>
+
+            <div class="border-gradient rounded-2xl p-8 max-w-2xl mx-auto space-y-6">
+                <div class="slide-up">
+                    <label class="block text-sm font-medium text-zinc-400 mb-2">Shard 1</label>
+                    <textarea id="recover-shard-1" rows="3"
+                        class="w-full bg-black/50 border border-zinc-700 rounded-xl px-5 py-4 text-white font-mono text-xs focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition"></textarea>
+                </div>
+
+                <div class="slide-up" style="animation-delay: 0.1s">
+                    <label class="block text-sm font-medium text-zinc-400 mb-2">Shard 2</label>
+                    <textarea id="recover-shard-2" rows="3"
+                        class="w-full bg-black/50 border border-zinc-700 rounded-xl px-5 py-4 text-white font-mono text-xs focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition"></textarea>
+                </div>
+
+                <button onclick="recoverSeed()"
+                    class="w-full py-4 bg-blue-500 text-white font-bold rounded-xl hover:bg-blue-400 transition text-lg shadow-lg shadow-blue-500/25 slide-up"
+                    style="animation-delay: 0.2s">
+                    Recover Seed Phrase →
+                </button>
+
+                <!-- Recovery Result -->
+                <div id="recovery-result" class="hidden mt-6 slide-up">
+                    <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-6">
+                        <div class="flex items-center gap-3 mb-3">
+                            <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <h3 class="text-emerald-400 font-bold text-lg">Seed Phrase Recovered!</h3>
+                        </div>
+                        <label class="block text-sm font-medium text-zinc-400 mb-2">Recovered Seed Phrase</label>
+                        <div id="recovered-seed"
+                            class="bg-black/50 rounded-xl p-4 text-white font-mono text-sm break-all"></div>
+                        <p class="text-zinc-500 text-xs mt-3">✓ Successfully recovered using 2 of 3 shards</p>
+
+                        <button onclick="proceedToEmails()"
+                            class="w-full mt-6 py-4 bg-emerald-500 text-black font-bold rounded-xl hover:bg-emerald-400 transition text-lg">
+                            Continue to Setup →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Emails -->
+        <div id="step-4" class="hidden">
+            <div class="text-center mb-12 slide-up">
+                <div class="inline-block px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-lg mb-4">
+                    <span class="text-emerald-400 font-semibold text-sm">STEP 4 OF 4</span>
+                </div>
+                <h1 class="text-5xl font-bold text-white mb-4">Activate Dead Man's Switch</h1>
+                <p class="text-zinc-400 text-lg">We'll email you every 90 days. No response = Shard C goes to
+                    beneficiary.</p>
+            </div>
+
+            <div class="border-gradient rounded-2xl p-8 max-w-2xl mx-auto space-y-6">
+                <div class="slide-up">
+                    <label class="block text-sm font-medium text-zinc-400 mb-2">Your Email</label>
+                    <input type="email" id="user-email" placeholder="your@email.com"
+                        class="w-full bg-black/50 border border-zinc-700 rounded-xl px-5 py-4 text-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
+                </div>
+
+                <div class="slide-up" style="animation-delay: 0.1s">
+                    <label class="block text-sm font-medium text-zinc-400 mb-2">Beneficiary Email</label>
+                    <input type="email" id="beneficiary-email" placeholder="beneficiary@email.com"
+                        class="w-full bg-black/50 border border-zinc-700 rounded-xl px-5 py-4 text-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none transition">
+                </div>
+
+                <button onclick="activateSwitch()"
+                    class="w-full py-4 bg-emerald-500 text-black font-bold rounded-xl hover:bg-emerald-400 transition text-lg shadow-lg shadow-emerald-500/25 slide-up"
+                    style="animation-delay: 0.2s">
+                    Activate Switch ✓
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 5: Success -->
+        <div id="step-5" class="hidden">
+            <div class="text-center slide-up">
+                <div
+                    class="w-24 h-24 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-emerald-500/30">
+                    <svg class="w-12 h-12 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h1 class="text-5xl font-bold text-white mb-4">Your Crypto Is Secured</h1>
+                <p class="text-zinc-400 text-xl mb-8">Dead man's switch activated. Your family will inherit your assets.
+                </p>
+
+                <div class="max-w-2xl mx-auto border-gradient rounded-2xl p-8 mt-8">
+                    <div class="grid grid-cols-3 gap-6 text-center">
+                        <div>
+                            <div class="text-3xl font-bold text-emerald-400 mb-2">3</div>
+                            <div class="text-sm text-zinc-500">Shards Created</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold text-emerald-400 mb-2">2</div>
+                            <div class="text-sm text-zinc-500">Needed to Recover</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold text-emerald-400 mb-2">90</div>
+                            <div class="text-sm text-zinc-500">Days Until Check-in</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="location.reload()"
+                    class="mt-8 px-8 py-3 border border-zinc-700 text-zinc-300 font-medium rounded-xl hover:border-emerald-500 hover:text-emerald-400 transition">
+                    ← Start Over
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let originalSeed = '';
+
+        function generateRandomSeed() {
+            const words = [
+                'abandon', 'ability', 'able', 'about', 'above', 'absent', 'absorb', 'abstract', 'absurd', 'abuse',
+                'access', 'accident', 'account', 'accuse', 'achieve', 'acid', 'acoustic', 'acquire', 'across', 'act',
+                'action', 'actor', 'actress', 'actual', 'adapt', 'add', 'addict', 'address', 'adjust', 'admit'
+            ];
+            const randomWords = [];
+            for (let i = 0; i < 12; i++) {
+                randomWords.push(words[Math.floor(Math.random() * words.length)]);
+            }
+            document.getElementById('seed-input').value = randomWords.join(' ');
+        }
+
+        function splitSeed() {
+            const seed = document.getElementById('seed-input').value.trim();
+            if (!seed) {
+                alert('Please enter a seed phrase');
+                return;
+            }
+
+            originalSeed = seed;
+
+            // Generate fake but realistic-looking shards for demo
+            function generateShard() {
+                const chars = '0123456789abcdef';
+                let shard = '';
+                for (let i = 0; i < 128; i++) {
+                    shard += chars[Math.floor(Math.random() * chars.length)];
+                }
+                return shard;
+            }
+
+            // Display shards
+            document.getElementById('shard-a').textContent = generateShard();
+            document.getElementById('shard-b').textContent = generateShard();
+            document.getElementById('shard-c').textContent = generateShard();
+
+            // Transition
+            document.getElementById('step-1').classList.add('hidden');
+            document.getElementById('step-2').classList.remove('hidden');
+        }
+
+        function proceedToRecovery() {
+            // Auto-fill recovery shards
+            const shardA = document.getElementById('shard-a').textContent;
+            const shardB = document.getElementById('shard-b').textContent;
+            document.getElementById('recover-shard-1').value = shardA;
+            document.getElementById('recover-shard-2').value = shardB;
+
+            document.getElementById('step-2').classList.add('hidden');
+            document.getElementById('step-3').classList.remove('hidden');
+        }
+
+        function recoverSeed() {
+            const shard1 = document.getElementById('recover-shard-1').value.trim();
+            const shard2 = document.getElementById('recover-shard-2').value.trim();
+
+            if (!shard1 || !shard2) {
+                alert('Please enter both shards');
+                return;
+            }
+
+            // Display recovered seed
+            document.getElementById('recovered-seed').textContent = originalSeed;
+            document.getElementById('recovery-result').classList.remove('hidden');
+        }
+
+        function proceedToEmails() {
+            document.getElementById('step-3').classList.add('hidden');
+            document.getElementById('step-4').classList.remove('hidden');
+        }
+
+        function activateSwitch() {
+            const userEmail = document.getElementById('user-email').value;
+            const beneficiaryEmail = document.getElementById('beneficiary-email').value;
+
+            if (!userEmail || !beneficiaryEmail) {
+                alert('Please enter both emails');
+                return;
+            }
+
+            document.getElementById('step-4').classList.add('hidden');
+            document.getElementById('step-5').classList.remove('hidden');
+        }
+    </script>
+</body>
+
+</html>

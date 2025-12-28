@@ -127,6 +127,11 @@ async def landing_page(request: Request):
     """Marketing landing page"""
     return templates.TemplateResponse("landing.html", {"request": request})
 
+@app.get("/demo", response_class=HTMLResponse)
+async def demo_page(request: Request):
+    """Demo page for screen recording"""
+    return templates.TemplateResponse("demo.html", {"request": request})
+
 @app.get("/app", response_class=HTMLResponse)
 async def app_page(request: Request, plan: str = "lifetime"):
     """

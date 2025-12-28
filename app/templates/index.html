@@ -12,7 +12,28 @@
         <p class="text-zinc-400 max-w-xl mx-auto">
             Client-side encryption using Shamir's Secret Sharing. Your seed never leaves this device.
         </p>
+
+        <!-- Payment Success Message -->
+        <div id="payment-success"
+            class="hidden mt-6 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-lg max-w-xl mx-auto">
+            <p class="text-emerald-400 font-semibold">✓ Payment Verified! Your seed is ready to split.</p>
+        </div>
     </div>
+
+    <script>
+        // Auto-populate seed from sessionStorage (after payment)
+        window.addEventListener('DOMContentLoaded', function () {
+            const storedSeed = sessionStorage.getItem('shardium_seed');
+            if (storedSeed) {
+                document.getElementById('seed-input').value = storedSeed;
+                document.getElementById('payment-success').classList.remove('hidden');
+                // Clear from sessionStorage for security
+                sessionStorage.removeItem('shardium_seed');
+                // Auto-scroll to seed input
+                document.getElementById('seed-input').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+    </script>
 
     <!-- Error/Messages -->
     {% if error %}

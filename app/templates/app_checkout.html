@@ -1,82 +1,80 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% if paid %}
-<!-- Payment Complete - Redirect to full vault page -->
-<script>window.location.href = '/vault';</script>
-{% else %}
-<!-- Split Screen: Payment Left, Preview Right -->
 <div class="min-h-screen bg-zinc-950 pt-20">
     <div class="max-w-7xl mx-auto px-6 py-12">
-        <div class="grid lg:grid-cols-2 gap-8 items-start">
 
-            <!-- LEFT: Stripe Checkout -->
-            <div class="lg:sticky lg:top-24">
-                <div class="border-gradient rounded-xl p-8 bg-zinc-900/50">
-                    <h2 class="text-2xl font-bold text-white mb-2">Complete Payment</h2>
-                    <p class="text-zinc-400 mb-6">Secure your crypto inheritance in 5 minutes.</p>
-
-                    <!-- Stripe Embedded Checkout -->
-                    <div id="checkout"></div>
-
-                    <div class="mt-6 pt-6 border-t border-zinc-800">
-                        <div class="flex items-center gap-2 text-sm text-zinc-500">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            <span>Secured by Stripe</span>
-                        </div>
-                    </div>
+        <!-- Step 1: Seed Phrase Entry (IKEA Effect) -->
+        <div id="step-seed" class="max-w-2xl mx-auto">
+            <div class="text-center mb-8">
+                <div class="inline-block px-4 py-2 bg-accent/10 border border-accent/30 rounded-lg mb-4">
+                    <span class="text-accent font-semibold">Step 1 of 3</span>
                 </div>
+                <h1 class="text-3xl font-bold text-white mb-2">Enter Your Seed Phrase</h1>
+                <p class="text-zinc-400">We'll split it into 3 shards. Client-side encryption only.</p>
             </div>
 
-            <!-- RIGHT: Vault Form Preview (Disabled) -->
-            <div class="relative">
-                <div class="border-gradient rounded-xl p-8 bg-zinc-900/50 opacity-60 pointer-events-none select-none">
-                    <h2 class="text-2xl font-bold text-white mb-6">Vault Creation</h2>
+            <div class="border-gradient rounded-xl p-8 bg-zinc-900/50">
+                <label class="block text-sm font-medium text-zinc-400 mb-2">Your 12 or 24 Word Seed Phrase</label>
+                <textarea id="seed-input" rows="4"
+                    placeholder="witch collapse practice feed shame open despair creek road again ice least..."
+                    class="w-full bg-black/50 border border-zinc-700 rounded-lg px-4 py-3 text-white font-mono text-sm focus:border-accent outline-none"></textarea>
+                <p class="text-xs text-zinc-500 mt-2">✓ Never leaves your device · ✓ Client-side encryption only</p>
 
-                    <div class="space-y-6">
-                        <div>
-                            <label class="block text-sm font-medium text-zinc-400 mb-2">Seed Phrase</label>
-                            <textarea disabled placeholder="Enter your 12 or 24 word seed phrase..." rows="4"
-                                class="w-full bg-black/50 border border-zinc-700 rounded-lg px-4 py-3 text-white font-mono text-sm"></textarea>
-                            <p class="text-xs text-zinc-600 mt-2">Client-side encryption only. Never leaves your device.
-                            </p>
+                <button onclick="proceedToPayment()"
+                    class="w-full mt-6 py-4 bg-accent text-black font-bold rounded-lg hover:bg-emerald-400 transition">
+                    Continue to Payment →
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 2: Payment (After Seed Entry) -->
+        <div id="step-payment" class="hidden">
+            <div class="grid lg:grid-cols-2 gap-8 items-start">
+
+                <!-- LEFT: Stripe Checkout -->
+                <div class="lg:sticky lg:top-24">
+                    <div class="border-gradient rounded-xl p-8 bg-zinc-900/50">
+                        <div class="text-center mb-4">
+                            <div class="inline-block px-4 py-2 bg-accent/10 border border-accent/30 rounded-lg mb-4">
+                                <span class="text-accent font-semibold">Step 2 of 3</span>
+                            </div>
                         </div>
+                        <h2 class="text-2xl font-bold text-white mb-2">Complete Payment</h2>
+                        <p class="text-zinc-400 mb-6">Your seed is ready to split. Secure it now.</p>
 
-                        <div>
-                            <label class="block text-sm font-medium text-zinc-400 mb-2">Your Email</label>
-                            <input type="email" disabled placeholder="your@email.com"
-                                class="w-full bg-black/50 border border-zinc-700 rounded-lg px-4 py-3 text-white">
+                        <!-- Stripe Embedded Checkout -->
+                        <div id="checkout"></div>
+
+                        <div class="mt-6 pt-6 border-t border-zinc-800">
+                            <div class="flex items-center gap-2 text-sm text-zinc-500">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                <span>Secured by Stripe</span>
+                            </div>
                         </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-zinc-400 mb-2">Beneficiary Email</label>
-                            <input type="email" disabled placeholder="beneficiary@email.com"
-                                class="w-full bg-black/50 border border-zinc-700 rounded-lg px-4 py-3 text-white">
-                        </div>
-
-                        <button disabled
-                            class="w-full py-4 bg-zinc-800 text-zinc-600 font-bold rounded-lg cursor-not-allowed">
-                            🔒 Locked - Complete Payment First
-                        </button>
                     </div>
                 </div>
 
-                <!-- Lock Overlay -->
-                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div class="text-center">
-                        <div
-                            class="w-16 h-16 mx-auto mb-4 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center">
-                            <svg class="w-8 h-8 text-zinc-600" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                        </div>
-                        <p class="text-zinc-500 font-medium">Complete payment to unlock</p>
+                <!-- RIGHT: Seed Preview (Shows they already invested) -->
+                <div class="border-gradient rounded-xl p-8 bg-zinc-900/50">
+                    <h3 class="text-xl font-bold text-white mb-4">✓ Your Seed is Ready</h3>
+                    <div class="bg-black/50 border border-zinc-800 rounded-lg p-4 mb-4">
+                        <p class="text-zinc-500 text-xs mb-2">ENCRYPTED SEED PREVIEW</p>
+                        <p id="seed-preview" class="text-white font-mono text-sm break-all"></p>
+                    </div>
+                    <p class="text-zinc-400 text-sm">
+                        Complete payment to split this into 3 shards and activate your dead man's switch.
+                    </p>
+
+                    <div class="mt-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+                        <p class="text-red-400 text-sm">
+                            ⚠️ <strong>Don't leave now.</strong> Your seed is entered but not secured.
+                            Abandoning = starting over.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -87,13 +85,42 @@
 <!-- Stripe.js -->
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-    const stripe = Stripe('{{ stripe_pk }}');
+    let userSeed = '';
 
-    stripe.initEmbeddedCheckout({
-        clientSecret: '{{ client_secret }}',
-    }).then(checkout => {
-        checkout.mount('#checkout');
-    });
+    function proceedToPayment() {
+        const seedInput = document.getElementById('seed-input');
+        userSeed = seedInput.value.trim();
+
+        if (!userSeed) {
+            alert('Please enter your seed phrase first');
+            return;
+        }
+
+        // Validate seed (12 or 24 words)
+        const words = userSeed.split(/\s+/);
+        if (words.length !== 12 && words.length !== 24) {
+            alert('Seed phrase must be 12 or 24 words');
+            return;
+        }
+
+        // Store in sessionStorage (survives page refresh during payment)
+        sessionStorage.setItem('shardium_seed', userSeed);
+
+        // Show preview (first 3 words + ... + last 3 words)
+        const preview = words.slice(0, 3).join(' ') + ' ... ' + words.slice(-3).join(' ');
+        document.getElementById('seed-preview').textContent = preview;
+
+        // Hide step 1, show step 2
+        document.getElementById('step-seed').classList.add('hidden');
+        document.getElementById('step-payment').classList.remove('hidden');
+
+        // Initialize Stripe checkout
+        const stripe = Stripe('{{ stripe_pk }}');
+        stripe.initEmbeddedCheckout({
+            clientSecret: '{{ client_secret }}',
+        }).then(checkout => {
+            checkout.mount('#checkout');
+        });
+    }
 </script>
-{% endif %}
 {% endblock %}

@@ -238,6 +238,11 @@ async def app_cancel(request: Request):
     """User cancelled payment"""
     return RedirectResponse("/#pricing", status_code=303)
 
+@app.get("/manage-subscription", response_class=HTMLResponse)
+async def manage_subscription(request: Request):
+    """Subscription management page"""
+    return templates.TemplateResponse("manage_subscription.html", {"request": request})
+
 @app.post("/stripe/webhook")
 async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
     """Handle Stripe webhook events"""

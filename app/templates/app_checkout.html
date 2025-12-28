@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if paid %}
+<!-- Payment Complete - Redirect to full vault page -->
+<script>window.location.href = '/vault';</script>
+{% else %}
+<!-- Split Screen: Payment Left, Preview Right -->
+<div class="min-h-screen bg-zinc-950 pt-20">
+    <div class="max-w-7xl mx-auto px-6 py-12">
+        <div class="grid lg:grid-cols-2 gap-8 items-start">
+
+            <!-- LEFT: Stripe Checkout -->
+            <div class="lg:sticky lg:top-24">
+                <div class="border-gradient rounded-xl p-8 bg-zinc-900/50">
+                    <h2 class="text-2xl font-bold text-white mb-2">Complete Payment</h2>
+                    <p class="text-zinc-400 mb-6">Secure your crypto inheritance in 5 minutes.</p>
+
+                    <!-- Stripe Embedded Checkout -->
+                    <div id="checkout"></div>
+
+                    <div class="mt-6 pt-6 border-t border-zinc-800">
+                        <div class="flex items-center gap-2 text-sm text-zinc-500">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <span>Secured by Stripe</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Vault Form Preview (Disabled) -->
+            <div class="relative">
+                <div class="border-gradient rounded-xl p-8 bg-zinc-900/50 opacity-60 pointer-events-none select-none">
+                    <h2 class="text-2xl font-bold text-white mb-6">Vault Creation</h2>
+
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-zinc-400 mb-2">Seed Phrase</label>
+                            <textarea disabled placeholder="Enter your 12 or 24 word seed phrase..." rows="4"
+                                class="w-full bg-black/50 border border-zinc-700 rounded-lg px-4 py-3 text-white font-mono text-sm"></textarea>
+                            <p class="text-xs text-zinc-600 mt-2">Client-side encryption only. Never leaves your device.
+                            </p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-zinc-400 mb-2">Your Email</label>
+                            <input type="email" disabled placeholder="your@email.com"
+                                class="w-full bg-black/50 border border-zinc-700 rounded-lg px-4 py-3 text-white">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-zinc-400 mb-2">Beneficiary Email</label>
+                            <input type="email" disabled placeholder="beneficiary@email.com"
+                                class="w-full bg-black/50 border border-zinc-700 rounded-lg px-4 py-3 text-white">
+                        </div>
+
+                        <button disabled
+                            class="w-full py-4 bg-zinc-800 text-zinc-600 font-bold rounded-lg cursor-not-allowed">
+                            🔒 Locked - Complete Payment First
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Lock Overlay -->
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div class="text-center">
+                        <div
+                            class="w-16 h-16 mx-auto mb-4 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center">
+                            <svg class="w-8 h-8 text-zinc-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <p class="text-zinc-500 font-medium">Complete payment to unlock</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stripe.js -->
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    const stripe = Stripe('{{ stripe_pk }}');
+
+    stripe.initEmbeddedCheckout({
+        clientSecret: '{{ client_secret }}',
+    }).then(checkout => {
+        checkout.mount('#checkout');
+    });
+</script>
+{% endif %}
+{% endblock %}

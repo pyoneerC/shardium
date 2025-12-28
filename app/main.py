@@ -130,76 +130,108 @@ async def landing_page(request: Request):
 @app.get("/app", response_class=HTMLResponse)
 async def app_page(request: Request, plan: str = "lifetime"):
     """
-    Redirect to Stripe Checkout for payment.
-    Supports: plan=annual ($49/yr) or plan=lifetime ($129 once)
+    Split-screen: Stripe Checkout (left) + Vault Form (right, disabled until paid)
     """
+    # Check if user already paid (has session cookie)
+    session_id = request.cookies.get("shardium_session")
+    paid = False
+    
+    if session_id:
+        # Verify the session is valid and paid
+        try:
+            session = stripe.checkout.Session.retrieve(session_id)
+            if session.payment_status == "paid":
+                paid = True
+        except:
+            pass
+    
     # Get the right price ID based on plan
     price_id = STRIPE_PRICES.get(plan, STRIPE_PRICES.get("lifetime"))
     
-    # Debug: print what we have
-    print(f"[Stripe Debug] api_key set: {bool(stripe.api_key)}")
-    print(f"[Stripe Debug] price_id: {price_id}")
-    print(f"[Stripe Debug] plan: {plan}")
-    
     if not stripe.api_key or not price_id:
-        # Fallback: show vault page directly if Stripe not configured (dev mode)
-        print(f"[Stripe Debug] Falling back - api_key: {bool(stripe.api_key)}, price_id: {price_id}")
+        # Dev mode fallback
         return templates.TemplateResponse("index.html", {"request": request})
     
-    # Determine payment mode (subscription for annual, payment for lifetime)
-    mode = "subscription" if plan == "annual" else "payment"
+    # Create Stripe Checkout Session for embedded mode
+    client_secret = None
+    if not paid:
+        try:
+            mode = "subscription" if plan == "annual" else "payment"
+            checkout_session = stripe.checkout.Session.create(
+                ui_mode='embedded',
+                payment_method_types=['card'],
+                line_items=[{
+                    'price': price_id,
+                    'quantity': 1,
+                }],
+                mode=mode,
+                return_url=f"{BASE_URL}/app/success?session_id={{CHECKOUT_SESSION_ID}}",
+                metadata={
+                    'product': 'shardium_vault',
+                    'plan': plan
+                }
+            )
+            client_secret = checkout_session.client_secret
+        except Exception as e:
+            return templates.TemplateResponse("index.html", {
+                "request": request,
+                "error": f"Payment error: {str(e)}"
+            })
     
-    try:
-        checkout_session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
-            line_items=[{
-                'price': price_id,
-                'quantity': 1,
-            }],
-            mode=mode,
-            success_url=f"{BASE_URL}/app/success?session_id={{CHECKOUT_SESSION_ID}}",
-            cancel_url=f"{BASE_URL}/app/cancel",
-            metadata={
-                'product': 'shardium_vault',
-                'plan': plan
-            }
-        )
-        return RedirectResponse(checkout_session.url, status_code=303)
-    except AttributeError as e:
-        # Stripe module not properly installed
-        return templates.TemplateResponse("index.html", {
-            "request": request,
-            "error": f"Stripe not installed properly. Run: pip install stripe"
-        })
-    except Exception as e:
-        # If Stripe fails, show error
-        return templates.TemplateResponse("index.html", {
-            "request": request,
-            "error": f"Payment system error: {str(e)}"
-        })
+    return templates.TemplateResponse("app_checkout.html", {
+        "request": request,
+        "client_secret": client_secret,
+        "paid": paid,
+        "stripe_pk": STRIPE_PUBLISHABLE_KEY,
+        "plan": plan
+    })
 
 @app.get("/app/success", response_class=HTMLResponse)
 async def app_success(request: Request, session_id: str = None):
     """
-    Success page after Stripe payment.
-    Verify the session is paid, then show vault creation page.
+    After payment: Set session cookie and redirect to /app (which will now show unlocked form)
     """
+    response = RedirectResponse(url="/app", status_code=303)
+    
     if session_id and stripe.api_key:
         try:
             session = stripe.checkout.Session.retrieve(session_id)
-            if session.payment_status != 'paid':
-                return templates.TemplateResponse("index.html", {
-                    "request": request,
-                    "error": "Payment not completed. Please try again."
-                })
+            if session.payment_status == 'paid':
+                # Set secure cookie (30 days expiry)
+                response.set_cookie(
+                    key="shardium_session",
+                    value=session_id,
+                    max_age=30 * 24 * 60 * 60,  # 30 days
+                    httponly=True,
+                    secure=True,
+                    samesite="lax"
+                )
         except Exception as e:
-            return templates.TemplateResponse("index.html", {
-                "request": request,
-                "error": f"Could not verify payment: {str(e)}"
-            })
+            pass
     
-    # Payment verified (or Stripe not configured - dev mode)
+    return response
+
+@app.get("/vault", response_class=HTMLResponse)
+async def vault_page(request: Request):
+    """
+    Vault creation page - only accessible after payment
+    """
+    session_id = request.cookies.get("shardium_session")
+    
+    if not session_id:
+        return RedirectResponse(url="/app", status_code=303)
+    
+    # Verify payment
+    try:
+        session = stripe.checkout.Session.retrieve(session_id)
+        if session.payment_status != "paid":
+            return RedirectResponse(url="/app", status_code=303)
+    except:
+        return RedirectResponse(url="/app", status_code=303)
+    
+    # Payment verified - show vault creation
     return templates.TemplateResponse("index.html", {"request": request})
+
 
 @app.get("/app/cancel", response_class=HTMLResponse)
 async def app_cancel(request: Request):

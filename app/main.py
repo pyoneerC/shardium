@@ -29,6 +29,7 @@ stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
 BASE_URL = os.getenv("BASE_URL", "https://shardium.maxcomperatore.com")
+DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL")  # For purchase notifications
 
 # Stripe Price IDs - Create these in Stripe Dashboard
 STRIPE_PRICES = {
@@ -122,6 +123,100 @@ def get_db():
     finally:
         db.close()
 
+# Discord notification helper
+async def send_discord_notification(plan: str, amount: float, customer_email: str = None):
+    """Send purchase notification to Discord"""
+    if not DISCORD_WEBHOOK_URL:
+        return  # Skip if webhook not configured
+    
+    import httpx
+    
+    # Determine emoji and color based on plan
+    if plan == "annual":
+        emoji = "📅"
+        color = 3066993  # Green
+        plan_name = "Annual Plan"
+    else:
+        emoji = "💎"
+        color = 15844367  # Gold
+        plan_name = "Lifetime Plan"
+    
+    embed = {
+        "title": f"{emoji} New Purchase!",
+        "description": f"Someone just bought **{plan_name}**",
+        "color": color,
+        "fields": [
+            {"name": "Plan", "value": plan_name, "inline": True},
+            {"name": "Amount", "value": f"${amount:.2f}", "inline": True},
+        ],
+        "footer": {"text": "Shardium"},
+        "timestamp": datetime.utcnow().isoformat()
+    }
+    
+    if customer_email:
+        embed["fields"].append({"name": "Email", "value": customer_email, "inline": False})
+    
+    payload = {"embeds": [embed]}
+    
+    try:
+        async with httpx.AsyncClient() as client:
+            await client.post(DISCORD_WEBHOOK_URL, json=payload)
+    except Exception as e:
+        print(f"Discord webhook error: {e}")
+
+# Stripe Webhook Handler
+@app.post("/stripe/webhook")
+async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
+    """Handle Stripe webhook events"""
+    payload = await request.body()
+    sig_header = request.headers.get("stripe-signature")
+    
+    if not STRIPE_WEBHOOK_SECRET:
+        raise HTTPException(status_code=400, detail="Webhook secret not configured")
+    
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, STRIPE_WEBHOOK_SECRET
+        )
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid payload")
+    except stripe.error.SignatureVerificationError:
+        raise HTTPException(status_code=400, detail="Invalid signature")
+    
+    # Handle checkout.session.completed
+    if event["type"] == "checkout.session.completed":
+        session = event["data"]["object"]
+        
+        # Extract data
+        customer_email = session.get("customer_details", {}).get("email")
+        amount = session.get("amount_total", 0) / 100  # Convert cents to dollars
+        plan = session.get("metadata", {}).get("plan", "unknown")
+        
+        # Send Discord notification
+        await send_discord_notification(plan, amount, customer_email)
+        
+        # Update user in database (if needed)
+        if customer_email:
+            user = db.query(User).filter(User.email == customer_email).first()
+            if user:
+                user.stripe_customer_id = session.get("customer")
+                user.plan_type = plan
+                user.is_active = True
+                db.commit()
+    
+    # Handle subscription events
+    elif event["type"] == "customer.subscription.deleted":
+        subscription = event["data"]["object"]
+        customer_id = subscription.get("customer")
+        
+        # Deactivate user
+        user = db.query(User).filter(User.stripe_customer_id == customer_id).first()
+        if user:
+            user.is_active = False
+            db.commit()
+    
+    return {"status": "success"}
+
 @app.get("/", response_class=HTMLResponse)
 async def landing_page(request: Request):
     """Marketing landing page"""
@@ -169,7 +264,16 @@ async def app_page(request: Request, plan: str = "lifetime"):
                 metadata={
                     'product': 'shardium_vault',
                     'plan': plan
-                }
+                },
+                # Customize appearance to match Shardium's dark theme
+                ui_mode='embedded',
+                custom_text={
+                    'submit': {
+                        'message': 'Secure payment via Stripe. Your card info never touches our servers.'
+                    }
+                },
+                # Note: Full appearance customization requires Stripe Dashboard configuration
+                # Go to: Stripe Dashboard → Settings → Branding → Checkout
             )
             client_secret = checkout_session.client_secret
         except Exception as e:

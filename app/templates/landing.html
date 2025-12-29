@@ -59,6 +59,50 @@
     }
     </script>
 
+    <!-- FAQ Schema for Rich Snippets -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [{
+            "@type": "Question",
+            "name": "What is Shamir's Secret Sharing?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Shamir's Secret Sharing is a cryptographic algorithm that splits a secret (like your seed phrase) into multiple parts called 'shards'. You can set a threshold (e.g., 2-of-3) meaning any 2 shards can reconstruct the original secret, but 1 shard alone reveals nothing. This eliminates single points of failure."
+            }
+        },{
+            "@type": "Question",
+            "name": "What happens to my crypto when I die?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Without a plan, your crypto is lost forever. Shardium solves this with a dead man's switch: we email you every 90 days. If you don't respond, Shard C (stored encrypted on our servers) is automatically sent to your beneficiary. Combined with the shard you gave them, they can recover your seed phrase and access your assets."
+            }
+        },{
+            "@type": "Question",
+            "name": "Is my seed phrase safe with Shardium?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Your seed phrase is encrypted client-side in your browser before being split. We never see your original seed phrase. Shard C is stored encrypted on our servers, but it's useless alone - you need 2 of 3 shards to recover. The code is open source (MIT license) so you can verify the security yourself."
+            }
+        },{
+            "@type": "Question",
+            "name": "How do I backup my seed phrase securely?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Use Shardium to split your seed into 3 shards: keep Shard A in your password manager, give Shard B to your heir (USB drive or printed), and Shard C stays encrypted on Shardium's servers. This way, losing one shard doesn't compromise your security, and your family can still inherit your crypto if something happens to you."
+            }
+        },{
+            "@type": "Question",
+            "name": "Can I use Shardium without paying?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! Shardium is open source. You can self-host it for free on your own server. The paid hosted version ($49/year or $129 lifetime) includes the dead man's switch service, automatic email reminders, and supports continued development."
+            }
+        }]
+    }
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.8.0/countUp.umd.min.js"></script>
     <link rel="icon" type="image/png" href="/static/favicon.png">
@@ -303,6 +347,8 @@
 
             <div class="aspect-video rounded-2xl overflow-hidden border border-zinc-800 shadow-2xl bg-black">
                 <video autoplay muted loop playsinline class="w-full h-full object-cover"
+                    title="Shardium demo: Split crypto seed phrase into 3 shards in 20 seconds"
+                    aria-label="Product demo showing seed phrase splitting using Shamir's Secret Sharing, recovery test with 2 shards, and dead man's switch activation"
                     poster="/static/video-poster.jpg">
                     <source src="/static/shardium.mp4" type="video/mp4">
                     Your browser does not support the video tag.

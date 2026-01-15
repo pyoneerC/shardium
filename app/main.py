@@ -695,7 +695,6 @@ async def create_vault(
     email: str = Form(...),
     beneficiary_email: str = Form(...),
     shard_c: str = Form(...),
-    personal_message: str = Form(None),
     db: Session = Depends(get_db)
 ):
     # Check if user exists
@@ -723,8 +722,7 @@ async def create_vault(
         shard_c=encrypted_shard,  # Now actually encrypted!
         config_hash=config_hash,  # Immutable commitment
         heartbeat_token=heartbeat_token,
-        last_heartbeat=created_timestamp,
-        personal_message=personal_message
+        last_heartbeat=created_timestamp
     )
     db.add(new_user)
     db.commit()
@@ -817,7 +815,12 @@ async def heartbeat(request: Request, user_id: int, token: str, db: Session = De
     user.is_dead = False # Resurrect if previously marked
     db.commit()
     
-    return templates.TemplateResponse("check_in.html", {"request": request, "message": "Heartbeat confirmed. Timer reset for 30 days."})
+    next_check_in = (datetime.now() + timedelta(days=90)).strftime('%B %d, %Y').lower()
+    
+    return templates.TemplateResponse("check_in.html", {
+        "request": request, 
+        "next_date": next_check_in
+    })
 
 @app.get("/recover", response_class=HTMLResponse)
 async def recover_page(request: Request):
@@ -938,15 +941,6 @@ async def check_heartbeats(db: Session = Depends(get_db)):
                             continue
                     
                     user.is_dead = True
-                    personal_msg_html = ""
-                    if user.personal_message:
-                        personal_msg_html = f"""
-                        <div style="background: #fffdf0; border: 1px solid #f0e68c; padding: 20px; border-radius: 4px; margin: 30px 0; font-style: italic; color: #555;">
-                            <p style="margin-top: 0; font-weight: bold; color: #000; font-style: normal; font-size: 14px;">a personal note for you:</p>
-                            "{user.personal_message}"
-                        </div>
-                        """
-
                     death_html = f"""
                     <!DOCTYPE html>
                     <html>
@@ -968,8 +962,6 @@ async def check_heartbeats(db: Session = Depends(get_db)):
                         <p>i'm max, the founder of shardium. i'm writing to you because 90 days ago, <strong>{user.email}</strong> entrusted our system to reach out to you if we stopped hearing from them.</p>
                         
                         <p>we haven't received a heartbeat check-in from them in three months. as per their explicit instructions, i am now releasing the final piece of their digital legacy to you.</p>
-
-                        {personal_msg_html}
 
                         <p>this is <strong>shard c</strong>. it's one of three pieces needed to access their crypto assets. if they followed our setup guide, you should already have <strong>shard b</strong> (likely a printed document or a digital file they gave you).</p>
 

@@ -33,9 +33,9 @@
 
         h1 {
             font-size: 2em;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             font-weight: normal;
-            text-decoration: underline;
+            color: #000;
         }
 
         .icon {
@@ -46,7 +46,16 @@
 
         p {
             color: #555;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
+        }
+
+        .date-box {
+            margin: 30px 0;
+            padding: 20px;
+            background: #fdfdfd;
+            border: 1px dashed #ddd;
+            font-family: monospace;
+            color: #000;
         }
 
         .nav {
@@ -69,15 +78,17 @@
 <body>
 
     <div class="container">
-        {% if message %}
         <div class="icon">✓</div>
-        <h1>status updated.</h1>
-        <p>{{ message | lower }}</p>
-        {% else %}
-        <h1>checking status...</h1>
-        {% endif %}
+        <h1>pulse confirmed.</h1>
 
-        <p>we've reset your 90-day timer. thanks for checking in. your family is safe.</p>
+        <p>we've reset the watchdog. the count starts from zero.</p>
+
+        <div class="date-box">
+            next check-in required by:<br>
+            <strong>{{ next_date }}</strong>
+        </div>
+
+        <p>go live your life. we'll stand guard until you come back.</p>
     </div>
 
     <div class="nav">

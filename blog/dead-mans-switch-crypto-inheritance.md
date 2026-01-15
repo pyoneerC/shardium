@@ -3,7 +3,7 @@ title: "Dead Man's Switch: How to Automate Crypto Inheritance"
 slug: dead-mans-switch-crypto-inheritance
 description: A dead man's switch automatically triggers an action when you stop responding. Learn how this mechanism enables trustless cryptocurrency inheritance.
 author: Max Comperatore
-date: 2024-12-18
+date: 2025-12-15
 tags: dead mans switch, automation, inheritance, trustless
 image: /static/blog/dead-mans-switch.jpg
 ---

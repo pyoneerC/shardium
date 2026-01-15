@@ -1,7 +1,7 @@
 ---
 title: "Shamir's Secret Sharing Explained (For Normal People)"
 slug: "shamirs-secret-sharing-explained"
-date: "2025-01-03"
+date: "2026-01-05"
 author: "Max Comperatore"
 description: "Shamir's Secret Sharing sounds complicated. It's not. Here's how it works and why it's the best way to backup your crypto seed phrase."
 image: "/static/blog/shamir-explained.jpg"

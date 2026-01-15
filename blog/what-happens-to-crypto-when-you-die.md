@@ -1,7 +1,7 @@
 ---
 title: "What Happens to Your Crypto When You Die?"
 slug: "what-happens-to-crypto-when-you-die"
-date: "2025-01-01"
+date: "2026-01-14"
 author: "Max Comperatore"
 description: "Without a plan, your Bitcoin, Ethereum, and other crypto assets are lost forever when you die. Here's what happens and how to prevent it."
 image: "/static/blog/crypto-death.jpg"

@@ -634,7 +634,7 @@ async def blog_post(request: Request, slug: str):
         "date_formatted": date_formatted,
         "tags": tags,
         "tags_list": tags_list,
-        "image": meta.get('image', '/static/favicon.png'),
+        "image": meta.get('image', '/static/og_card.png'),
         "slug": slug,
         "content": html_content,
         "reading_time": reading_time,

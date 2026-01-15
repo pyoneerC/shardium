@@ -4,8 +4,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }} - shardium blog</title>
+    <title>{{ title | lower }} - shardium blog</title>
+    <meta name="description" content="{{ description | lower }}">
     <link rel="icon" type="image/png" href="/static/favicon.png">
+
+    <!-- SEO Meta Tags -->
+    <link rel="canonical" href="https://shardium.xyz/blog/{{ slug }}">
+    <meta name="author" content="{{ author | lower }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://shardium.xyz/blog/{{ slug }}">
+    <meta property="og:title" content="{{ title | lower }}">
+    <meta property="og:description" content="{{ description | lower }}">
+    <meta property="og:image" content="https://shardium.xyz{{ image }}">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://shardium.xyz/blog/{{ slug }}">
+    <meta property="twitter:title" content="{{ title | lower }}">
+    <meta property="twitter:description" content="{{ description | lower }}">
+    <meta property="twitter:image" content="https://shardium.xyz{{ image }}">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "{{ title | lower }}",
+      "image": "https://shardium.xyz{{ image }}",
+      "author": {
+        "@type": "Person",
+        "name": "{{ author | lower }}"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "shardium",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://shardium.xyz/static/favicon.png"
+        }
+      },
+      "datePublished": "{{ date }}",
+      "description": "{{ description | lower }}"
+    }
+    </script>
     <style>
         * {
             box-sizing: border-box;
@@ -216,6 +259,22 @@
             <p>set up a trustless dead man's switch in 5 minutes. no signup required.</p>
             <a href="/tools/dead-switch" class="btn">secure your vault</a>
         </div>
+
+        {% if related_posts %}
+        <div style="margin-top: 60px; border-top: 1px solid #eee; padding-top: 40px;">
+            <h4 style="font-family: monospace; color: #888; margin-bottom: 20px;">// keep reading</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                {% for post in related_posts %}
+                <a href="/blog/{{ post.slug }}"
+                    style="text-decoration: none; color: inherit; padding: 15px; border: 1px dashed #eee; display: block;">
+                    <div style="font-family: monospace; font-size: 0.8em; color: #888; margin-bottom: 5px;">{{
+                        post.date_formatted | lower }}</div>
+                    <div style="font-weight: bold; font-size: 0.9em; line-height: 1.3;">{{ post.title | lower }}</div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
 
         <div class="author-box">
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqMxJLDbZIQLXKntZEo7g3360eM4pM2eVUTg&s"

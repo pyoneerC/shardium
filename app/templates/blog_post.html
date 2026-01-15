@@ -4,349 +4,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }} | Shardium Blog</title>
-    <meta name="description" content="{{ description }}">
-    <meta name="author" content="{{ author }}">
-    <meta name="keywords" content="{{ tags }}, crypto inheritance, seed phrase, bitcoin inheritance">
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="article">
-    <meta property="og:url" content="https://shardium.maxcomperatore.com/blog/{{ slug }}">
-    <meta property="og:title" content="{{ title }}">
-    <meta property="og:description" content="{{ description }}">
-    <meta property="og:image" content="https://shardium.maxcomperatore.com{{ image }}">
-    <meta property="og:site_name" content="Shardium">
-    <meta property="article:published_time" content="{{ date }}">
-    <meta property="article:author" content="{{ author }}">
-
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@shardiumhq">
-    <meta name="twitter:title" content="{{ title }}">
-    <meta name="twitter:description" content="{{ description }}">
-    <meta name="twitter:image" content="https://shardium.maxcomperatore.com{{ image }}">
-
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://shardium.maxcomperatore.com/blog/{{ slug }}">
-
-    <!-- Schema.org Article Structured Data -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "Article",
-        "headline": "{{ title }}",
-        "description": "{{ description }}",
-        "image": "https://shardium.maxcomperatore.com{{ image }}",
-        "author": {
-            "@type": "Person",
-            "name": "{{ author }}",
-            "url": "https://maxcomperatore.com"
-        },
-        "publisher": {
-            "@type": "Organization",
-            "name": "Shardium",
-            "logo": {
-                "@type": "ImageObject",
-                "url": "https://shardium.maxcomperatore.com/static/favicon.png"
-            }
-        },
-        "datePublished": "{{ date }}",
-        "dateModified": "{{ date }}",
-        "mainEntityOfPage": {
-            "@type": "WebPage",
-            "@id": "https://shardium.maxcomperatore.com/blog/{{ slug }}"
-        }
-    }
-    </script>
-
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>{{ title }} - shardium blog</title>
     <link rel="icon" type="image/png" href="/static/favicon.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    },
-                    colors: {
-                        zinc: {
-                            950: '#09090b',
-                            900: '#18181b',
-                            800: '#27272a',
-                            700: '#3f3f46',
-                            600: '#52525b',
-                            400: '#a1a1aa',
-                            300: '#d4d4d8',
-                        },
-                        accent: '#10b981',
-                    }
-                }
-            }
-        }
-    </script>
-
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            background: #09090b;
+            font-family: Georgia, serif;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            line-height: 1.8;
+            background: #fafafa;
+            color: #222;
+            text-transform: lowercase;
         }
 
-        .border-gradient {
-            border: 1px solid transparent;
-            background: linear-gradient(#09090b, #09090b) padding-box,
-                linear-gradient(135deg, #27272a, #18181b) border-box;
+        header {
+            margin-bottom: 50px;
         }
 
-        /* Article Prose Styles */
-        .prose h1 {
-            font-size: 2.25rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 1rem;
-            line-height: 1.2;
+        .nav {
+            margin-bottom: 40px;
+            font-family: monospace;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
         }
 
-        .prose h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #fff;
-            margin-top: 2rem;
-            margin-bottom: 0.75rem;
+        .nav a {
+            margin-right: 15px;
+            color: #666;
+            text-decoration: none;
         }
 
-        .prose h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #e4e4e7;
-            margin-top: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .prose p {
-            color: #a1a1aa;
-            line-height: 1.75;
-            margin-bottom: 1rem;
-        }
-
-        .prose a {
-            color: #10b981;
+        .nav a:hover {
+            color: #000;
             text-decoration: underline;
         }
 
-        .prose a:hover {
-            color: #34d399;
+        h1 {
+            font-size: 3em;
+            margin: 0.2em 0;
+            line-height: 1.1;
+            font-weight: normal;
         }
 
-        .prose strong {
-            color: #fff;
+        .post-meta {
+            font-family: monospace;
+            font-size: 0.9em;
+            color: #888;
+            margin-top: 20px;
         }
 
-        .prose ul,
-        .prose ol {
-            color: #a1a1aa;
-            margin-left: 1.5rem;
-            margin-bottom: 1rem;
+        /* Article Styles */
+        article {
+            font-size: 1.1em;
         }
 
-        .prose li {
-            margin-bottom: 0.5rem;
+        article h2 {
+            font-size: 1.6em;
+            margin-top: 1.5em;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
         }
 
-        .prose blockquote {
-            border-left: 3px solid #10b981;
-            padding-left: 1rem;
-            color: #71717a;
-            font-style: italic;
-            margin: 1.5rem 0;
+        article h3 {
+            font-size: 1.3em;
+            margin-top: 1.2em;
         }
 
-        .prose code {
-            background: #27272a;
-            padding: 0.125rem 0.375rem;
-            border-radius: 0.25rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.875rem;
-            color: #10b981;
+        article p {
+            margin: 1.2em 0;
         }
 
-        .prose pre {
-            background: #18181b;
-            padding: 1rem;
-            border-radius: 0.5rem;
+        article img {
+            max-width: 100%;
+            border-radius: 4px;
+            filter: grayscale(100%);
+            transition: filter 0.3s;
+        }
+
+        article img:hover {
+            filter: grayscale(0%);
+        }
+
+        article pre {
+            background: #f0f0f0;
+            padding: 20px;
             overflow-x: auto;
-            margin: 1rem 0;
+            font-family: monospace;
+            border-radius: 4px;
+            font-size: 0.9em;
         }
 
-        .prose pre code {
-            background: none;
-            padding: 0;
+        article code {
+            background: #f0f0f0;
+            padding: 2px 4px;
+            border-radius: 2px;
+            font-family: monospace;
+            font-size: 0.9em;
         }
 
-        .prose table {
-            width: 100%;
-            margin: 1rem 0;
-            border-collapse: collapse;
+        article blockquote {
+            border-left: 4px solid #ddd;
+            margin: 2em 0;
+            padding-left: 20px;
+            font-style: italic;
+            color: #555;
         }
 
-        .prose th,
-        .prose td {
-            border: 1px solid #3f3f46;
-            padding: 0.5rem 1rem;
-            text-align: left;
+        article ul,
+        article ol {
+            margin: 1.2em 0;
+            padding-left: 20px;
         }
 
-        .prose th {
-            background: #27272a;
+        article li {
+            margin-bottom: 0.5em;
+        }
+
+        .cta-box {
+            background: #222;
             color: #fff;
+            padding: 40px;
+            margin: 60px 0;
+            border-radius: 8px;
+            text-align: center;
         }
 
-        .prose td {
-            color: #a1a1aa;
+        .cta-box h3 {
+            margin-top: 0;
+            color: #fff;
+            border: none;
         }
 
-        .prose hr {
-            border-color: #3f3f46;
-            margin: 2rem 0;
+        .cta-box .btn {
+            display: inline-block;
+            background: #fff;
+            color: #000;
+            padding: 12px 25px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 4px;
+            margin-top: 20px;
         }
 
-        .prose img {
-            border-radius: 0.5rem;
-            margin: 1.5rem 0;
+        .author-box {
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .author-box img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            filter: grayscale(100%);
+        }
+
+        .author-text {
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .footer {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 0.85em;
+            color: #888;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.2em;
+            }
+
+            article {
+                font-size: 1em;
+            }
         }
     </style>
 </head>
 
-<body class="text-zinc-300 font-sans antialiased">
+<body>
 
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800">
-        <div class="max-w-6xl mx-auto px-6 h-16 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <a href="/" class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded overflow-hidden">
-                        <img src="/static/favicon.png" alt="Shardium" class="w-full h-full object-cover">
-                    </div>
-                    <span class="font-semibold text-white tracking-tight">Shardium</span>
-                </a>
-            </div>
-            <div class="flex items-center gap-4 md:gap-6">
-                <a href="/blog" class="text-sm text-white font-medium">Blog</a>
-                <a href="/docs" class="text-sm text-zinc-500 hover:text-white transition">Docs</a>
-                <a href="/app"
-                    class="text-sm px-4 py-2 bg-white text-black font-medium rounded hover:bg-zinc-200 transition">
-                    Launch App
-                </a>
+    <div class="nav">
+        <a href="/blog">← all posts</a>
+        <a href="/">home</a>
+        <a href="/tools/dead-switch">dead switch</a>
+    </div>
+
+    <header>
+        <div class="post-meta">{{ date_formatted | lower }} // {{ reading_time }} min read // by {{ author | lower }}
+        </div>
+    </header>
+
+    <main>
+        <article>
+            {{ content | safe }}
+        </article>
+
+        <div class="cta-box">
+            <h3>don't let your crypto die with you.</h3>
+            <p>set up a trustless dead man's switch in 5 minutes. no signup required.</p>
+            <a href="/tools/dead-switch" class="btn">secure your vault</a>
+        </div>
+
+        <div class="author-box">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqMxJLDbZIQLXKntZEo7g3360eM4pM2eVUTg&s"
+                alt="{{ author }}">
+            <div class="author-text">
+                <strong>{{ author }}</strong><br>
+                founder of shardium. building tools that outlive their founders.
             </div>
         </div>
-    </nav>
-
-    <!-- Article -->
-    <main class="pt-24 pb-16">
-        <article class="max-w-3xl mx-auto px-6">
-
-            <!-- Breadcrumbs (SEO) -->
-            <nav class="mb-8 text-sm" aria-label="Breadcrumb">
-                <ol class="flex items-center gap-2 text-zinc-500" itemscope
-                    itemtype="https://schema.org/BreadcrumbList">
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                        <a href="/" itemprop="item" class="hover:text-white"><span itemprop="name">Home</span></a>
-                        <meta itemprop="position" content="1" />
-                    </li>
-                    <li class="text-zinc-700">/</li>
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                        <a href="/blog" itemprop="item" class="hover:text-white"><span itemprop="name">Blog</span></a>
-                        <meta itemprop="position" content="2" />
-                    </li>
-                    <li class="text-zinc-700">/</li>
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                        <span itemprop="name" class="text-zinc-400">{{ title|truncate(40) }}</span>
-                        <meta itemprop="position" content="3" />
-                    </li>
-                </ol>
-            </nav>
-
-            <!-- Meta -->
-            <div class="mb-8">
-                <div class="flex items-center gap-4 text-sm text-zinc-500 mb-4">
-                    <time datetime="{{ date }}">{{ date_formatted }}</time>
-                    <span>·</span>
-                    <span>{{ reading_time }} min read</span>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    {% for tag in tags_list %}
-                    <span class="px-2 py-1 bg-zinc-800 text-zinc-400 text-xs rounded">{{ tag }}</span>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <!-- Content -->
-            <div class="prose">
-                {{ content|safe }}
-            </div>
-
-            <!-- Author Box -->
-            <div class="mt-12 border-gradient rounded-xl p-6 flex items-center gap-4">
-                <img src="https://i.pravatar.cc/150?img=68" alt="{{ author }}" class="w-16 h-16 rounded-full">
-                <div>
-                    <div class="text-white font-semibold">{{ author }}</div>
-                    <div class="text-zinc-500 text-sm">Founder of Shardium. Building trustless crypto inheritance.</div>
-                </div>
-            </div>
-
-            <!-- CTA -->
-            <div class="mt-12 border-gradient rounded-xl p-8 text-center bg-accent/5">
-                <h3 class="text-xl font-bold text-white mb-2">Ready to Protect Your Crypto?</h3>
-                <p class="text-zinc-400 mb-4">Set up your vault in under 5 minutes. Client-side encryption. Open source.
-                </p>
-                <a href="/app"
-                    class="inline-block px-6 py-3 bg-accent text-black font-semibold rounded hover:bg-emerald-400 transition">
-                    Create Your Vault
-                </a>
-            </div>
-
-            <!-- Related Posts -->
-            <div class="mt-12">
-                <h3 class="text-lg font-semibold text-white mb-4">Related Articles</h3>
-                <div class="grid md:grid-cols-2 gap-4">
-                    {% for post in related_posts %}
-                    <a href="/blog/{{ post.slug }}"
-                        class="border-gradient rounded-lg p-4 hover:border-zinc-600 transition block">
-                        <div class="text-white font-medium mb-1">{{ post.title }}</div>
-                        <div class="text-zinc-500 text-sm">{{ post.description|truncate(80) }}</div>
-                    </a>
-                    {% endfor %}
-                </div>
-            </div>
-
-        </article>
     </main>
 
-    <!-- Footer -->
-    <footer class="py-8 border-t border-zinc-800">
-        <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-3">
-                <div class="w-6 h-6 rounded overflow-hidden">
-                    <img src="/static/favicon.png" alt="Shardium" class="w-full h-full object-cover">
-                </div>
-                <span class="text-sm text-zinc-500">Shardium</span>
-            </div>
-            <div class="flex gap-6 text-sm text-zinc-500">
-                <a href="/blog" class="hover:text-white transition">Blog</a>
-                <a href="/docs" class="hover:text-white transition">Docs</a>
-                <a href="/terms" class="hover:text-white transition">Terms</a>
-                <a href="https://github.com/pyoneerC/shardium" class="hover:text-white transition">GitHub</a>
-            </div>
-            <div class="text-xs text-zinc-600">
-                Open Source · MIT License
-            </div>
-        </div>
-    </footer>
+    <div class="footer">
+        <p>&copy; 2026 shardium. open source. built in argentina.</p>
+    </div>
 
 </body>
 

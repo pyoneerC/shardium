@@ -120,7 +120,7 @@ Instead of having one seed phrase that's a single point of failure, you split it
 7. Enter your email and your beneficiary's email
 8. Done.
 
-**Cost**: $49/year or $129 lifetime.
+**Cost**: $0 for the first 50 early bird users. Then rising to $99, and finally $399 lifetime.
 
 **Alternative**: Self-host for free (it's open source).
 

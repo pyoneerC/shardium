@@ -692,73 +692,72 @@ async def create_vault(
     <html>
     <head>
         <style>
-            body {{ font-family: Georgia, serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background: #fafafa; }}
-            .content {{ background: white; padding: 40px; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }}
-            h1 {{ font-size: 24px; color: #000; font-weight: normal; margin-top: 0; }}
-            .image-container {{ text-align: center; margin: 30px 0; }}
-            .image-container img {{ max-width: 100%; border-radius: 4px; border: 1px solid #eee; }}
-            .instructions {{ background: #f9f9f9; padding: 20px; border-left: 3px solid #222; margin: 30px 0; font-family: monospace; font-size: 14px; rotate: -0.5deg; }}
-            .heartbeat-link {{ display: block; background: #222; color: #fff !important; text-decoration: none; padding: 15px 25px; text-align: center; border-radius: 4px; margin: 30px 0; font-weight: bold; }}
-            .footer {{ font-size: 12px; color: #777; margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px; font-style: italic; }}
+            body {{ font-family: Georgia, serif; line-height: 1.6; color: #222; max-width: 600px; margin: 0 auto; padding: 40px 20px; background: #fff; }}
+            .content {{ background: #fff; padding: 0; }}
+            h1 {{ font-size: 22px; color: #000; font-weight: normal; margin-top: 0; text-decoration: underline; }}
+            .image-container {{ text-align: left; margin: 40px 0; }}
+            .image-container img {{ max-width: 100%; border: 1px solid #eee; }}
+            .instructions {{ background: #fefefe; padding: 20px; border: 1px dashed #ccc; margin: 30px 0; font-family: monospace; font-size: 13px; }}
+            .heartbeat-link {{ display: inline-block; color: #000 !important; text-decoration: underline; font-weight: bold; margin: 20px 0; }}
+            .footer {{ font-size: 11px; color: #999; margin-top: 60px; border-top: 1px solid #eee; padding-top: 20px; }}
         </style>
     </head>
     <body>
         <div class="content">
-            <h1>It's not just a welcome email.</h1>
+            <h1>it's not just a welcome email.</h1>
             
-            <p>Hey there,</p>
+            <p>hey there,</p>
             
-            <p>I'm Max, the founder of Shardium.</p>
+            <p>i'm max, the founder of shardium.</p>
             
-            <p>I could have sent you a shiny, corporate HTML template with "Action Required" in the subject. But Shardium isn't a typical app, and you aren't a typical user.</p>
+            <p>i could have sent you a shiny, corporate html template with "action required" in the subject. but shardium isn't a typical app, and you aren't a typical user.</p>
             
-            <p>You just made a hard choice. Thinking about what happens "after" isn't exactly fun. But the fact that you're here means you deeply care about someone and you want to protect them no matter what. That’s a powerful thing, and it deserves more than a form letter.</p>
+            <p>you just made a hard choice. thinking about what happens "after" isn't exactly fun. but the fact that you're here means you deeply care about someone and you want to protect them no matter what. that’s a powerful thing, and it deserves more than a form letter.</p>
             
-            <p>In a digital world that's getting colder by the second, I wanted to give you something "handmade." Since my actual drawing skills stopped improving in kindergarten, I used a specialized AI to help me create a "photo" of a crayon drawing I made while thinking about this project. It’s imperfect, it's a bit silly, but it’s real to me.</p>
+            <p>in a digital world that's getting colder by the second, i wanted to give you something "handmade." since my actual drawing skills stopped improving in kindergarten, i used a specialized ai to help me create a "photo" of a crayon drawing i made while thinking about this project. it’s imperfect, it's a bit silly, but it’s real to me.</p>
 
             <div class="image-container">
-                <!-- Replace with your hosted image of the crayon Polaroid -->
-                <img src="https://shardium.xyz/static/shardium_welcome_crayon_polaroid_en.png" alt="A drawing of a family for you">
+                <img src="https://shardium.xyz/static/shardium_welcome_crayon_polaroid_en.png" alt="a drawing of a family for you">
             </div>
 
-            <p>I want you to know that on the other side of this complex math is a real person who understands the weight of what you're setting up. I don't take that trust lightly.</p>
+            <p>i want you to know that on the other side of this complex math is a real person who understands the weight of what you're setting up. i don't take that trust lightly.</p>
 
             <div class="instructions">
-                <strong>Vault Active for: {email}</strong><br>
-                Beneficiary: {beneficiary_email}<br>
-                System: 2-of-3 Shamir's Secret Sharing<br>
-                Status: SECURED
+                <strong>vault active for: {email}</strong><br>
+                beneficiary: {beneficiary_email}<br>
+                system: 2-of-3 shamir's secret sharing<br>
+                status: secured
             </div>
 
-            <p>Take a breath. Your family is safe now. There’s no rush to do anything else right now. Just keep your Shard A safe, and make sure your beneficiary has Shard B.</p>
+            <p>take a breath. your family is safe now. there’s no rush to do anything else right now. just keep your shard a safe, and make sure your beneficiary has shard b.</p>
 
-            <p><strong>One critical thing:</strong> To make sure you're still with us, we need a "heartbeat." Click the link below once just to verify you can access it. It resets your 90-day timer.</p>
+            <p><strong>one critical thing:</strong> to make sure you're still with us, we need a "heartbeat." click the link below once just to verify you can access it. it resets your 90-day timer.</p>
 
-            <a href="https://shardium.xyz/heartbeat/{new_user.id}/{heartbeat_token}" class="heartbeat-link">Verify My Heartbeat & Reset Timer</a>
+            <a href="https://shardium.xyz/heartbeat/{new_user.id}/{heartbeat_token}" class="heartbeat-link">verify my heartbeat & reset timer</a>
 
             <div class="image-container">
-                <!-- Replace with your hosted image of the napkin note -->
-                <img src="https://shardium.xyz/static/shardium_napkin_note.png" alt="Handwritten note on a napkin: Your family is safe now">
+                <img src="https://shardium.xyz/static/shardium_napkin_note.png" alt="handwritten note on a napkin: your family is safe now">
             </div>
 
-            <p><strong>This is my personal email.</strong> If you have a question, a fear, or just want to tell me how your setup went, just reply. I read them. I answer them.</p>
+            <p><strong>this is my personal email.</strong> if you have a question, a fear, or just want to tell me how your setup went, just reply. i read them. i answer them.</p>
 
-            <p>Deeply grateful you're here,</p>
+            <p>deeply grateful you're here,</p>
             
-            <p><strong>Max</strong><br>
-            Founder of Shardium<br>
-            <i>(The guy who sends you crayon drawings)</i></p>
+            <p><strong>max</strong><br>
+            founder of shardium<br>
+            <i>(the guy who sends you crayon drawings)</i></p>
 
             <div class="footer">
-                <p>Shardium — Protecting your crypto legacy, one human at a time.</p>
-                <p>Built with care in Argentina. Open source. Trustless by design.</p>
+                <p>shardium — protecting your crypto legacy, one human at a time.</p>
+                <p>built with care in argentina. open source. trustless by design.</p>
             </div>
         </div>
     </body>
     </html>
     """
     
-    send_email(email, "Not just a welcome email (and a drawing for you)", welcome_html)
+    send_email(email, "not just a welcome email (and a drawing for you)", welcome_html)
+
     return templates.TemplateResponse("success.html", {"request": request})
 
 @app.get("/heartbeat/{user_id}/{token}", response_class=HTMLResponse)

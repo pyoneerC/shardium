@@ -138,13 +138,13 @@ We combine the best of all approaches:
 
 Setting up your dead man's switch takes 5 minutes:
 
-1. Go to [shardium.maxcomperatore.com/app](https://shardium.maxcomperatore.com/app)
+1. Go to [shardium.xyz](https://shardium.xyz)
 2. Enter your seed phrase (client-side only)
 3. Download/print Shard A and B
 4. Enter your email and beneficiary's email
 5. Activate the switch
 
-That's it. You'll get reminders every 30 days. Your beneficiary gets access if you stop responding for 90 days.
+**Cost**: $0 for the first 50 early bird users. We're in public beta and building trust, not just subscriptions.
 
 ---
 

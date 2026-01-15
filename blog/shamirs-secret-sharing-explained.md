@@ -237,7 +237,7 @@ The math is complex. One mistake = permanent loss.
 4. Save Shard A, give Shard B to your heir, Shard C stays encrypted
 5. Done
 
-**Cost**: $49/year or $129 lifetime
+**Cost**: $0 for the first 50 early bird users. Then rising to $99, and finally $399 lifetime.
 
 ### Option 2: Ian Coleman's Tool (Free, Manual)
 

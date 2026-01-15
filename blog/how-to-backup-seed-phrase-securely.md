@@ -151,7 +151,7 @@ A hacker gets into your password manager and steals Shard A.
 7. Enter your email + beneficiary email
 8. Done (5 minutes)
 
-**Cost**: $49/year or $129 lifetime
+**Cost**: $0 for the first 50 early bird users. Then rising to $99, and finally $399 lifetime.
 
 ### Option 2: Self-Host (Free, More Technical)
 

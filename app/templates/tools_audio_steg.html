@@ -17,8 +17,10 @@
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            line-height: 1.7;
+            line-height: 1.6;
             background: #fafafa;
+            color: #222;
+            text-transform: lowercase;
         }
 
         a {
@@ -29,7 +31,7 @@
             position: sticky;
             top: 0;
             background: #fafafa;
-            padding: 10px 0;
+            padding: 12px 0;
             border-bottom: 1px solid #ddd;
             margin-bottom: 20px;
             z-index: 100;
@@ -95,8 +97,9 @@
             padding: 10px 20px;
             border: none;
             cursor: pointer;
-            font-family: Georgia, serif;
+            font-family: inherit;
             font-size: 1em;
+            text-transform: lowercase;
         }
 
         .btn:hover {
@@ -185,6 +188,11 @@
 
         <p id="encodeInfo" style="color: #666; font-size: 0.9em;"></p>
 
+        <div style="margin-bottom: 20px;">
+            <button class="btn" style="background: #fff; color: #222; border: 1px solid #222;"
+                onclick="loadDemoAudio()">try with demo audio</button>
+        </div>
+
         <button class="btn" id="encodeBtn" onclick="encodeMessage()" disabled>hide message in audio</button>
 
         <div class="result" id="encodeResult" style="display: none;">
@@ -245,40 +253,66 @@
     </div>
 
     <script>
-        let encodeAudioBuffer = null;
-        let encodeAudioContext = null;
-        let decodeAudioBuffer = null;
+        let isDemoRun = false;
+        let originalWavBuffer = null;
+
+        async function loadDemoAudio() {
+            isDemoRun = true;
+            try {
+                const response = await fetch('/static/song.wav');
+                if (!response.ok) throw new Error('failed to fetch song.wav');
+                const arrayBuffer = await response.arrayBuffer();
+
+                originalWavBuffer = arrayBuffer;
+                document.getElementById('encodeLabel').textContent = "song.wav";
+                document.getElementById('encodeUpload').classList.add('has-file');
+                document.getElementById('secretMessage').value = "shardium demo: apple banana cherry dog elephant fox";
+
+                // parse enough to show info
+                const view = new DataView(arrayBuffer);
+                const dataSize = arrayBuffer.byteLength - 44; // assume 44 byte header
+                const maxChars = Math.floor(dataSize / 16) - 1; // 16 bytes per character (2 bytes/sample * 8 bits)
+
+                document.getElementById('encodeInfo').textContent =
+                    `audio: song.wav loaded. can hide up to ${maxChars} characters securely.`;
+
+                document.getElementById('encodeBtn').disabled = false;
+
+                // auto-encode
+                encodeMessage();
+            } catch (e) {
+                console.error(e);
+                alert('failed to load demo song.wav. check if it exists in app/static/');
+            }
+        }
 
         function handleEncodeUpload(input) {
+            isDemoRun = false;
             const file = input.files[0];
             if (!file) return;
 
             document.getElementById('encodeLabel').textContent = file.name;
             document.getElementById('encodeUpload').classList.add('has-file');
 
-            // show audio player
+            // show audio player for preview
             const audio = document.getElementById('originalAudio');
             audio.src = URL.createObjectURL(file);
             audio.style.display = 'block';
 
-            // decode audio for processing
             const reader = new FileReader();
             reader.onload = function (e) {
-                encodeAudioContext = new (window.AudioContext || window.webkitAudioContext)();
-                encodeAudioContext.decodeAudioData(e.target.result, function (buffer) {
-                    encodeAudioBuffer = buffer;
-                    const samples = buffer.length;
-                    const maxChars = Math.floor(samples / 8) - 1;
-                    document.getElementById('encodeInfo').textContent =
-                        `audio: ${buffer.duration.toFixed(1)}s, ${samples} samples. can hide up to ${maxChars} characters.`;
-                    document.getElementById('encodeBtn').disabled = false;
-                });
+                originalWavBuffer = e.target.result;
+                const dataSize = originalWavBuffer.byteLength - 44;
+                const maxChars = Math.floor(dataSize / 16) - 1;
+                document.getElementById('encodeInfo').textContent =
+                    `audio loaded: ${file.name}. capacity: ${maxChars} chars.`;
+                document.getElementById('encodeBtn').disabled = false;
             };
             reader.readAsArrayBuffer(file);
         }
 
         function encodeMessage() {
-            if (!encodeAudioBuffer) return;
+            if (!originalWavBuffer) return;
 
             const message = document.getElementById('secretMessage').value;
             if (!message) {
@@ -287,7 +321,7 @@
             }
 
             // convert message to bits
-            const messageWithNull = message + '\0'; // null terminator
+            const messageWithNull = message + '\0';
             const bits = [];
             for (let i = 0; i < messageWithNull.length; i++) {
                 const charCode = messageWithNull.charCodeAt(i);
@@ -296,52 +330,61 @@
                 }
             }
 
-            // check capacity
-            const channel = encodeAudioBuffer.getChannelData(0);
-            if (bits.length > channel.length) {
-                alert('audio too short for this message');
+            // copy buffer
+            const newArrayBuffer = originalWavBuffer.slice(0);
+            const view = new DataView(newArrayBuffer);
+
+            // bit-perfect LSB modification
+            // find 'data' subchunk
+            let offset = 12;
+            let foundData = false;
+            while (offset < view.byteLength) {
+                const chunkId = String.fromCharCode(view.getUint8(offset), view.getUint8(offset + 1), view.getUint8(offset + 2), view.getUint8(offset + 3));
+                const chunkSize = view.getUint32(offset + 4, true);
+                if (chunkId === 'data') {
+                    offset += 8;
+                    foundData = true;
+                    break;
+                }
+                offset += 8 + chunkSize;
+            }
+
+            if (!foundData) {
+                alert('invalid wav format (no data chunk)');
                 return;
             }
 
-            // copy audio data
-            const newBuffer = encodeAudioContext.createBuffer(
-                encodeAudioBuffer.numberOfChannels,
-                encodeAudioBuffer.length,
-                encodeAudioBuffer.sampleRate
-            );
-
-            for (let c = 0; c < encodeAudioBuffer.numberOfChannels; c++) {
-                const srcData = encodeAudioBuffer.getChannelData(c);
-                const dstData = newBuffer.getChannelData(c);
-
-                if (c === 0) {
-                    // encode in first channel
-                    for (let i = 0; i < srcData.length; i++) {
-                        // convert float to 16-bit int
-                        let sample = Math.floor(srcData[i] * 32767);
-
-                        if (i < bits.length) {
-                            // clear LSB and set our bit
-                            sample = (sample & ~1) | bits[i];
-                        }
-
-                        // convert back to float
-                        dstData[i] = sample / 32767;
-                    }
-                } else {
-                    // copy other channels
-                    dstData.set(srcData);
-                }
+            if (bits.length > (view.byteLength - offset) / 2) {
+                alert('audio too short');
+                return;
             }
 
-            // convert to wav blob
-            const wavBlob = audioBufferToWav(newBuffer);
+            for (let i = 0; i < bits.length; i++) {
+                // modify LSB of 16-bit PCM sample (little endian)
+                let sample = view.getInt16(offset + (i * 2), true);
+                sample = (sample & ~1) | bits[i];
+                view.setInt16(offset + (i * 2), sample, true);
+            }
+
+            const wavBlob = new Blob([newArrayBuffer], { type: 'audio/wav' });
             const wavUrl = URL.createObjectURL(wavBlob);
 
             document.getElementById('encodedAudio').src = wavUrl;
             document.getElementById('encodedDownload').href = wavUrl;
             document.getElementById('encodeResult').style.display = 'block';
+
+            if (isDemoRun) {
+                // auto-populate decode section
+                decodeWavBuffer = newArrayBuffer;
+                document.getElementById('decodeLabel').textContent = "secret_song.wav";
+                document.getElementById('decodeUpload').classList.add('has-file');
+                document.getElementById('decodeBtn').disabled = false;
+                decodeMessage();
+                isDemoRun = false;
+            }
         }
+
+        let decodeWavBuffer = null;
 
         function handleDecodeUpload(input) {
             const file = input.files[0];
@@ -352,44 +395,55 @@
 
             const reader = new FileReader();
             reader.onload = function (e) {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                audioContext.decodeAudioData(e.target.result, function (buffer) {
-                    decodeAudioBuffer = buffer;
-                    document.getElementById('decodeBtn').disabled = false;
-                });
+                decodeWavBuffer = e.target.result;
+                document.getElementById('decodeBtn').disabled = false;
             };
             reader.readAsArrayBuffer(file);
         }
 
         function decodeMessage() {
-            if (!decodeAudioBuffer) return;
+            if (!decodeWavBuffer) return;
 
-            const channel = decodeAudioBuffer.getChannelData(0);
-            const maxChars = 10000;
-            const maxBits = maxChars * 8;
+            const view = new DataView(decodeWavBuffer);
 
-            // extract LSBs
-            const bits = [];
-            for (let i = 0; i < Math.min(maxBits, channel.length); i++) {
-                const sample = Math.floor(channel[i] * 32767);
-                bits.push(sample & 1);
+            // find 'data' subchunk
+            let offset = 12;
+            let foundData = false;
+            while (offset < view.byteLength) {
+                const chunkId = String.fromCharCode(view.getUint8(offset), view.getUint8(offset + 1), view.getUint8(offset + 2), view.getUint8(offset + 3));
+                const chunkSize = view.getUint32(offset + 4, true);
+                if (chunkId === 'data') {
+                    offset += 8;
+                    foundData = true;
+                    break;
+                }
+                offset += 8 + chunkSize;
             }
 
-            // convert bits to text
+            if (!foundData) {
+                alert('invalid wav format');
+                return;
+            }
+
+            const maxBits = (view.byteLength - offset) / 2;
+            const bits = [];
+            for (let i = 0; i < maxBits; i++) {
+                const sample = view.getInt16(offset + (i * 2), true);
+                bits.push(Math.abs(sample % 2));
+            }
+
             let message = '';
             for (let i = 0; i < bits.length; i += 8) {
                 if (i + 8 > bits.length) break;
-
                 let charCode = 0;
                 for (let b = 0; b < 8; b++) {
                     charCode = (charCode << 1) | bits[i + b];
                 }
-
-                if (charCode === 0) break; // null terminator
+                if (charCode === 0) break;
                 message += String.fromCharCode(charCode);
             }
 
-            document.getElementById('extractedMessage').textContent = message || '(no message found or invalid data)';
+            document.getElementById('extractedMessage').textContent = message || '(no message found)';
             document.getElementById('decodeResult').style.display = 'block';
         }
 
@@ -434,7 +488,8 @@
             for (let i = 0; i < buffer.length; i++) {
                 for (let c = 0; c < numChannels; c++) {
                     const sample = Math.max(-1, Math.min(1, channels[c][i]));
-                    const val = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
+                    // use consistent 32767 scale to match encode/decode logic
+                    const val = Math.round(sample * 32767);
                     view.setInt16(offset, val, true);
                     offset += 2;
                 }

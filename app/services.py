@@ -36,6 +36,7 @@ def send_email(to_email: str, subject: str, content: str):
             params = {
                 "from": FROM_EMAIL,
                 "to": [to_email],
+                "reply_to": "max@deadhandprotocol.com",
                 "subject": subject,
                 "html": content,
             }

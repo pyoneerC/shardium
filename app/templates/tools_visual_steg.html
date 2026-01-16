@@ -14,12 +14,14 @@
         }
 
         body {
-            font-family: Georgia, serif;
+            font-family: 'Courier New', monospace;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            line-height: 1.7;
+            line-height: 1.6;
             background: #fafafa;
+            color: #222;
+            text-transform: lowercase;
         }
 
         a {
@@ -30,7 +32,7 @@
             position: sticky;
             top: 0;
             background: #fafafa;
-            padding: 10px 0;
+            padding: 12px 0;
             border-bottom: 1px solid #ddd;
             margin-bottom: 20px;
             z-index: 100;
@@ -87,8 +89,9 @@
             padding: 10px 20px;
             border: none;
             cursor: pointer;
-            font-family: Georgia, serif;
+            font-family: inherit;
             font-size: 1em;
+            text-transform: lowercase;
         }
 
         .btn:hover {
@@ -160,6 +163,12 @@
 
     <p>split an image into 2 shares that look like random noise. when you overlay them, the original image appears.
         works digitally or with physical printed transparencies.</p>
+
+    <div style="margin: 2em 0; text-align: center;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Visual_crypto_animation_demo.gif"
+            alt="visual crypto demo" style="max-width: 100%; border: 1px solid #ddd;">
+        <p style="font-size: 0.8em; color: #666; margin-top: 5px;">demo: share 1 + share 2 = secret</p>
+    </div>
 
     <p>100% client-side. your images never leave your browser.</p>
 

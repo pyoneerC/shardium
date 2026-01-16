@@ -9,7 +9,8 @@ Welcome to the deadhand documentation. This guide will help you understand how d
 3. [Security Model](security.md)
 4. [API Reference](api-reference.md)
 5. [Self-Hosting](self-hosting.md)
-6. [FAQ](faq.md)
+6. [Vercel Web Analytics Setup](vercel-web-analytics.md)
+7. [FAQ](faq.md)
 
 ## Quick Links
 

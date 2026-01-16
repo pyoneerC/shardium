@@ -4,27 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title | lower }} - shardium blog</title>
+    <title>{{ title | lower }} - deadhand blog</title>
     <meta name="description" content="{{ description | lower }}">
     <link rel="icon" type="image/png" href="/static/favicon.png">
 
     <!-- SEO Meta Tags -->
-    <link rel="canonical" href="https://shardium.xyz/blog/{{ slug }}">
+    <link rel="canonical" href="https://deadhand.xyz/blog/{{ slug }}">
     <meta name="author" content="{{ author | lower }}">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="article">
-    <meta property="og:url" content="https://shardium.xyz/blog/{{ slug }}">
+    <meta property="og:url" content="https://deadhand.xyz/blog/{{ slug }}">
     <meta property="og:title" content="{{ title | lower }}">
     <meta property="og:description" content="{{ description | lower }}">
-    <meta property="og:image" content="https://shardium.xyz{{ image }}">
+    <meta property="og:image" content="https://deadhand.xyz{{ image }}">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://shardium.xyz/blog/{{ slug }}">
+    <meta property="twitter:url" content="https://deadhand.xyz/blog/{{ slug }}">
     <meta property="twitter:title" content="{{ title | lower }}">
     <meta property="twitter:description" content="{{ description | lower }}">
-    <meta property="twitter:image" content="https://shardium.xyz{{ image }}">
+    <meta property="twitter:image" content="https://deadhand.xyz{{ image }}">
 
     <!-- Structured Data -->
     <script type="application/ld+json">
@@ -32,17 +32,17 @@
       "@context": "https://schema.org",
       "@type": "BlogPosting",
       "headline": "{{ title | lower }}",
-      "image": "https://shardium.xyz{{ image }}",
+      "image": "https://deadhand.xyz{{ image }}",
       "author": {
         "@type": "Person",
         "name": "{{ author | lower }}"
       },
       "publisher": {
         "@type": "Organization",
-        "name": "shardium",
+        "name": "deadhand",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://shardium.xyz/static/favicon.png"
+          "url": "https://deadhand.xyz/static/favicon.png"
         }
       },
       "datePublished": "{{ date }}",
@@ -282,13 +282,13 @@
                 alt="{{ author }}">
             <div class="author-text">
                 <strong>{{ author }}</strong><br>
-                founder of shardium. building tools that outlive their founders.
+                founder of deadhand. building tools that outlive their founders.
             </div>
         </div>
     </main>
 
     <div class="footer">
-        <p>&copy; 2026 shardium. open source. built in argentina.</p>
+        <p>&copy; 2026 deadhand. open source. built in argentina.</p>
     </div>
 
 </body>

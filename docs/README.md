@@ -1,6 +1,6 @@
-# Shardium Documentation
+# deadhand Documentation
 
-Welcome to the Shardium documentation. This guide will help you understand how Shardium works and how to use it effectively.
+Welcome to the deadhand documentation. This guide will help you understand how deadhand works and how to use it effectively.
 
 ## Table of Contents
 
@@ -15,7 +15,7 @@ Welcome to the Shardium documentation. This guide will help you understand how S
 
 - [Create a Vault](/) - Split your seed phrase
 - [Recover a Key](/recover) - Combine shards to recover
-- [GitHub Repository](https://github.com/pyoneerC/shardium)
+- [GitHub Repository](https://github.com/pyoneerC/deadhand)
 
 ## Support
 

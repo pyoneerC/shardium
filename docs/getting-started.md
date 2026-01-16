@@ -1,8 +1,8 @@
 # Getting Started
 
-## What is Shardium?
+## What is deadhand?
 
-Shardium is a trustless dead man's switch for crypto inheritance. It uses **Shamir's Secret Sharing** to split your seed phrase into 3 shards, ensuring no single party can access your funds.
+deadhand is a trustless dead man's switch for crypto inheritance. It uses **Shamir's Secret Sharing** to split your seed phrase into 3 shards, ensuring no single party can access your funds.
 
 ## Prerequisites
 
@@ -14,7 +14,7 @@ Shardium is a trustless dead man's switch for crypto inheritance. It uses **Sham
 
 ### Step 1: Enter Your Seed Phrase
 
-1. Visit the Shardium app
+1. Visit the deadhand app
 2. **Disconnect from the internet** (for maximum security)
 3. Enter your 12 or 24 word seed phrase
 4. Click "Encrypt & Split Key"
@@ -27,13 +27,13 @@ After splitting, you'll receive 3 shards:
 |-------|--------------|---------|
 | **Shard A** | You | Master backup - store in password manager or safe |
 | **Shard B** | Beneficiary | Give to your heir (printed PDF recommended) |
-| **Shard C** | Shardium Server | Released to beneficiary when switch triggers |
+| **Shard C** | deadhand Server | Released to beneficiary when switch triggers |
 
 ### Step 3: Activate the Switch
 
 1. Enter your email address
 2. Enter your beneficiary's email
-3. Click "Activate Shardium"
+3. Click "Activate deadhand"
 
 That's it! You'll receive heartbeat emails every 30 days.
 

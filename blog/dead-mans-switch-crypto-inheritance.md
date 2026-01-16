@@ -27,7 +27,7 @@ The challenge with crypto inheritance is timing:
 
 A dead man's switch solves the timing problem automatically.
 
-## How Shardium's Switch Works
+## How deadhand's Switch Works
 
 ### The Timeline
 
@@ -49,24 +49,24 @@ Note: We are working on customizable timers (30 days to 1 year) for pro users.
 
 ## The Trust Model
 
-Shardium is designed to be trustless.
+deadhand is designed to be trustless.
 
-### What Shardium Has
+### What deadhand Has
 - Your email address.
 - Your beneficiary's email address.
 - Shard C (encrypted and useless alone).
 
-### What Shardium Does Not Have
+### What deadhand Does Not Have
 - Your seed phrase.
 - Shard A (you keep this).
 - Shard B (your beneficiary keeps this).
 - Any ability to access your funds.
 
-Even if Shardium were compromised, Shard C alone reveals zero information about your seed phrase.
+Even if deadhand were compromised, Shard C alone reveals zero information about your seed phrase.
 
 ## Security Considerations
 
-### What if Shardium is hacked?
+### What if deadhand is hacked?
 
 Hackers would get a database of encrypted Shard C values. Without the matching Shard A or Shard B, these are worthless. It is like having one piece of a complex puzzle: no picture emerges.
 
@@ -92,7 +92,7 @@ Traditional estate planning can include crypto instructions. But lawyers are oft
 ### Metal Plates in a Safe
 Some people stamp their seed phrase on metal and put it in a safe deposit box. This works, but it requires your heirs to find the box and have the legal right to access it.
 
-## The Shardium Advantage
+## The deadhand Advantage
 
 We combine the best parts of these approaches:
 
@@ -125,7 +125,7 @@ We combine the best parts of these approaches:
 
 Setting up your dead man's switch takes 5 minutes:
 
-1. Go to [shardium.xyz](https://shardium.xyz)
+1. Go to [deadhand.xyz](https://deadhand.xyz)
 2. Enter your seed phrase (client-side only).
 3. Download or print Shard A and B.
 4. Enter your email and beneficiary's email.

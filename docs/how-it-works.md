@@ -1,4 +1,4 @@
-# How Shardium Works
+# How deadhand Works
 
 ## The Problem: The Trust Paradox
 
@@ -12,7 +12,7 @@ This is the **Trust Paradox**: You need to share access, but sharing access is d
 
 ## The Solution: Shamir's Secret Sharing
 
-Shardium uses a cryptographic technique called **Shamir's Secret Sharing (SSS)**, invented by Adi Shamir in 1979.
+deadhand uses a cryptographic technique called **Shamir's Secret Sharing (SSS)**, invented by Adi Shamir in 1979.
 
 ### How SSS Works
 
@@ -22,7 +22,7 @@ Instead of storing your secret as a single piece of data, SSS splits it into mul
 Secret → Split into N shards → Need K shards to recover (K ≤ N)
 ```
 
-Shardium uses a **2-of-3** scheme:
+deadhand uses a **2-of-3** scheme:
 - 3 shards are created
 - Any 2 shards can recover the original
 - 1 shard alone reveals **zero information**
@@ -35,7 +35,7 @@ This isn't just "hard to crack"—it's **information-theoretically secure**:
 - No amount of computing power changes this
 - It's not encryption that can be broken—it's math
 
-## The Shardium Architecture
+## The deadhand Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -87,7 +87,7 @@ When the switch triggers:
 
 1. Beneficiary receives email with **Shard C**
 2. They already have **Shard B** (the printed PDF)
-3. They visit Shardium's recovery page
+3. They visit deadhand's recovery page
 4. They enter both shards
 5. Original seed phrase is reconstructed
 6. They can now access the wallet
@@ -98,7 +98,7 @@ When the switch triggers:
 |-------|---------------|-----------------|
 | You | Shard A | No (need 2 shards) |
 | Beneficiary | Shard B | No (need 2 shards) |
-| Shardium | Shard C | No (need 2 shards) |
+| deadhand | Shard C | No (need 2 shards) |
 | Hacker (server) | Shard C | No (need 2 shards) |
 | You + Anyone | A + B or A + C | ✅ Yes (intended) |
 | Beneficiary | B + C (after trigger) | ✅ Yes (intended) |

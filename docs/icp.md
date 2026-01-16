@@ -1,4 +1,4 @@
-# Shardium ICP (Ideal Customer Profile)
+# deadhand ICP (Ideal Customer Profile)
 
 > *"Defining our ICP is the most important thing we ever did"*
 
@@ -159,7 +159,7 @@
 **Strong signals:**
 - Asks about security model before signing up
 - Mentions hardware wallet in conversation
-- Concerned about "what if Shardium gets hacked"
+- Concerned about "what if deadhand gets hacked"
 - Has specific questions about Shamir's Secret Sharing
 - Wants to know if it's open source
 - Pays for yearly or lifetime immediately

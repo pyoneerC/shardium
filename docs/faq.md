@@ -2,13 +2,13 @@
 
 ## General
 
-### What is Shardium?
+### What is deadhand?
 
-Shardium is a trustless dead man's switch for crypto inheritance. It splits your seed phrase into 3 shards using Shamir's Secret Sharing, ensuring no single party can access your funds.
+deadhand is a trustless dead man's switch for crypto inheritance. It splits your seed phrase into 3 shards using Shamir's Secret Sharing, ensuring no single party can access your funds.
 
 ### Is this safe?
 
-Yes. Shardium uses Shamir's Secret Sharing, which provides **information-theoretic security**. This means:
+Yes. deadhand uses Shamir's Secret Sharing, which provides **information-theoretic security**. This means:
 - 1 shard reveals zero information about your secret
 - No amount of computing power can change this
 - It's mathematically proven, not just "hard to break"
@@ -17,11 +17,11 @@ Yes. Shardium uses Shamir's Secret Sharing, which provides **information-theoret
 
 **No.** Your seed phrase is split entirely in your browser using JavaScript. We only receive Shard C, which is useless on its own.
 
-### What if Shardium gets hacked?
+### What if deadhand gets hacked?
 
 Attackers would only get Shard C values. Without Shard B (which beneficiaries hold physically), they cannot recover any seed phrases.
 
-### What if Shardium shuts down?
+### What if deadhand shuts down?
 
 If we shut down:
 1. You still have Shard A
@@ -32,7 +32,7 @@ You don't need us to recover your funds.
 
 ---
 
-## Using Shardium
+## Using deadhand
 
 ### How often will I receive emails?
 
@@ -62,7 +62,7 @@ Currently, one beneficiary per vault. For multiple heirs, create multiple vaults
 
 1. They receive Shard C via email (when switch triggers)
 2. They already have Shard B (the printed PDF you gave them)
-3. They visit the Shardium recovery page
+3. They visit the deadhand recovery page
 4. They enter both shards
 5. Original seed phrase is displayed
 6. They import it into a wallet

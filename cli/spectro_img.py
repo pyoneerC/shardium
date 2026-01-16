@@ -74,7 +74,7 @@ def generate_spectrogram_audio(image_path, output_path, duration=5.0, min_freq=2
         wav.writeframes(binary_data)
 
 def main():
-    parser = argparse.ArgumentParser(description="Shardium Spectrogram Image Hider CLI")
+    parser = argparse.ArgumentParser(description="deadhand Spectrogram Image Hider CLI")
     parser.add_argument("image", help="Input image file")
     parser.add_argument("output", help="Output WAV file")
     parser.add_argument("--duration", type=float, default=5.0, help="Duration in seconds (default: 5.0)")

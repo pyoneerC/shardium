@@ -55,7 +55,7 @@ Any two shards can recover your seed. One shard alone reveals zero information.
 ### Step 2: Distribute the Shards
 - **Shard A**: Store in your password manager (e.g., 1Password, Bitwarden). This keeps it encrypted and accessible from anywhere.
 - **Shard B**: Give to your heir. You can give them a USB drive or a printed copy. They cannot access your crypto with just this shard.
-- **Shard C**: Store encrypted on Shardium's servers. This is released to your beneficiary only if you stop responding to check-ins.
+- **Shard C**: Store encrypted on deadhand's servers. This is released to your beneficiary only if you stop responding to check-ins.
 
 ### Step 3: Test Recovery
 Do not set it up and forget it. Test your recovery once a year:
@@ -67,21 +67,21 @@ Do not set it up and forget it. Test your recovery once a year:
 ## Real-World Scenarios
 
 ### Scenario 1: You Lose Your Password Manager
-If you lose access to your password manager, you still have Shard B (with your heir) and Shard C (on Shardium). You can recover your seed phrase using those two.
+If you lose access to your password manager, you still have Shard B (with your heir) and Shard C (on deadhand). You can recover your seed phrase using those two.
 
 ### Scenario 2: Your House is Destroyed
-If your home is lost to fire or flood, you still have Shard A (in the cloud) and Shard C (on Shardium). You can still recover your funds.
+If your home is lost to fire or flood, you still have Shard A (in the cloud) and Shard C (on deadhand). You can still recover your funds.
 
 ### Scenario 3: You Pass Away
-Shardium's dead man's switch triggers after 90 days of silence. Shard C is sent to your beneficiary. They combine it with Shard B (which you gave them earlier) and recover your inheritance.
+deadhand's dead man's switch triggers after 90 days of silence. Shard C is sent to your beneficiary. They combine it with Shard B (which you gave them earlier) and recover your inheritance.
 
 ### Scenario 4: A Hacker Steals One Shard
 If a hacker gains access to Shard A, it is useless to them. They need the threshold (two shards) to do anything. Your crypto remains safe.
 
 ## How to Set This Up
 
-### Option 1: Use Shardium (Easiest)
-1. Visit [shardium.xyz](https://shardium.xyz).
+### Option 1: Use deadhand (Easiest)
+1. Visit [deadhand.xyz](https://deadhand.xyz).
 2. Enter your seed phrase (encrypted client-side).
 3. The tool splits it into 3 shards automatically.
 4. Save Shard A in your password manager and give Shard B to your heir.
@@ -107,8 +107,8 @@ Paper backups are risky and single points of failure are dangerous. Shamir's Sec
 - Pass away? Your family inherits automatically.
 - Get hacked? One shard is useless to an attacker.
 
-**[Secure your seed phrase backup now](https://shardium.xyz)**
+**[Secure your seed phrase backup now](https://deadhand.xyz)**
 
 ---
 
-*Max Comperatore is the founder of Shardium. He has been focused on seed phrase security since 2017.*
+*Max Comperatore is the founder of deadhand. He has been focused on seed phrase security since 2017.*

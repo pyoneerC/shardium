@@ -49,7 +49,7 @@ def recover(shares, prime):
 # --- CLI Tool ---
 
 def main():
-    parser = argparse.ArgumentParser(description="Shardium SSS Tool - Split your seed phrase into shards.")
+    parser = argparse.ArgumentParser(description="deadhand SSS Tool - Split your seed phrase into shards.")
     subparsers = parser.add_subparsers(dest="command", help="Command to run")
 
     # Split command
@@ -74,7 +74,7 @@ def main():
 
         points = split(secret_int, 3, 2, PRIME)
         
-        print("\n--- SHARDIUM SSS SPLIT (2-of-3) ---")
+        print("\n--- deadhand SSS SPLIT (2-of-3) ---")
         print("Keep these shards in separate physical locations.")
         print("Any TWO are required to recover your original seed.\n")
         for i, (x, y) in enumerate(points):

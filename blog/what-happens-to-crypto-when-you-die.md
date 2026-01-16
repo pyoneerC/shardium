@@ -60,17 +60,17 @@ This is what 90% of crypto holders do. It is the worst option. When you die, you
 
 ## The Solution: Shamir's Secret Sharing
 
-This is why Shardium exists. Instead of having one seed phrase that acts as a single point of failure, you split it into 3 shards:
+This is why deadhand exists. Instead of having one seed phrase that acts as a single point of failure, you split it into 3 shards:
 
 - **Shard A**: You keep (e.g., in a password manager).
 - **Shard B**: Your heir keeps (e.g., on a USB drive).
-- **Shard C**: Stored encrypted on Shardium's servers.
+- **Shard C**: Stored encrypted on deadhand's servers.
 
 **Any two shards can recover your seed phrase. One shard alone is useless.**
 
 ### What Happens When You Die?
 
-1. You stop responding to Shardium's check-in emails.
+1. You stop responding to deadhand's check-in emails.
 2. After 90 days of silence, Shard C is automatically emailed to your beneficiary.
 3. They combine Shard C with Shard B (which you already gave them earlier).
 4. They recover your seed phrase and access your crypto.
@@ -79,7 +79,7 @@ Your family inherits your assets automatically, without lawyers or courts.
 
 ## How to Set This Up
 
-1. Visit [shardium.xyz](https://shardium.xyz).
+1. Visit [deadhand.xyz](https://deadhand.xyz).
 2. Enter your seed phrase (encrypted client-side).
 3. The tool splits it into 3 shards.
 4. Save Shard A in your password manager and give Shard B to your heir.
@@ -95,8 +95,8 @@ Your crypto does not have to die with you. You have three choices:
 2. Trust one person with your entire seed phrase.
 3. Use Shamir's Secret Sharing and sleep soundly.
 
-**[Secure your crypto inheritance now](https://shardium.xyz)**
+**[Secure your crypto inheritance now](https://deadhand.xyz)**
 
 ---
 
-*Max Comperatore is the founder of Shardium. He has been in crypto since 2017 and has seen too many people lose fortunes because they did not have a plan.*
+*Max Comperatore is the founder of deadhand. He has been in crypto since 2017 and has seen too many people lose fortunes because they did not have a plan.*

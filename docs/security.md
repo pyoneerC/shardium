@@ -2,7 +2,7 @@
 
 ## Overview
 
-Shardium is designed with a **zero-trust architecture**. This document explains our security model and threat analysis.
+deadhand is designed with a **zero-trust architecture**. This document explains our security model and threat analysis.
 
 ## Core Security Principles
 
@@ -36,7 +36,7 @@ Shamir's Secret Sharing provides **perfect secrecy**:
 
 ### Threat: Server Compromise
 
-**Scenario**: Attacker gains full access to Shardium database.
+**Scenario**: Attacker gains full access to deadhand database.
 
 **Impact**: They obtain all Shard C values.
 
@@ -58,7 +58,7 @@ Shamir's Secret Sharing provides **perfect secrecy**:
 
 ---
 
-### Threat: Malicious Shardium Employee
+### Threat: Malicious deadhand Employee
 
 **Scenario**: Insider tries to steal user funds.
 
@@ -101,14 +101,14 @@ Shamir's Secret Sharing provides **perfect secrecy**:
 
 ### Threat: Beneficiary + Server Collusion
 
-**Scenario**: Beneficiary and Shardium employee work together.
+**Scenario**: Beneficiary and deadhand employee work together.
 
 **Impact**: They could combine Shard B + Shard C.
 
 **Mitigation**: 
 1. Users should trust their beneficiary (they're inheriting anyway)
-2. Shardium has no way to identify which Shard C belongs to which beneficiary
-3. Legal consequences for Shardium
+2. deadhand has no way to identify which Shard C belongs to which beneficiary
+3. Legal consequences for deadhand
 
 **Risk Level**: ⚠️ Medium (requires careful beneficiary selection)
 
@@ -117,7 +117,7 @@ Shamir's Secret Sharing provides **perfect secrecy**:
 ### For Users
 
 1. **Split offline**: Disconnect internet before entering seed phrase
-2. **Verify the code**: Check that you're running official Shardium
+2. **Verify the code**: Check that you're running official deadhand
 3. **Multiple backups**: Store Shard A in multiple secure locations
 4. **Physical Shard B**: Print Shard B, don't send digitally
 5. **Dedicated email**: Use a separate email for heartbeat notifications
@@ -142,7 +142,7 @@ Before using in production:
 
 ## Responsible Disclosure
 
-Found a vulnerability? Please email security@shardium.io (or open a private GitHub issue).
+Found a vulnerability? Please email security@deadhand.io (or open a private GitHub issue).
 
 We commit to:
 - Acknowledging reports within 48 hours

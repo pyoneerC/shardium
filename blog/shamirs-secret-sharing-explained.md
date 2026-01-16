@@ -225,13 +225,13 @@ Last 6 words: absorb abstract absurd abuse access accident
 
 The math is complex. One mistake = permanent loss.
 
-**Use software**: Shardium, Ian Coleman's tool, or other audited implementations.
+**Use software**: deadhand, Ian Coleman's tool, or other audited implementations.
 
 ## How to Use Shamir's Secret Sharing
 
-### Option 1: Shardium (Easiest)
+### Option 1: deadhand (Easiest)
 
-1. Go to [shardium.xyz](https://shardium.xyz)
+1. Go to [deadhand.xyz](https://deadhand.xyz)
 2. Enter your seed phrase
 3. It splits into 3 shards automatically (2-of-3)
 4. Save Shard A, give Shard B to your heir, Shard C stays encrypted
@@ -249,9 +249,9 @@ The math is complex. One mistake = permanent loss.
 
 **Cost**: Free, but no dead man's switch
 
-### Option 3: Self-Host Shardium (Free, Technical)
+### Option 3: Self-Host deadhand (Free, Technical)
 
-1. Clone: `github.com/pyoneerc/shardium`
+1. Clone: `github.com/pyoneerc/deadhand`
 2. Run on your own server
 3. Full control, open source
 
@@ -263,14 +263,14 @@ The math is complex. One mistake = permanent loss.
 - No single point of failure
 - One shard reveals nothing
 - Lose one shard? No problem
-- Die? Your family inherits automatically (with Shardium)
+- Die? Your family inherits automatically (with deadhand)
 
 **How?**
 - Splits your seed into multiple shards
 - Any threshold number of shards can recover
 - Mathematically secure (polynomial interpolation)
 
-**[Try it now →](https://shardium.xyz)**
+**[Try it now →](https://deadhand.xyz)**
 
 ---
 
@@ -278,8 +278,8 @@ The math is complex. One mistake = permanent loss.
 
 - [Original Shamir paper (1979)](https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing)
 - [BIP39 (Seed phrase standard)](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
-- [Shardium source code](https://github.com/pyoneerc/shardium)
+- [deadhand source code](https://github.com/pyoneerc/deadhand)
 
 ---
 
-*Max Comperatore is the founder of Shardium. He's been obsessed with cryptographic security since 2017.*
+*Max Comperatore is the founder of deadhand. He's been obsessed with cryptographic security since 2017.*

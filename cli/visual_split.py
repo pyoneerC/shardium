@@ -65,7 +65,7 @@ def combine_shares(share1_path, share2_path, output_path):
     print(f"Combined image saved as {output_path}")
 
 def main():
-    parser = argparse.ArgumentParser(description="Shardium Visual Cryptography CLI")
+    parser = argparse.ArgumentParser(description="deadhand Visual Cryptography CLI")
     subparsers = parser.add_subparsers(dest="command")
 
     # Split

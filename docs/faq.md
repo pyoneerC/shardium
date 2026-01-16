@@ -76,11 +76,18 @@ This is critical. Without Shard B, they cannot recover even with Shard C. Recomm
 
 ### Can I recover my own funds?
 
-Yes! You have Shard A. Combine with either:
-- Shard B (ask your beneficiary)
-- Shard C (contact Shardium support)
+Yes! You have Shard A. Combine with:
+- Shard B (get it from your beneficiary)
+
+**Note**: Shard C is never released manually. If you lose Shard B while you are alive, we recommend you immediately create a new vault and move your funds to a new seed phrase. If you have lost your seed phrase and Shard B, you must wait for the 90-day switch to trigger.
 
 ---
+
+## Security Policy
+
+### Can the team "break" my switch if I lose a shard?
+
+**Never.** The protocol is autonomous. There are zero manual overrides. If you lose a shard, you must wait for the 90-day inactivity trigger. No exceptions. This prevents social engineering and ensures that not even a compromised admin can release your data prematurely.
 
 ## Technical
 

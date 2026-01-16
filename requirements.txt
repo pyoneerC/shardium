@@ -10,3 +10,4 @@ markdown
 psycopg2-binary
 cryptography
 stripe
+resend

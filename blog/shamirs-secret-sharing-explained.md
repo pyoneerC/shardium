@@ -231,7 +231,7 @@ The math is complex. One mistake = permanent loss.
 
 ### Option 1: deadhand (Easiest)
 
-1. Go to [deadhand.xyz](https://deadhand.xyz)
+1. Go to [deadhandprotocol.com](https://deadhandprotocol.com)
 2. Enter your seed phrase
 3. It splits into 3 shards automatically (2-of-3)
 4. Save Shard A, give Shard B to your heir, Shard C stays encrypted
@@ -270,7 +270,7 @@ The math is complex. One mistake = permanent loss.
 - Any threshold number of shards can recover
 - Mathematically secure (polynomial interpolation)
 
-**[Try it now →](https://deadhand.xyz)**
+**[Try it now →](https://deadhandprotocol.com)**
 
 ---
 

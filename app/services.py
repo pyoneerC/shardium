@@ -9,40 +9,52 @@ load_dotenv()
 
 logger = logging.getLogger("legacy_vault")
 
-# Email configuration - supports Gmail SMTP (free) or SendGrid
+# Resend API
+RESEND_API_KEY = os.getenv("RESEND_API_KEY")
+FROM_EMAIL = os.getenv("FROM_EMAIL", "Deadhand <noreply@deadhandprotocol.com>")
+
+# Email configuration - supports Gmail SMTP (free) as fallback
 SMTP_HOST = os.getenv("SMTP_HOST", "smtp.gmail.com")
 SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
-SMTP_USER = os.getenv("SMTP_USER")  # Your Gmail address
-SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")  # Gmail App Password (NOT your regular password)
-FROM_EMAIL = os.getenv("FROM_EMAIL")
-
-# Optional SendGrid (if you prefer it later)
-SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
-
+SMTP_USER = os.getenv("SMTP_USER")
+SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
 
 def send_email(to_email: str, subject: str, content: str):
     """
     Sends an email using:
-    1. Gmail SMTP (if SMTP_USER/SMTP_PASSWORD configured) - FREE!
-    2. SendGrid (if API key configured)
-    3. Mock logger (fallback for development)
-    
-    Gmail Setup:
-    1. Enable 2FA on your Google account
-    2. Go to: https://myaccount.google.com/apppasswords
-    3. Create an "App Password" for "Mail"
-    4. Use that 16-char password as SMTP_PASSWORD
+    1. Resend API (Preferred)
+    2. Gmail SMTP (Fallback)
+    3. Mock logger (Fallback for development)
     """
     
-    # Try Gmail SMTP first (FREE!)
+    # 1. Try Resend (Fast & Reliable)
+    if RESEND_API_KEY and "your_" not in RESEND_API_KEY:
+        try:
+            import resend
+            resend.api_key = RESEND_API_KEY
+            
+            params = {
+                "from": FROM_EMAIL,
+                "to": [to_email],
+                "subject": subject,
+                "html": content,
+            }
+            
+            resend.Emails.send(params)
+            logger.info(f"Email sent via Resend to {to_email}")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to send email via Resend: {str(e)}")
+            # Fall through
+            
+    # 2. Try Gmail SMTP Fallback
     if SMTP_USER and SMTP_PASSWORD and "your_" not in SMTP_PASSWORD:
         try:
             msg = MIMEMultipart('alternative')
             msg['Subject'] = subject
-            msg['From'] = FROM_EMAIL or SMTP_USER
+            msg['From'] = FROM_EMAIL
             msg['To'] = to_email
             
-            # Attach HTML content
             html_part = MIMEText(content, 'html')
             msg.attach(html_part)
             
@@ -55,33 +67,12 @@ def send_email(to_email: str, subject: str, content: str):
             return True
         except Exception as e:
             logger.error(f"Failed to send email via SMTP: {str(e)}")
-            # Fall through to next method
     
-    # Try SendGrid if configured
-    if SENDGRID_API_KEY and "your_sendgrid" not in SENDGRID_API_KEY:
-        try:
-            from sendgrid import SendGridAPIClient
-            from sendgrid.helpers.mail import Mail
-            
-            message = Mail(
-                from_email=FROM_EMAIL,
-                to_emails=to_email,
-                subject=subject,
-                html_content=content
-            )
-            sg = SendGridAPIClient(SENDGRID_API_KEY)
-            response = sg.send(message)
-            logger.info(f"Email sent via SendGrid to {to_email} | Status: {response.status_code}")
-            return True
-        except Exception as e:
-            logger.error(f"Failed to send email via SendGrid: {str(e)}")
-    
-    # Mock / Fallback for development
-    logger.info(f"--- MOCK EMAIL (No SMTP configured) ---")
+    # 3. Mock / Fallback for development
+    logger.info(f"--- MOCK EMAIL ---")
     logger.info(f"To: {to_email}")
     logger.info(f"Subject: {subject}")
-    logger.info(f"Content: {content[:200]}...")
-    logger.info(f"----------------------------------------")
+    logger.info(f"------------------")
     
     with open("email_log.txt", "a") as f:
         f.write(f"To: {to_email}\nSubject: {subject}\nContent: {content}\n---\n")

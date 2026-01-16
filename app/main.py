@@ -65,43 +65,43 @@ async def sitemap():
     if blog_dir.exists():
         for file in blog_dir.glob("*.md"):
             slug = file.stem
-            blog_posts.append(f"https://Deadhand.xyz/blog/{slug}")
+            blog_posts.append(f"https://deadhandprotocol.com/blog/{slug}")
     
     sitemap_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>https://Deadhand.xyz/</loc>
+        <loc>https://deadhandprotocol.com/</loc>
         <lastmod>{datetime.now().strftime('%Y-%m-%d')}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://Deadhand.xyz/app</loc>
+        <loc>https://deadhandprotocol.com/app</loc>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://Deadhand.xyz/docs</loc>
+        <loc>https://deadhandprotocol.com/docs</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://Deadhand.xyz/blog</loc>
+        <loc>https://deadhandprotocol.com/blog</loc>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://Deadhand.xyz/tools/death-calculator</loc>
+        <loc>https://deadhandprotocol.com/tools/death-calculator</loc>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://Deadhand.xyz/tools/crypto-loss-calculator</loc>
+        <loc>https://deadhandprotocol.com/tools/crypto-loss-calculator</loc>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://Deadhand.xyz/tools/shamir-playground</loc>
+        <loc>https://deadhandprotocol.com/tools/shamir-playground</loc>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
@@ -458,7 +458,7 @@ async def lead_magnet_signup(request: Request, email: str = Form(...)):
         <p>i put this together because most "crypto security" guides are written by people who want to sell you a titanium plate you'll probably lose anyway. this is about the human side—how to make sure your family actually gets the keys without needing a computer science degree.</p>
         
         <p>you can download the playbook here:</p>
-        <a href="https://deadhand.xyz/static/crypto-inheritance-guide.pdf" class="cta-link">download the crypto inheritance playbook (pdf)</a>
+        <a href="https://deadhandprotocol.com/static/crypto-inheritance-guide.pdf" class="cta-link">download the crypto inheritance playbook (pdf)</a>
 
         <p>here is what i cover in there:</p>
         <ul>
@@ -538,7 +538,7 @@ async def api_roast(request: Request):
                 headers={
                     "Authorization": f"Bearer {api_key.strip()}",
                     "Content-Type": "application/json",
-                    "HTTP-Referer": "https://deadhand.xyz", # Required by some models on OpenRouter
+                    "HTTP-Referer": "https://deadhandprotocol.com", # Required by some models on OpenRouter
                     "X-Title": "Deadhand Crypto Inheritance"
                 },
                 json={
@@ -816,7 +816,7 @@ async def create_vault(
             <p>in a digital world that's getting colder by the second, i wanted to give you something "handmade." since my actual drawing skills stopped improving in kindergarten, i used a specialized ai to help me create a "photo" of a crayon drawing i made while thinking about this project. it’s imperfect, it's a bit silly, but it’s real to me.</p>
 
             <div class="image-container">
-                <img src="https://deadhand.xyz/static/Deadhand_welcome_crayon_polaroid_en.png" alt="a drawing of a family for you">
+                <img src="https://deadhandprotocol.com/static/Deadhand_welcome_crayon_polaroid_en.png" alt="a drawing of a family for you">
             </div>
 
             <p>i want you to know that on the other side of this complex math is a real person who understands the weight of what you're setting up. i don't take that trust lightly.</p>
@@ -832,10 +832,10 @@ async def create_vault(
 
             <p><strong>one critical thing:</strong> to make sure you're still with us, we need a "heartbeat." click the link below once just to verify you can access it. it resets your 90-day timer.</p>
 
-            <a href="https://deadhand.xyz/heartbeat/{new_user.id}/{heartbeat_token}" class="heartbeat-link">verify my heartbeat & reset timer</a>
+            <a href="https://deadhandprotocol.com/heartbeat/{new_user.id}/{heartbeat_token}" class="heartbeat-link">verify my heartbeat & reset timer</a>
 
             <div class="image-container">
-                <img src="https://deadhand.xyz/static/Deadhand_napkin_note.png" alt="handwritten note on a napkin: your family is safe now">
+                <img src="https://deadhandprotocol.com/static/Deadhand_napkin_note.png" alt="handwritten note on a napkin: your family is safe now">
             </div>
 
             <p><strong>this is my personal email.</strong> if you have a question, a fear, or just want to tell me how your setup went, just reply. i read them. i answer them.</p>
@@ -926,7 +926,7 @@ async def check_heartbeats(db: Session = Depends(get_db)):
                         <p>it's been 30 days since we last heard from you. i'm just checking in to make sure everything is okay.</p>
                         <p>could you click the link below? it just tells our system you're still with us and resets your timer. it takes two seconds.</p>
                         
-                        <a href="https://Deadhand.xyz/heartbeat/{user.id}/{user.heartbeat_token}" class="heartbeat-link">i'm still here</a>
+                        <a href="https://deadhandprotocol.com/heartbeat/{user.id}/{user.heartbeat_token}" class="heartbeat-link">i'm still here</a>
 
                         <p>if you don't click it, no big deal for now. i'll check in again in another 30 days. but after 90 days of silence, we'll have to send shard c to your beneficiary.</p>
                         
@@ -966,7 +966,7 @@ async def check_heartbeats(db: Session = Depends(get_db)):
 
                         <p>if you're just busy, i totally get it. but please, click this now so we don't worry your family unnecessarily:</p>
                         
-                        <a href="https://Deadhand.xyz/heartbeat/{user.id}/{user.heartbeat_token}" class="heartbeat-link">i'm here, reset the timer</a>
+                        <a href="https://deadhandprotocol.com/heartbeat/{user.id}/{user.heartbeat_token}" class="heartbeat-link">i'm here, reset the timer</a>
 
                         <p>talk soon,</p>
                         <p><strong>max</strong></p>
@@ -1028,7 +1028,7 @@ async def check_heartbeats(db: Session = Depends(get_db)):
                             <p><strong>how to use this:</strong></p>
                             <ol>
                                 <li>locate <strong>shard b</strong> (the one they gave you).</li>
-                                <li>go to <a href="https://Deadhand.xyz/recover">Deadhand.xyz/recover</a>.</li>
+                                <li>go to <a href="https://deadhandprotocol.com/recover">deadhandprotocol.com/recover</a>.</li>
                                 <li>enter both shard b and shard c into the tool.</li>
                                 <li>the tool will reconstruct their original seed phrase for you.</li>
                             </ol>
@@ -1044,7 +1044,7 @@ async def check_heartbeats(db: Session = Depends(get_db)):
                         <div class="cta-box">
                             <p style="font-size: 14px;"><strong>protect your own legacy</strong></p>
                             <p style="font-size: 13px; color: #666;">you've just seen how Deadhand works. if you have crypto, don't leave your family in the dark. set up your own trustless switch in 5 minutes.</p>
-                            <a href="https://Deadhand.xyz/app?ref=beneficiary" class="cta-link">create your vault</a>
+                            <a href="https://deadhandprotocol.com/app?ref=beneficiary" class="cta-link">create your vault</a>
                         </div>
 
                         <div class="footer">

@@ -125,7 +125,7 @@ We combine the best parts of these approaches:
 
 Setting up your dead man's switch takes 5 minutes:
 
-1. Go to [deadhand.xyz](https://deadhand.xyz)
+1. Go to [deadhandprotocol.com](https://deadhandprotocol.com)
 2. Enter your seed phrase (client-side only).
 3. Download or print Shard A and B.
 4. Enter your email and beneficiary's email.

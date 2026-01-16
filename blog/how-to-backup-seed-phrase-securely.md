@@ -81,7 +81,7 @@ If a hacker gains access to Shard A, it is useless to them. They need the thresh
 ## How to Set This Up
 
 ### Option 1: Use deadhand (Easiest)
-1. Visit [deadhand.xyz](https://deadhand.xyz).
+1. Visit [deadhandprotocol.com](https://deadhandprotocol.com).
 2. Enter your seed phrase (encrypted client-side).
 3. The tool splits it into 3 shards automatically.
 4. Save Shard A in your password manager and give Shard B to your heir.
@@ -107,7 +107,7 @@ Paper backups are risky and single points of failure are dangerous. Shamir's Sec
 - Pass away? Your family inherits automatically.
 - Get hacked? One shard is useless to an attacker.
 
-**[Secure your seed phrase backup now](https://deadhand.xyz)**
+**[Secure your seed phrase backup now](https://deadhandprotocol.com)**
 
 ---
 

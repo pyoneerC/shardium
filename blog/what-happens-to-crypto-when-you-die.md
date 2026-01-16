@@ -79,7 +79,7 @@ Your family inherits your assets automatically, without lawyers or courts.
 
 ## How to Set This Up
 
-1. Visit [deadhand.xyz](https://deadhand.xyz).
+1. Visit [deadhandprotocol.com](https://deadhandprotocol.com).
 2. Enter your seed phrase (encrypted client-side).
 3. The tool splits it into 3 shards.
 4. Save Shard A in your password manager and give Shard B to your heir.
@@ -95,7 +95,7 @@ Your crypto does not have to die with you. You have three choices:
 2. Trust one person with your entire seed phrase.
 3. Use Shamir's Secret Sharing and sleep soundly.
 
-**[Secure your crypto inheritance now](https://deadhand.xyz)**
+**[Secure your crypto inheritance now](https://deadhandprotocol.com)**
 
 ---
 

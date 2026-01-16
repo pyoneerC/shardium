@@ -38,7 +38,7 @@ Would love to hear your thoughts.
 
 Max
 Founder, Deadhand
-Deadhand.xyz | github.com/pyoneerC/Deadhand
+deadhandprotocol.com | github.com/pyoneerC/Deadhand
 
 ---
 
@@ -116,7 +116,7 @@ First 100 users get Lifetime for $49 (normally $129).
 10X Refund Guarantee:
 If you can't recover your seed, I'll personally refund 10x your purchase.
 
-→ Deadhand.xyz
+→ deadhandprotocol.com
 
 Questions? Reply below. I built this, I'll answer everything.
 ```

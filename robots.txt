@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 
 # Sitemaps
-Sitemap: https://Deadhand.xyz/sitemap.xml
+Sitemap: https://deadhandprotocol.com/sitemap.xml

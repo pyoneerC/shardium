@@ -1,4 +1,4 @@
-# 🚀 Marketing Templates for Shardium
+# 🚀 Marketing Templates for Deadhand
 
 ## 1. Email Template for Micro-Influencers
 
@@ -10,7 +10,7 @@ Hey [NAME],
 
 I'm Max, a developer who's been in crypto since 2017.
 
-I built **Shardium** - an open-source tool that splits your seed phrase into 3 shards using Shamir's Secret Sharing. Lose one shard? Recover with the other two. Die? Your family inherits automatically.
+I built **Deadhand** - an open-source tool that splits your seed phrase into 3 shards using Shamir's Secret Sharing. Lose one shard? Recover with the other two. Die? Your family inherits automatically.
 
 **Why I'm reaching out:**
 
@@ -19,7 +19,7 @@ I've seen your content on [YouTube/Twitter] about hardware wallets and seed phra
 **The offer:**
 
 - Free Lifetime license ($129 value)
-- Full access to source code (MIT license): github.com/pyoneerC/shardium
+- Full access to source code (MIT license): github.com/pyoneerC/Deadhand
 - No strings attached
 
 **All I ask:**
@@ -37,8 +37,8 @@ Here's a 20-second demo: [LINK TO DEMO VIDEO]
 Would love to hear your thoughts.
 
 Max
-Founder, Shardium
-shardium.xyz | github.com/pyoneerC/shardium
+Founder, Deadhand
+Deadhand.xyz | github.com/pyoneerC/Deadhand
 
 ---
 
@@ -46,7 +46,7 @@ shardium.xyz | github.com/pyoneerC/shardium
 
 **Tweet 1:**
 ```
-I built Shardium because I was terrified of losing my seed phrase.
+I built Deadhand because I was terrified of losing my seed phrase.
 
 The problem:
 • Lose your seed = lose everything
@@ -60,7 +60,7 @@ Here's how it works 🧵
 
 **Tweet 2:**
 ```
-Shardium splits your seed into 3 shards:
+Deadhand splits your seed into 3 shards:
 
 • Shard A → You keep (password manager)
 • Shard B → Your heir keeps (USB drive)
@@ -91,7 +91,7 @@ It doesn't protect you from:
 • House fires
 • Dying without telling anyone
 
-Shardium eliminates single points of failure.
+Deadhand eliminates single points of failure.
 ```
 
 **Tweet 5:**
@@ -100,7 +100,7 @@ The code is 100% open source (MIT license).
 
 Client-side encryption only.
 Your seed phrase never touches our servers.
-Audit it yourself: github.com/pyoneerC/shardium
+Audit it yourself: github.com/pyoneerC/Deadhand
 
 20-second demo 👇
 
@@ -116,7 +116,7 @@ First 100 users get Lifetime for $49 (normally $129).
 10X Refund Guarantee:
 If you can't recover your seed, I'll personally refund 10x your purchase.
 
-→ shardium.xyz
+→ Deadhand.xyz
 
 Questions? Reply below. I built this, I'll answer everything.
 ```
@@ -133,7 +133,7 @@ Hey r/CryptoCurrency,
 
 Last year I almost lost access to ~$50k in crypto because I couldn't find my seed phrase backup. That scared the shit out of me.
 
-So I built **Shardium**.
+So I built **Deadhand**.
 
 **What it does:**
 - Splits your seed phrase into 3 "shards" using Shamir's Secret Sharing
@@ -158,18 +158,18 @@ Happy to answer any technical questions. I'm the solo dev.
 
 ---
 
-## 4. Comparison Tweet (Shardium vs Ledger Recover)
+## 4. Comparison Tweet (Deadhand vs Ledger Recover)
 
 ```
 Ledger Recover: Send your encrypted seed to 3 third parties. Trust them.
 
-Shardium: Split your seed locally. You control all shards. Open source.
+Deadhand: Split your seed locally. You control all shards. Open source.
 
 Ledger: $10/month forever
-Shardium: $49 once (or free self-hosted)
+Deadhand: $49 once (or free self-hosted)
 
 Ledger: Closed source
-Shardium: MIT license, audit it yourself
+Deadhand: MIT license, audit it yourself
 
 Choose wisely.
 ```
@@ -181,7 +181,7 @@ Choose wisely.
 When you see someone tweet about losing their seed phrase or worrying about security:
 
 ```
-This is why I built Shardium.
+This is why I built Deadhand.
 
 Splits your seed into 3 shards using Shamir's Secret Sharing. Lose one? Recover with the other two.
 
@@ -230,7 +230,7 @@ Your seed never leaves your browser.
 
 ### Day 5-7:
 - [ ] Post Reddit thread in r/CryptoCurrency
-- [ ] Create "Shardium vs Ledger Recover" comparison page
+- [ ] Create "Deadhand vs Ledger Recover" comparison page
 - [ ] Reply to 5 "lost seed" tweets per day
 
 ---

@@ -4,18 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>shardium - what happens to your crypto when you die?</title>
+    <title>deadhand - what happens to your crypto when you die?</title>
     <meta name="description" content="split your seed phrase into 3 shards. lose one? recover with the other two.">
-    <link rel="canonical" href="https://shardium.xyz/">
+    <link rel="canonical" href="https://deadhand.xyz/">
     <link rel="icon" type="image/png" href="/static/favicon.png">
-    <meta property="og:title" content="shardium">
+    <meta property="og:title" content="deadhand">
     <meta property="og:description" content="what happens to your crypto when you die? the humanDead Man's Switch.">
-    <meta property="og:image" content="https://shardium.xyz/static/og_card.png">
+    <meta property="og:image" content="https://deadhand.xyz/static/og_card.png">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="shardium">
+    <meta name="twitter:title" content="deadhand">
     <meta name="twitter:description" content="trustless crypto inheritance. split your seed. protect your loved ones.">
-    <meta name="twitter:image" content="https://shardium.xyz/static/og_card.png">
+    <meta name="twitter:image" content="https://deadhand.xyz/static/og_card.png">
     <style>
         * {
             box-sizing: border-box;
@@ -381,7 +381,7 @@
                 <a href="/tools/audio-steg">audio steg</a>
                 <a href="#cli">cli tools</a>
                 <a href="/blog">blog</a>
-                <a href="https://github.com/pyoneerC/shardium">github</a>
+                <a href="https://github.com/pyoneerC/deadhand">github</a>
             </nav>
         </div>
     </div>
@@ -389,13 +389,13 @@
     <div class="container">
 
         <pre class="ascii">
-   _____ __  ______    ____  ____  ________  __  ___
-  / ___// / / /   |  / __ \/ __ \/  _/ / / /  |/  / 
-  \__ \/ /_/ / /| | / /_/ / / / // // / / / /|_/ /  
- ___/ / __  / ___ |/ _, _/ /_/ // // /_/ / /  / /   
-/____/_/ /_/_/  |_/_/ |_/_____/___/\____/_/  /_/    
+    ____  _________    ____  __  ______    _   ______ 
+   / __ \/ ____/   |  / __ \/ / / /   |  / | / / __ \
+  / / / / __/ / /| | / / / / /_/ / /| | /  |/ / / / /
+ / /_/ / /___/ ___ |/ /_/ / __  / ___ |/ /|  / /_/ / 
+/_____/_____/_/  |_/_____/_/ /_/_/  |_/_/ |_/_____/  
 
-     your crypto shouldnt die with you
+      your crypto shouldnt die with you
 </pre>
 
         <p><b>what happens to your crypto when you die?</b></p>
@@ -463,7 +463,7 @@
 
         <h2>the idea</h2>
 
-        <p>shardium splits your seed into 3 pieces using <a
+        <p>deadhand splits your seed into 3 pieces using <a
                 href="https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing">shamirs secret sharing</a>.</p>
 
         <p>any 2 shards = full recovery. 1 shard alone = nothing. mathematicaly proven.</p>
@@ -495,7 +495,7 @@
             <li><b>chain-specific</b> - only work for one chain. you probably have btc AND eth</li>
         </ul>
 
-        <p>nothing does what shardium does. simple, trustless, any bip-39 seed, fully open source.</p>
+        <p>nothing does what deadhand does. simple, trustless, any bip-39 seed, fully open source.</p>
 
         <hr>
 
@@ -504,14 +504,14 @@
         <ul>
             <li><b>we get hacked:</b> we only have shard c. useless alone</li>
             <li><b>we go rogue:</b> same. need 2 of 3</li>
-            <li><b>shardium shuts down:</b> you have a + b. always recover</li>
+            <li><b>deadhand shuts down:</b> you have a + b. always recover</li>
             <li><b>man in middle:</b> splitting happens in your browser. seed never hits network</li>
         </ul>
 
-        <p>code is open source. <a href="https://deepwiki.com/pyoneerC/shardium" target="_blank">go read it and ask
+        <p>code is open source. <a href="https://deepwiki.com/pyoneerC/deadhand" target="_blank">go read it and ask
                 ai</a></p>
 
-        <p><b>no lock-in:</b> we use standard BIP-39 and Shamir Secret Sharing. if shardium disappears tomorrow, you can
+        <p><b>no lock-in:</b> we use standard BIP-39 and Shamir Secret Sharing. if deadhand disappears tomorrow, you can
             recover your keys using <code>ssss-split</code> on linux or any other standard offline tool. the emergency
             exit is always open.</p>
 
@@ -533,17 +533,17 @@
         <h2 id="cli">cli utilities (raw python)</h2>
         <p>for the "trust nobody" crowd. zero dependencies. runs offline. single files.</p>
         <div class="tools-grid">
-            <a href="https://github.com/pyoneerC/shardium/blob/main/cli/seed_split.py" class="tool-card"
+            <a href="https://github.com/pyoneerC/deadhand/blob/main/cli/seed_split.py" class="tool-card"
                 target="_blank">
                 <strong>seed_split.py</strong>
                 <span>2-of-3 SSS for seed phrases. console-only.</span>
             </a>
-            <a href="https://github.com/pyoneerC/shardium/blob/main/cli/audio_steg.py" class="tool-card"
+            <a href="https://github.com/pyoneerC/deadhand/blob/main/cli/audio_steg.py" class="tool-card"
                 target="_blank">
                 <strong>audio_steg.py</strong>
                 <span>hide seeds in wavs. no internet needed.</span>
             </a>
-            <a href="https://github.com/pyoneerC/shardium/blob/main/cli/visual_split.py" class="tool-card"
+            <a href="https://github.com/pyoneerC/deadhand/blob/main/cli/visual_split.py" class="tool-card"
                 target="_blank">
                 <strong>visual_split.py</strong>
                 <span>2-of-2 visual crypto. needs pillow.</span>
@@ -590,7 +590,7 @@
                     forever.</strong></p>
         </div>
 
-        <p><b>self-host:</b> always free. clone the <a href="https://github.com/pyoneerC/shardium">repo</a> and run your
+        <p><b>self-host:</b> always free. clone the <a href="https://github.com/pyoneerC/deadhand">repo</a> and run your
             own instance.</p>
 
         <a href="/tools/dead-switch" class="cta">claim your free vault</a>
@@ -653,7 +653,7 @@
 
         <div class="footer">
             <p><a href="/terms">terms</a> / <a href="/blog">blog</a> / <a
-                    href="https://github.com/pyoneerC/shardium">github</a></p>
+                    href="https://github.com/pyoneerC/deadhand">github</a></p>
             <p>status: feature complete</p>
             <p>open source. mit license. built in argentina.</p>
         </div>

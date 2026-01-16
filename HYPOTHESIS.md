@@ -1,4 +1,4 @@
-# Shardium Launch Hypothesis: Experiment 01
+# Deadhand Launch Hypothesis: Experiment 01
 
 **Date:** 2026-01-14
 **Founder:** Max

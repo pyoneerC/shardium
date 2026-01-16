@@ -22,7 +22,7 @@ elif DATABASE_URL and DATABASE_URL.startswith("postgres://"):
     print("🐘 Connected to Postgres (Production)")
 else:
     # Local development: SQLite
-    DB_PATH = "sqlite:///./shardium.db"
+    DB_PATH = "sqlite:///./Deadhand.db"
     engine = create_engine(DB_PATH, connect_args={"check_same_thread": False})
     print("💾 Using local SQLite database")
 

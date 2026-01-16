@@ -28,7 +28,7 @@ Base.metadata.create_all(bind=engine)
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
-BASE_URL = os.getenv("BASE_URL", "https://shardium.maxcomperatore.com")
+BASE_URL = os.getenv("BASE_URL", "https://deadhand.maxcomperatore.com")
 DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL")  # For purchase notifications
 
 # Stripe Price IDs - Create these in Stripe Dashboard
@@ -38,7 +38,7 @@ STRIPE_PRICES = {
 }
 
 # Move OpenAPI docs to /api-docs so we can use /docs for our documentation
-app = FastAPI(title="Shardium", docs_url="/api-docs", redoc_url="/api-redoc")
+app = FastAPI(title="Deadhand", docs_url="/api-docs", redoc_url="/api-redoc")
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
@@ -65,43 +65,43 @@ async def sitemap():
     if blog_dir.exists():
         for file in blog_dir.glob("*.md"):
             slug = file.stem
-            blog_posts.append(f"https://shardium.xyz/blog/{slug}")
+            blog_posts.append(f"https://Deadhand.xyz/blog/{slug}")
     
     sitemap_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>https://shardium.xyz/</loc>
+        <loc>https://Deadhand.xyz/</loc>
         <lastmod>{datetime.now().strftime('%Y-%m-%d')}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://shardium.xyz/app</loc>
+        <loc>https://Deadhand.xyz/app</loc>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://shardium.xyz/docs</loc>
+        <loc>https://Deadhand.xyz/docs</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://shardium.xyz/blog</loc>
+        <loc>https://Deadhand.xyz/blog</loc>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://shardium.xyz/tools/death-calculator</loc>
+        <loc>https://Deadhand.xyz/tools/death-calculator</loc>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://shardium.xyz/tools/crypto-loss-calculator</loc>
+        <loc>https://Deadhand.xyz/tools/crypto-loss-calculator</loc>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://shardium.xyz/tools/shamir-playground</loc>
+        <loc>https://Deadhand.xyz/tools/shamir-playground</loc>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
@@ -149,7 +149,7 @@ async def send_discord_notification(plan: str, amount: float, customer_email: st
             {"name": "Plan", "value": plan_name, "inline": True},
             {"name": "Amount", "value": f"${amount:.2f}", "inline": True},
         ],
-        "footer": {"text": "Shardium"},
+        "footer": {"text": "Deadhand"},
         "timestamp": datetime.utcnow().isoformat()
     }
     
@@ -295,19 +295,19 @@ async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
             <body>
                 <p>hey,</p>
                 <p>i just got word that your subscription was cancelled. your vault is now deactivated.</p>
-                <p>i'm not going to send you a "please come back" survey or a discount code to win you over. i just want to say thanks for trusting shardium for a while.</p>
+                <p>i'm not going to send you a "please come back" survey or a discount code to win you over. i just want to say thanks for trusting deadhand for a while.</p>
                 <p>if you ever want to protect your family again, you know where to find me.</p>
                 
                 <p>take care,</p>
                 <p><strong>max</strong></p>
 
                 <div class="footer">
-                    <p>sent by shardium - built with care in argentina.</p>
+                    <p>sent by deadhand - built with care in argentina.</p>
                 </div>
             </body>
             </html>
             """
-            send_email(user.email, "your shardium vault has been deactivated", cancellation_html)
+            send_email(user.email, "your deadhand vault has been deactivated", cancellation_html)
     
     return {"status": "success"}
 
@@ -458,7 +458,7 @@ async def lead_magnet_signup(request: Request, email: str = Form(...)):
         <p>i put this together because most "crypto security" guides are written by people who want to sell you a titanium plate you'll probably lose anyway. this is about the human side—how to make sure your family actually gets the keys without needing a computer science degree.</p>
         
         <p>you can download the playbook here:</p>
-        <a href="https://shardium.xyz/static/crypto-inheritance-guide.pdf" class="cta-link">download the crypto inheritance playbook (pdf)</a>
+        <a href="https://deadhand.xyz/static/crypto-inheritance-guide.pdf" class="cta-link">download the crypto inheritance playbook (pdf)</a>
 
         <p>here is what i cover in there:</p>
         <ul>
@@ -474,7 +474,7 @@ async def lead_magnet_signup(request: Request, email: str = Form(...)):
         <p><strong>max</strong></p>
 
         <div class="footer">
-            <p>sent by shardium - built with care in argentina.</p>
+            <p>sent by deadhand - built with care in argentina.</p>
         </div>
     </body>
     </html>
@@ -492,7 +492,7 @@ async def lead_magnet_signup(request: Request, email: str = Form(...)):
                         "description": f"Someone downloaded the guide",
                         "color": 3447003,
                         "fields": [{"name": "Email", "value": email, "inline": True}],
-                        "footer": {"text": "Shardium Lead Magnet"}
+                        "footer": {"text": "Deadhand Lead Magnet"}
                     }]
                 })
         except:
@@ -505,13 +505,8 @@ async def lead_magnet_signup(request: Request, email: str = Form(...)):
 @app.post("/api/track/{event}")
 async def track_event(event: str):
     """
-    Simple counter for experiment success/failure criteria.
-    Events: 'landing_hit', 'seed_split', 'vault_activated'
+    Tracking disabled.
     """
-    log_file = "experiment_logs.txt"
-    with open(log_file, "a") as f:
-        from datetime import datetime
-        f.write(f"{datetime.now().isoformat()} - {event}\n")
     return {"status": "ok"}
 
 # ========== BLOG ==========
@@ -560,7 +555,7 @@ def get_all_blog_posts() -> list:
                 'title': meta.get('title', ''),
                 'slug': meta.get('slug', file.stem),
                 'description': meta.get('description', ''),
-                'author': meta.get('author', 'Shardium Team'),
+                'author': meta.get('author', 'Deadhand Team'),
                 'date': date_str,
                 'date_formatted': date_formatted,
                 'tags': tags,
@@ -629,7 +624,7 @@ async def blog_post(request: Request, slug: str):
         "request": request,
         "title": meta.get('title', 'Blog Post'),
         "description": meta.get('description', ''),
-        "author": meta.get('author', 'Shardium Team'),
+        "author": meta.get('author', 'Deadhand Team'),
         "date": date_str,
         "date_formatted": date_formatted,
         "tags": tags,
@@ -753,16 +748,16 @@ async def create_vault(
             
             <p>hey there,</p>
             
-            <p>i'm max, the founder of shardium.</p>
+            <p>i'm max, the founder of deadhand.</p>
             
-            <p>i could have sent you a shiny, corporate html template with "action required" in the subject. but shardium isn't a typical app, and you aren't a typical user.</p>
+            <p>i could have sent you a shiny, corporate html template with "action required" in the subject. but deadhand isn't a typical app, and you aren't a typical user.</p>
             
             <p>you just made a hard choice. thinking about what happens "after" isn't exactly fun. but the fact that you're here means you deeply care about someone and you want to protect them no matter what. that’s a powerful thing, and it deserves more than a form letter.</p>
             
             <p>in a digital world that's getting colder by the second, i wanted to give you something "handmade." since my actual drawing skills stopped improving in kindergarten, i used a specialized ai to help me create a "photo" of a crayon drawing i made while thinking about this project. it’s imperfect, it's a bit silly, but it’s real to me.</p>
 
             <div class="image-container">
-                <img src="https://shardium.xyz/static/shardium_welcome_crayon_polaroid_en.png" alt="a drawing of a family for you">
+                <img src="https://deadhand.xyz/static/Deadhand_welcome_crayon_polaroid_en.png" alt="a drawing of a family for you">
             </div>
 
             <p>i want you to know that on the other side of this complex math is a real person who understands the weight of what you're setting up. i don't take that trust lightly.</p>
@@ -778,22 +773,22 @@ async def create_vault(
 
             <p><strong>one critical thing:</strong> to make sure you're still with us, we need a "heartbeat." click the link below once just to verify you can access it. it resets your 90-day timer.</p>
 
-            <a href="https://shardium.xyz/heartbeat/{new_user.id}/{heartbeat_token}" class="heartbeat-link">verify my heartbeat & reset timer</a>
+            <a href="https://deadhand.xyz/heartbeat/{new_user.id}/{heartbeat_token}" class="heartbeat-link">verify my heartbeat & reset timer</a>
 
             <div class="image-container">
-                <img src="https://shardium.xyz/static/shardium_napkin_note.png" alt="handwritten note on a napkin: your family is safe now">
+                <img src="https://deadhand.xyz/static/Deadhand_napkin_note.png" alt="handwritten note on a napkin: your family is safe now">
             </div>
 
             <p><strong>this is my personal email.</strong> if you have a question, a fear, or just want to tell me how your setup went, just reply. i read them. i answer them.</p>
-
+            
             <p>deeply grateful you're here,</p>
             
             <p><strong>max</strong><br>
-            founder of shardium<br>
+            founder of deadhand<br>
             <i>(the guy who sends you crayon drawings)</i></p>
 
             <div class="footer">
-                <p>shardium - protecting your crypto legacy.</p>
+                <p>deadhand - protecting your crypto legacy.</p>
                 <p>built with care in argentina. open source. trustless by design.</p>
             </div>
         </div>
@@ -872,7 +867,7 @@ async def check_heartbeats(db: Session = Depends(get_db)):
                         <p>it's been 30 days since we last heard from you. i'm just checking in to make sure everything is okay.</p>
                         <p>could you click the link below? it just tells our system you're still with us and resets your timer. it takes two seconds.</p>
                         
-                        <a href="https://shardium.xyz/heartbeat/{user.id}/{user.heartbeat_token}" class="heartbeat-link">i'm still here</a>
+                        <a href="https://Deadhand.xyz/heartbeat/{user.id}/{user.heartbeat_token}" class="heartbeat-link">i'm still here</a>
 
                         <p>if you don't click it, no big deal for now. i'll check in again in another 30 days. but after 90 days of silence, we'll have to send shard c to your beneficiary.</p>
                         
@@ -880,12 +875,12 @@ async def check_heartbeats(db: Session = Depends(get_db)):
                         <p><strong>max</strong></p>
 
                         <div class="footer">
-                            <p>sent by shardium - built with care in argentina.</p>
+                            <p>sent by Deadhand - built with care in argentina.</p>
                         </div>
                     </body>
                     </html>
                     """
-                    send_email(user.email, "quick check-in from shardium", reminder_html)
+                    send_email(user.email, "quick check-in from Deadhand", reminder_html)
                     results["reminders_30d"].append(user.email)
                 
                 # 60-day warning - urgent but human
@@ -912,13 +907,13 @@ async def check_heartbeats(db: Session = Depends(get_db)):
 
                         <p>if you're just busy, i totally get it. but please, click this now so we don't worry your family unnecessarily:</p>
                         
-                        <a href="https://shardium.xyz/heartbeat/{user.id}/{user.heartbeat_token}" class="heartbeat-link">i'm here, reset the timer</a>
+                        <a href="https://Deadhand.xyz/heartbeat/{user.id}/{user.heartbeat_token}" class="heartbeat-link">i'm here, reset the timer</a>
 
                         <p>talk soon,</p>
                         <p><strong>max</strong></p>
 
                         <div class="footer">
-                            <p>sent by shardium - protecting your crypto legacy.</p>
+                            <p>sent by Deadhand - protecting your crypto legacy.</p>
                         </div>
                     </body>
                     </html>
@@ -956,10 +951,10 @@ async def check_heartbeats(db: Session = Depends(get_db)):
                         </style>
                     </head>
                     <body>
-                        <h1>a message from shardium.</h1>
+                        <h1>a message from Deadhand.</h1>
                         
                         <p>hello,</p>
-                        <p>i'm max, the founder of shardium. i'm writing to you because 90 days ago, <strong>{user.email}</strong> entrusted our system to reach out to you if we stopped hearing from them.</p>
+                        <p>i'm max, the founder of Deadhand. i'm writing to you because 90 days ago, <strong>{user.email}</strong> entrusted our system to reach out to you if we stopped hearing from them.</p>
                         
                         <p>we haven't received a heartbeat check-in from them in three months. as per their explicit instructions, i am now releasing the final piece of their digital legacy to you.</p>
 
@@ -974,13 +969,13 @@ async def check_heartbeats(db: Session = Depends(get_db)):
                             <p><strong>how to use this:</strong></p>
                             <ol>
                                 <li>locate <strong>shard b</strong> (the one they gave you).</li>
-                                <li>go to <a href="https://shardium.xyz/recover">shardium.xyz/recover</a>.</li>
+                                <li>go to <a href="https://Deadhand.xyz/recover">Deadhand.xyz/recover</a>.</li>
                                 <li>enter both shard b and shard c into the tool.</li>
                                 <li>the tool will reconstruct their original seed phrase for you.</li>
                             </ol>
                         </div>
 
-                        <p>my deepest condolences for whatever situation has led to this email. i built shardium specifically so that people wouldn't have to worry about their loved ones being locked out of their hard-earned assets during difficult times.</p>
+                        <p>my deepest condolences for whatever situation has led to this email. i built Deadhand specifically so that people wouldn't have to worry about their loved ones being locked out of their hard-earned assets during difficult times.</p>
                         
                         <p>i hope this tool helps you in some small way.</p>
 
@@ -989,12 +984,12 @@ async def check_heartbeats(db: Session = Depends(get_db)):
 
                         <div class="cta-box">
                             <p style="font-size: 14px;"><strong>protect your own legacy</strong></p>
-                            <p style="font-size: 13px; color: #666;">you've just seen how shardium works. if you have crypto, don't leave your family in the dark. set up your own trustless switch in 5 minutes.</p>
-                            <a href="https://shardium.xyz/app?ref=beneficiary" class="cta-link">create your vault</a>
+                            <p style="font-size: 13px; color: #666;">you've just seen how Deadhand works. if you have crypto, don't leave your family in the dark. set up your own trustless switch in 5 minutes.</p>
+                            <a href="https://Deadhand.xyz/app?ref=beneficiary" class="cta-link">create your vault</a>
                         </div>
 
                         <div class="footer">
-                            <p>sent by shardium - built with care in argentina.</p>
+                            <p>sent by Deadhand - built with care in argentina.</p>
                         </div>
                     </body>
                     </html>

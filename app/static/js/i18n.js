@@ -1,4 +1,4 @@
-// Shardium Internationalization (i18n)
+// Deadhand Internationalization (i18n)
 const translations = {
     en: {
         // Nav
@@ -37,14 +37,14 @@ const translations = {
 
         // Solution
         solution_label: "// THE SOLUTION",
-        solution_title: "The Shardium Solution",
+        solution_title: "The Deadhand Solution",
         solution_subtitle: "Split your seed phrase into 3 shards. Any 2 can recover it. No single party can steal it.",
         shard_a: "Shard A",
         shard_a_desc: "You keep this. Store in a safe or password manager.",
         shard_b: "Shard B",
         shard_b_desc: "Give to your beneficiary. Print it as PDF.",
         shard_c: "Shard C",
-        shard_c_desc: "Held by Shardium. Released when switch triggers.",
+        shard_c_desc: "Held by Deadhand. Released when switch triggers.",
 
         // Protocol
         protocol_label: "// PROTOCOL",
@@ -65,7 +65,7 @@ const translations = {
         // FAQ
         faq_label: "// FAQ",
         faq_title: "Frequently Asked Questions",
-        faq_subtitle: "Everything you need to know about Shardium.",
+        faq_subtitle: "Everything you need to know about Deadhand.",
 
         // CTA
         cta_title: "Don't Let Your Crypto Die With You",
@@ -105,14 +105,14 @@ const translations = {
         problem_stat_3: "$0",
         problem_stat_3_desc: "Valor del cripto sin la clave",
         solution_label: "// LA SOLUCIÓN",
-        solution_title: "La Solución Shardium",
+        solution_title: "La Solución Deadhand",
         solution_subtitle: "Divide tu frase semilla en 3 fragmentos. Cualquier 2 pueden recuperarla. Nadie puede robarla solo.",
         shard_a: "Fragmento A",
         shard_a_desc: "Tú lo guardas. Almacena en caja fuerte o gestor de contraseñas.",
         shard_b: "Fragmento B",
         shard_b_desc: "Dáselo a tu beneficiario. Imprímelo como PDF.",
         shard_c: "Fragmento C",
-        shard_c_desc: "Lo guarda Shardium. Se libera cuando se activa el switch.",
+        shard_c_desc: "Lo guarda Deadhand. Se libera cuando se activa el switch.",
         protocol_label: "// PROTOCOLO",
         protocol_title: "Cómo Funciona",
         protocol_subtitle: "Matemáticamente seguro. Sin punto único de falla. Sin riesgo de custodia.",
@@ -127,7 +127,7 @@ const translations = {
         security_subtitle: "Incluso si nos hackean, los atacantes no obtienen nada útil.",
         faq_label: "// FAQ",
         faq_title: "Preguntas Frecuentes",
-        faq_subtitle: "Todo lo que necesitas saber sobre Shardium.",
+        faq_subtitle: "Todo lo que necesitas saber sobre Deadhand.",
         cta_title: "No Dejes Que Tu Cripto Muera Contigo",
         cta_subtitle: "Configura tu bóveda en menos de 5 minutos. Tu frase semilla nunca sale de tu dispositivo.",
         cta_button: "Crear Tu Bóveda",
@@ -163,14 +163,14 @@ const translations = {
         problem_stat_3: "$0",
         problem_stat_3_desc: "没有密钥的加密货币价值",
         solution_label: "// 解决方案",
-        solution_title: "Shardium 解决方案",
+        solution_title: "Deadhand 解决方案",
         solution_subtitle: "将您的助记词分成3个碎片。任意2个可以恢复。没有任何一方可以单独窃取。",
         shard_a: "碎片 A",
         shard_a_desc: "您保管。存储在保险箱或密码管理器中。",
         shard_b: "碎片 B",
         shard_b_desc: "交给您的受益人。打印成PDF。",
         shard_c: "碎片 C",
-        shard_c_desc: "由Shardium保管。开关触发时释放。",
+        shard_c_desc: "由Deadhand保管。开关触发时释放。",
         protocol_label: "// 协议",
         protocol_title: "工作原理",
         protocol_subtitle: "数学安全。无单点故障。无托管风险。",
@@ -185,7 +185,7 @@ const translations = {
         security_subtitle: "即使我们被入侵，攻击者也得不到任何有用的东西。",
         faq_label: "// 常见问题",
         faq_title: "常见问题",
-        faq_subtitle: "关于Shardium您需要知道的一切。",
+        faq_subtitle: "关于Deadhand您需要知道的一切。",
         cta_title: "不要让您的加密货币与您一起消亡",
         cta_subtitle: "在5分钟内设置您的保险库。您的助记词永不离开您的设备。",
         cta_button: "创建您的保险库",
@@ -215,7 +215,7 @@ const translations = {
         problem_title: "1400억 달러의 암호화폐가 소유자와 함께 사라질 것입니다",
         problem_subtitle: "셀프 커스터디는 신뢰 문제를 해결합니다. 하지만 새로운 문제를 만듭니다: 당신이 죽으면, 키도 함께 죽습니다.",
         solution_label: "// 해결책",
-        solution_title: "Shardium 솔루션",
+        solution_title: "Deadhand 솔루션",
         solution_subtitle: "시드 문구를 3개의 조각으로 나눕니다. 어떤 2개로도 복구할 수 있습니다. 어느 한 당사자도 혼자서 훔칠 수 없습니다.",
         cta_title: "암호화폐가 당신과 함께 사라지게 두지 마세요",
         cta_subtitle: "5분 안에 금고를 설정하세요. 시드 문구는 절대 기기를 떠나지 않습니다.",
@@ -246,7 +246,7 @@ const translations = {
         problem_title: "$140 Mrd. in Krypto werden mit ihren Besitzern sterben",
         problem_subtitle: "Selbstverwahrung löst das Vertrauensproblem. Aber es schafft ein neues: Wenn Sie sterben, sterben Ihre Schlüssel mit Ihnen.",
         solution_label: "// DIE LÖSUNG",
-        solution_title: "Die Shardium Lösung",
+        solution_title: "Die Deadhand Lösung",
         solution_subtitle: "Teilen Sie Ihre Seed-Phrase in 3 Teile. Beliebige 2 können sie wiederherstellen. Keine einzelne Partei kann sie stehlen.",
         cta_title: "Lassen Sie Ihre Krypto nicht mit Ihnen sterben",
         cta_subtitle: "Richten Sie Ihren Tresor in unter 5 Minuten ein. Ihre Seed-Phrase verlässt nie Ihr Gerät.",
@@ -277,7 +277,7 @@ const translations = {
         problem_title: "1400億ドルの暗号資産が所有者と共に消える",
         problem_subtitle: "セルフカストディは信頼の問題を解決します。しかし新たな問題を生み出します：あなたが死ぬと、鍵も一緒に死にます。",
         solution_label: "// ソリューション",
-        solution_title: "Shardiumソリューション",
+        solution_title: "Deadhandソリューション",
         solution_subtitle: "シードフレーズを3つの断片に分割。任意の2つで復元可能。単独では誰も盗めません。",
         cta_title: "暗号資産をあなたと一緒に消えさせないで",
         cta_subtitle: "5分以内に金庫を設定。シードフレーズはデバイスから離れません。",
@@ -308,7 +308,7 @@ const translations = {
         problem_title: "$140B em Cripto Morrerão Com Seus Donos",
         problem_subtitle: "Auto-custódia resolve o problema de confiança. Mas cria um novo: quando você morre, suas chaves morrem com você.",
         solution_label: "// A SOLUÇÃO",
-        solution_title: "A Solução Shardium",
+        solution_title: "A Solução Deadhand",
         solution_subtitle: "Divida sua frase semente em 3 fragmentos. Quaisquer 2 podem recuperá-la. Nenhuma parte pode roubá-la sozinha.",
         cta_title: "Não Deixe Sua Cripto Morrer Com Você",
         cta_subtitle: "Configure seu cofre em menos de 5 minutos. Sua frase semente nunca sai do seu dispositivo.",
@@ -330,12 +330,12 @@ const languageNames = {
 };
 
 // Current language
-let currentLang = localStorage.getItem('shardium_lang') || 'en';
+let currentLang = localStorage.getItem('Deadhand_lang') || 'en';
 
 // Apply translations
 function setLanguage(lang) {
     currentLang = lang;
-    localStorage.setItem('shardium_lang', lang);
+    localStorage.setItem('Deadhand_lang', lang);
 
     // Update all elements with data-i18n attribute
     document.querySelectorAll('[data-i18n]').forEach(el => {

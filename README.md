@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="app/static/banner.jpg" alt="Shardium Banner" width="100%">
+  <img src="app/static/banner.jpg" alt="Deadhand Banner" width="100%">
 </p>
 
-# Shardium
+# Deadhand
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.9+-blue?style=for-the-badge&logo=python&logoColor=white" alt="Python">
@@ -10,7 +10,7 @@
   <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License">
   <img src="https://img.shields.io/badge/Crypto-Shamir's_SSS-orange?style=for-the-badge" alt="Crypto">
   <br><br>
-  [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/pyoneerC/shardium)
+  [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/pyoneerC/Deadhand)
 </p>
 
 ### Trustless dead man's switch for crypto inheritance using Shamir's Secret Sharing
@@ -25,7 +25,7 @@ Traditional solutions require trusting someone with your seed phrase. That's not
 
 ## The Solution
 
-Shardium uses **Shamir's Secret Sharing** to split your seed phrase into 3 shards. No single entity (including us) has the full key.
+Deadhand uses **Shamir's Secret Sharing** to split your seed phrase into 3 shards. No single entity (including us) has the full key.
 
 > *Inspired by [@PixOnChain](https://x.com/PixOnChain/status/2000589935980458262)*
 
@@ -67,7 +67,7 @@ flowchart LR
 ```mermaid
 sequenceDiagram
     participant U as User
-    participant S as Shardium Server
+    participant S as Deadhand Server
     participant B as Beneficiary
 
     Note over U,S: Every 30 days
@@ -160,7 +160,7 @@ This is an MVP/Proof of Concept. In a real production environment:
 ---
 
 <p align="center">
-  <b>Built by the Shardium Team</b>
+  <b>Built by the Deadhand Team</b>
 </p>
 
 ---
@@ -191,7 +191,7 @@ This project is licensed under the **MIT License** - see below for details:
 ```
 MIT License
 
-Copyright (c) 2025 Shardium
+Copyright (c) 2025 Deadhand
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

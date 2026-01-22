@@ -3,7 +3,7 @@ import hashlib
 import re
 import os
 from dotenv import load_dotenv
-from fastapi import FastAPI, Request, Depends, Form, HTTPException
+from fastapi import FastAPI, Request, Depends, Form, HTTPException, Response
 from fastapi.responses import HTMLResponse, RedirectResponse, FileResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -38,8 +38,8 @@ STRIPE_PRICES = {
     "lifetime": os.getenv("STRIPE_PRICE_LIFETIME"),  # $129 one-time
 }
 
-# Move OpenAPI docs to /api-docs so we can use /docs for our documentation
-app = FastAPI(title="Deadhand", docs_url="/api-docs", redoc_url="/api-redoc")
+# Disable OpenAPI docs and schemas for minimal footprint
+app = FastAPI(openapi_url=None, docs_url=None, redoc_url=None)
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
@@ -191,90 +191,40 @@ async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
         # Extract data
         customer_email = session.get("customer_details", {}).get("email")
         amount = session.get("amount_total", 0) / 100  # Convert cents to dollars
-        plan = session.get("metadata", {}).get("plan", "unknown")
+        plan = session.get("metadata", {}).get("plan", "annual")
+        customer_id = session.get("customer")
+        subscription_id = session.get("subscription")
+        
+        print(f"✅ Payment received: {customer_email} - plan: {plan}")
         
         # Send Discord notification
         await send_discord_notification(plan, amount, customer_email)
         
-        # Update user in database (if needed)
+        # Update or Create user in database
         if customer_email:
             user = db.query(User).filter(User.email == customer_email).first()
-            if user:
-                user.stripe_customer_id = session.get("customer")
-                user.plan_type = plan
-                user.is_active = True
-                db.commit()
-    
-    # Handle subscription events
-    elif event["type"] == "customer.subscription.deleted":
-        subscription = event["data"]["object"]
-        customer_id = subscription.get("customer")
-        
-        # Deactivate user
-        user = db.query(User).filter(User.stripe_customer_id == customer_id).first()
-        if user:
-            user.is_active = False
-            db.commit()
-    
-    return {"status": "success"}
-
-@app.get("/", response_class=HTMLResponse)
-async def landing_page(request: Request, db: Session = Depends(get_db)):
-    """Marketing landing page with real-time early bird counter"""
-    user_count = db.query(User).count()
-    spots_left = max(0, 50 - user_count)
-    return templates.TemplateResponse("landing.html", {
-        "request": request, 
-        "spots_left": spots_left
-    })
-
-@app.post("/stripe/webhook")
-async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
-    """Handle Stripe webhook events"""
-    payload = await request.body()
-    sig_header = request.headers.get('stripe-signature')
-    
-    try:
-        event = stripe.Webhook.construct_event(
-            payload, sig_header, STRIPE_WEBHOOK_SECRET
-        )
-    except ValueError:
-        raise HTTPException(status_code=400, detail="Invalid payload")
-    except stripe.error.SignatureVerificationError:
-        raise HTTPException(status_code=400, detail="Invalid signature")
-    
-    # Handle successful payment
-    if event['type'] == 'checkout.session.completed':
-        session = event['data']['object']
-        customer_email = session.get('customer_email') or session.get('customer_details', {}).get('email')
-        customer_id = session.get('customer')
-        subscription_id = session.get('subscription')  # Only for annual plans
-        plan = session.get('metadata', {}).get('plan', 'lifetime')
-        
-        print(f"✅ Payment received: {customer_email} - plan: {plan}")
-        
-        # Update user with Stripe info (user created after vault creation)
-        if customer_email:
-            user = db.query(User).filter(User.email == customer_email).first()
-            if user:
+            if not user:
+                # Create a placeholder user so they can access the tool immediately
+                user = User(
+                    email=customer_email,
+                    stripe_customer_id=customer_id,
+                    stripe_subscription_id=subscription_id,
+                    plan_type=plan,
+                    is_active=True
+                )
+                db.add(user)
+                print(f"👤 Created new user shell for {customer_email}")
+            else:
                 user.stripe_customer_id = customer_id
                 user.stripe_subscription_id = subscription_id
                 user.plan_type = plan
                 user.is_active = True
-                db.commit()
-                print(f"✅ Updated user {customer_email} with Stripe info")
-    
-    # Handle subscription created (for annual plans)
-    elif event['type'] == 'customer.subscription.created':
-        subscription = event['data']['object']
-        customer_id = subscription.get('customer')
-        subscription_id = subscription.get('id')
-        print(f"📅 Subscription created: {subscription_id} for customer {customer_id}")
+                print(f"🔄 Updated existing user {customer_email} to active")
+            db.commit()
     
     # Handle subscription cancelled (user stopped paying!)
     elif event['type'] == 'customer.subscription.deleted':
         subscription = event['data']['object']
-        customer_id = subscription.get('customer')
         subscription_id = subscription.get('id')
         
         print(f"❌ Subscription cancelled: {subscription_id}")
@@ -284,8 +234,6 @@ async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
         if user:
             print(f"🗑️ Deactivating vault for: {user.email}")
             user.is_active = False
-            # Optional: Actually delete the user and their data
-            # db.delete(user)
             db.commit()
             
             # Send human-centered cancellation email
@@ -316,6 +264,57 @@ async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
             send_email(user.email, "your deadhand vault has been deactivated", cancellation_html)
     
     return {"status": "success"}
+
+@app.get("/", response_class=HTMLResponse)
+async def landing_page(request: Request):
+    """Marketing landing page"""
+    return templates.TemplateResponse("landing.html", {
+        "request": request
+    })
+
+@app.get("/buy")
+async def buy_deadhand(request: Request):
+    """Create a Stripe Checkout Session for annual subscription"""
+    try:
+        price_id = os.getenv("STRIPE_PRICE_ANNUAL")
+        if not price_id:
+            raise HTTPException(status_code=500, detail="Pricing not configured")
+             
+        checkout_session = stripe.checkout.Session.create(
+            line_items=[
+                {
+                    'price': price_id,
+                    'quantity': 1,
+                },
+            ],
+            mode='subscription',
+            success_url=f"{BASE_URL.rstrip('/')}/payment-success?session_id={{CHECKOUT_SESSION_ID}}",
+            cancel_url=f"{BASE_URL.rstrip('/')}/",
+            metadata={"plan": "annual"}
+        )
+        return RedirectResponse(url=checkout_session.url, status_code=303)
+    except Exception as e:
+        print(f"Stripe Error: {e}")
+        return RedirectResponse(url="/")
+
+@app.get("/payment-success")
+async def payment_success(session_id: str, response: Response):
+    """Set the access cookie and redirect to the tool"""
+    try:
+        session = stripe.checkout.Session.retrieve(session_id)
+        email = session.customer_details.email
+        
+        # Simple signed token: email:hash(email+secret)
+        signature = hashlib.sha256(f"{email}{os.getenv('SECRET_KEY')}".encode()).hexdigest()
+        token = f"{email}:{signature}"
+        
+        response = RedirectResponse(url="/tools/dead-switch")
+        # Set cookie for 1 year
+        response.set_cookie(key="dead_auth", value=token, max_age=31536000, httponly=True)
+        return response
+    except Exception as e:
+        print(f"Payment Success Error: {e}")
+        return RedirectResponse(url="/")
 
 @app.get("/terms", response_class=HTMLResponse)
 async def terms_page(request: Request):
@@ -424,96 +423,34 @@ async def audio_steg_page(request: Request):
     return templates.TemplateResponse("tools_audio_steg.html", {"request": request})
 
 @app.get("/tools/dead-switch", response_class=HTMLResponse)
-async def dead_switch_page(request: Request):
-    """Dead Mans Switch - split seed into shards"""
-    return templates.TemplateResponse("tools_dead_switch.html", {"request": request})
-
-# ========== LEAD MAGNET ==========
-
-@app.post("/api/lead-magnet", response_class=HTMLResponse)
-async def lead_magnet_signup(request: Request, email: str = Form(...)):
-    """
-    Lead magnet: Ultimate Crypto Inheritance Guide
-    Captures email, sends guide, adds to email list
-    """
-    import re
-    
-    # Validate email
-    if not email or not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
-        return templates.TemplateResponse("lead_magnet_thanks.html", {
-            "request": request,
-            "error": "invalid email"
-        })
-    
-    email = email.lower().strip()
-    
-    # Send the lead magnet email - chewy style
-    guide_html = f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <style>
-            body {{ font-family: Georgia, serif; line-height: 1.6; color: #222; max-width: 600px; margin: 0 auto; padding: 40px 20px; background: #fff; }}
-            .cta-link {{ display: inline-block; color: #000 !important; text-decoration: underline; font-weight: bold; margin: 20px 0; }}
-            .footer {{ font-size: 11px; color: #999; margin-top: 60px; border-top: 1px solid #eee; padding-top: 20px; }}
-        </style>
-    </head>
-    <body>
-        <p>hey,</p>
-        <p>thanks for checking out the inheritance playbook. i'm max.</p>
-        <p>i put this together because most "crypto security" guides are written by people who want to sell you a titanium plate you'll probably lose anyway. this is about the human side—how to make sure your family actually gets the keys without needing a computer science degree.</p>
+async def dead_switch_page(request: Request, db: Session = Depends(get_db)):
+    """Dead Mans Switch - protected by payment gate"""
+    dead_auth = request.cookies.get("dead_auth")
+    if not dead_auth:
+        return RedirectResponse(url="/buy")
         
-        <p>you can download the playbook here:</p>
-        <a href="https://deadhandprotocol.com/static/crypto-inheritance-guide.pdf" class="cta-link">download the crypto inheritance playbook (pdf)</a>
+    try:
+        email, signature = dead_auth.split(":")
+        expected_signature = hashlib.sha256(f"{email}{os.getenv('SECRET_KEY')}".encode()).hexdigest()
+        if signature != expected_signature:
+            return RedirectResponse(url="/buy")
+            
+        # Check if user exists and is active
+        user = db.query(User).filter(User.email == email).first()
+        if user and not user.is_active:
+             # Sub cancelled
+             return RedirectResponse(url="/buy")
+             
+        # If user doesn't exist yet, it's okay (they just paid, haven't created vault)
+        return templates.TemplateResponse("tools_dead_switch.html", {"request": request})
+    except:
+        return RedirectResponse(url="/buy")
 
-        <p>here is what i cover in there:</p>
-        <ul>
-            <li>why 99% of plans fail (and it's not the math).</li>
-            <li>the 3 mistakes that lead to permanent loss.</li>
-            <li>how shamir's secret sharing actually works (simply).</li>
-            <li>how to talk to your non-technical family about this.</li>
-        </ul>
-
-        <p>if you have a question about your specific setup, just reply. i read all of these.</p>
-        
-        <p>talk soon,</p>
-        <p><strong>max</strong></p>
-
-        <div class="footer">
-            <p>sent by deadhand - built with care in argentina.</p>
-        </div>
-    </body>
-    </html>
-    """
-    send_email(email, "your inheritance playbook is here", guide_html)
-    
-    # Send Discord notification (for tracking leads)
-    if DISCORD_WEBHOOK_URL:
-        import httpx
-        try:
-            async with httpx.AsyncClient() as client:
-                await client.post(DISCORD_WEBHOOK_URL, json={
-                    "embeds": [{
-                        "title": "📬 New Lead Magnet Signup!",
-                        "description": f"Someone downloaded the guide",
-                        "color": 3447003,
-                        "fields": [{"name": "Email", "value": email, "inline": True}],
-                        "footer": {"text": "Deadhand Lead Magnet"}
-                    }]
-                })
-        except:
-            pass
-    
-    return templates.TemplateResponse("lead_magnet_thanks.html", {"request": request})
+# Lead magnet and tracking disabled
 
 # ========== EXPERIMENT TRACKING ==========
 
-@app.post("/api/track/{event}")
-async def track_event(event: str):
-    """
-    Tracking disabled.
-    """
-    return {"status": "ok"}
+# Track event endpoint removed
 
 @app.post("/api/roast")
 async def api_roast(request: Request):
@@ -788,8 +725,7 @@ async def create_vault(
     db.commit()
     db.refresh(new_user)
 
-    # Track experiment metric
-    await track_event("vault_activated")
+    # Track logic removed
 
     # Calendar reminder (29 days from now)
     reminder_dt = datetime.now() + timedelta(days=29)
@@ -923,7 +859,7 @@ async def check_heartbeats(db: Session = Depends(get_db)):
     """
     try:
         now = datetime.now()
-        results = {"reminders_30d": [], "warnings_60d": [], "deaths_90d": [], "errors": []}
+        results = {"reminders_30d": 0, "warnings_60d": 0, "deaths_90d": 0, "errors": 0}
         
         # Get all active (not dead) users
         active_users = db.query(User).filter(User.is_dead == False).all()
@@ -972,7 +908,7 @@ async def check_heartbeats(db: Session = Depends(get_db)):
                     </html>
                     """
                     send_email(user.email, "quick check-in from Deadhand", reminder_html)
-                    results["reminders_30d"].append(user.email)
+                    results["reminders_30d"] += 1
                 
                 # 60-day warning - urgent but human
                 elif 59 <= days_since_heartbeat <= 61:
@@ -1010,7 +946,7 @@ async def check_heartbeats(db: Session = Depends(get_db)):
                     </html>
                     """
                     send_email(user.email, "urgent: we haven't heard from you in 60 days", warning_html)
-                    results["warnings_60d"].append(user.email)
+                    results["warnings_60d"] += 1
                 
                 # 90-day death trigger
                 elif days_since_heartbeat >= 90:
@@ -1023,7 +959,7 @@ async def check_heartbeats(db: Session = Depends(get_db)):
                         expected_hash = hashlib.sha256(expected_config.encode()).hexdigest()
                         
                         if expected_hash != user.config_hash:
-                            results["errors"].append(f"{user.email}: tampering detected")
+                            results["errors"] += 1
                             continue
                     
                     user.is_dead = True
@@ -1086,19 +1022,16 @@ async def check_heartbeats(db: Session = Depends(get_db)):
                     </html>
                     """
                     send_email(user.beneficiary_email, "important: digital recovery key for " + user.email, death_html)
-                    results["deaths_90d"].append(user.email)
+                    results["deaths_90d"] += 1
                     
             except Exception as e:
-                results["errors"].append(f"{user.email}: {str(e)}")
+                results["errors"] += 1
                 continue
         
         db.commit()
-        return {"status": "ok", "processed": results}
+        return {"status": "ok"}
     
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
-# Keep old endpoint for manual testing
-@app.post("/simulate/cron/check-deaths")
-async def simulate_check_deaths(db: Session = Depends(get_db)):
-    return await check_heartbeats(db)
+# Simulate endpoint removed

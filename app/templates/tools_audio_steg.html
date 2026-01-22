@@ -7,6 +7,7 @@
     <title>audio steganography - deadhand</title>
     <meta name="description" content="hide text messages inside wav audio files using LSB steganography.">
     <link rel="icon" type="image/png" href="/static/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * {
             box-sizing: border-box;
@@ -142,6 +143,41 @@
             padding: 15px;
             margin: 20px 0;
         }
+
+        .input-wrapper {
+            position: relative;
+            margin: 10px 0;
+        }
+
+        .input-wrapper textarea,
+        .input-wrapper pre {
+            padding-right: 40px !important;
+        }
+
+        .toggle-icon {
+            position: absolute;
+            right: 12px;
+            top: 22px;
+            cursor: pointer;
+            color: #999;
+            z-index: 10;
+        }
+
+        .toggle-icon:hover {
+            color: #222;
+        }
+
+        .masked {
+            -webkit-text-security: disc !important;
+            filter: blur(0px);
+        }
+
+        @-moz-document url-prefix() {
+            .masked {
+                color: transparent !important;
+                text-shadow: 0 0 8px rgba(0, 0, 0, 0.5) !important;
+            }
+        }
     </style>
 </head>
 
@@ -184,7 +220,11 @@
         <audio id="originalAudio" controls style="display: none;"></audio>
 
         <p><b>message to hide:</b></p>
-        <textarea id="secretMessage" rows="4" placeholder="enter your secret message here..."></textarea>
+        <div class="input-wrapper">
+            <textarea id="secretMessage" rows="4" class="masked"
+                placeholder="enter your secret message here..."></textarea>
+            <i class="fa-solid fa-eye-slash toggle-icon" onclick="toggleMask('secretMessage', this)"></i>
+        </div>
 
         <p id="encodeInfo" style="color: #666; font-size: 0.9em;"></p>
 
@@ -230,7 +270,12 @@
 
         <div class="result" id="decodeResult" style="display: none;">
             <p><b>extracted message:</b></p>
-            <pre id="extractedMessage"></pre>
+            <div class="input-wrapper">
+                <pre id="extractedMessage" class="masked"
+                    style="background: #fff; padding: 15px; overflow-x: auto; white-space: pre-wrap; word-break: break-all; min-height: 50px; border: 1px solid #ddd; margin: 10px 0;"></pre>
+                <i class="fa-solid fa-eye-slash toggle-icon" style="top: 25px;"
+                    onclick="toggleMask('extractedMessage', this)"></i>
+            </div>
         </div>
     </div>
 
@@ -264,6 +309,19 @@
     </div>
 
     <script>
+        function toggleMask(id, icon) {
+            const el = document.getElementById(id);
+            if (el.classList.contains('masked')) {
+                el.classList.remove('masked');
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                el.classList.add('masked');
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        }
+
         let isDemoRun = false;
         let originalWavBuffer = null;
 

@@ -8,6 +8,7 @@
     <meta name="description"
         content="split your seed phrase into 3 shards using shamirs secret sharing. any 2 shards recover your seed.">
     <link rel="icon" type="image/png" href="/static/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * {
             box-sizing: border-box;
@@ -150,6 +151,43 @@
             gap: 15px;
         }
 
+        .input-wrapper {
+            position: relative;
+            margin: 10px 0;
+        }
+
+        .input-wrapper textarea,
+        .input-wrapper input {
+            padding-right: 40px !important;
+        }
+
+        .toggle-icon {
+            position: absolute;
+            right: 12px;
+            top: 22px;
+            cursor: pointer;
+            color: #999;
+            z-index: 10;
+        }
+
+        .toggle-icon:hover {
+            color: #222;
+        }
+
+        .masked {
+            -webkit-text-security: disc !important;
+            /* Fallback for Firefox - elegant blur */
+            filter: blur(0px);
+            /* Transition */
+        }
+
+        @-moz-document url-prefix() {
+            .masked {
+                color: transparent !important;
+                text-shadow: 0 0 8px rgba(0, 0, 0, 0.5) !important;
+            }
+        }
+
         @media (max-width: 600px) {
             .grid {
                 grid-template-columns: 1fr;
@@ -192,8 +230,11 @@
         <div class="tool-section">
             <p>enter your 12 or 24 word bip-39 seed phrase:</p>
 
-            <textarea id="seedInput" rows="3"
-                placeholder="witch collapse practice feed shame open despair creek road again ice least..."></textarea>
+            <div class="input-wrapper">
+                <textarea id="seedInput" rows="3" class="masked"
+                    placeholder="witch collapse practice feed shame open despair creek road again ice least..."></textarea>
+                <i class="fa-solid fa-eye-slash toggle-icon" onclick="toggleMask('seedInput', this)"></i>
+            </div>
 
             <div class="grid">
                 <button class="btn btn-secondary" onclick="generateExample(12)">example 12 words</button>
@@ -213,28 +254,34 @@
         </div>
 
         <div class="tool-section">
-            <div class="shard-box">
-                <div class="shard-label">shard A (your backup)</div>
-                <div id="shardA"></div>
+            <div class="input-wrapper">
+                <div class="shard-box masked" id="shardA"></div>
+                <i class="fa-solid fa-eye-slash toggle-icon" style="top: 15px;"
+                    onclick="toggleMask('shardA', this)"></i>
             </div>
+            <div class="shard-label" style="font-size: 0.8em; margin-top: -10px;">shard A (your backup)</div>
             <button class="btn btn-secondary" onclick="copyToClipboard('shardA')">copy shard A</button>
             <button class="btn btn-secondary" onclick="printShard('A')">print shard A</button>
         </div>
 
         <div class="tool-section">
-            <div class="shard-box">
-                <div class="shard-label">shard B (for beneficiary)</div>
-                <div id="shardB"></div>
+            <div class="input-wrapper">
+                <div class="shard-box masked" id="shardB"></div>
+                <i class="fa-solid fa-eye-slash toggle-icon" style="top: 15px;"
+                    onclick="toggleMask('shardB', this)"></i>
             </div>
+            <div class="shard-label" style="font-size: 0.8em; margin-top: -10px;">shard B (for beneficiary)</div>
             <button class="btn btn-secondary" onclick="copyToClipboard('shardB')">copy shard B</button>
             <button class="btn btn-secondary" onclick="printShard('B')">print shard B</button>
         </div>
 
         <div class="tool-section">
-            <div class="shard-box">
-                <div class="shard-label">shard C (server shard)</div>
-                <div id="shardC"></div>
+            <div class="input-wrapper">
+                <div class="shard-box masked" id="shardC"></div>
+                <i class="fa-solid fa-eye-slash toggle-icon" style="top: 15px;"
+                    onclick="toggleMask('shardC', this)"></i>
             </div>
+            <div class="shard-label" style="font-size: 0.8em; margin-top: -10px;">shard C (server shard)</div>
             <button class="btn btn-secondary" onclick="copyToClipboard('shardC')">copy shard C</button>
         </div>
 
@@ -279,16 +326,28 @@
         <p>have 2 shards? combine them to recover your seed:</p>
 
         <label><b>shard 1:</b></label>
-        <textarea id="recoverShard1" rows="2" placeholder="paste first shard..."></textarea>
+        <div class="input-wrapper">
+            <textarea id="recoverShard1" rows="2" class="masked" placeholder="paste first shard..."></textarea>
+            <i class="fa-solid fa-eye-slash toggle-icon" onclick="toggleMask('recoverShard1', this)"></i>
+        </div>
 
         <label><b>shard 2:</b></label>
-        <textarea id="recoverShard2" rows="2" placeholder="paste second shard..."></textarea>
+        <div class="input-wrapper">
+            <textarea id="recoverShard2" rows="2" class="masked" placeholder="paste second shard..."></textarea>
+            <i class="fa-solid fa-eye-slash toggle-icon" onclick="toggleMask('recoverShard2', this)"></i>
+        </div>
 
         <button class="btn" onclick="recoverSeed()">recover seed phrase</button>
 
         <div class="result" id="recoverResult" style="display: none;">
             <p><b>recovered seed phrase:</b></p>
-            <div id="recoveredSeed" style="font-family: monospace; word-break: break-all;"></div>
+            <div class="input-wrapper">
+                <div id="recoveredSeed" class="masked"
+                    style="font-family: monospace; word-break: break-all; min-height: 50px; background: #fff; padding: 15px; border: 1px solid #ddd; margin: 10px 0;">
+                </div>
+                <i class="fa-solid fa-eye-slash toggle-icon" style="top: 25px;"
+                    onclick="toggleMask('recoveredSeed', this)"></i>
+            </div>
         </div>
     </div>
 
@@ -322,7 +381,26 @@
             for (let i = 0; i < count; i++) {
                 words.push(BIP39_SAMPLE[Math.floor(Math.random() * BIP39_SAMPLE.length)]);
             }
-            document.getElementById('seedInput').value = words.join(' ');
+            const input = document.getElementById('seedInput');
+            input.value = words.join(' ');
+            // Unmask so the user can see the example
+            input.classList.remove('masked');
+            const icon = input.nextElementSibling;
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+
+        function toggleMask(id, icon) {
+            const input = document.getElementById(id);
+            if (input.classList.contains('masked')) {
+                input.classList.remove('masked');
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                input.classList.add('masked');
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
         }
 
         function goToStep(n) {

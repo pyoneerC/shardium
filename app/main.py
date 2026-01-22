@@ -694,36 +694,38 @@ async def create_vault(
     shard_c: str = Form(...),
     db: Session = Depends(get_db)
 ):
-    # Check if user exists
+    # Check if user exists (might have been created by Stripe webhook)
     user = db.query(User).filter(User.email == email).first()
-    if user:
+    
+    # If user exists and already has a shard, don't allow overwrite
+    if user and user.shard_c:
         return templates.TemplateResponse("index.html", {
             "request": request, 
-            "error": "User already exists with this email."
+            "error": "A vault already exists for this email. If you need to reset it, please contact support."
         })
 
     heartbeat_token = secrets.token_urlsafe(32)
     created_timestamp = datetime.now()
     
     # IMMUTABILITY PROTECTION: Create hash of critical config
-    # If attacker modifies beneficiary_email or shard_c, hash won't match
     config_string = f"{beneficiary_email}|{shard_c}|{created_timestamp.isoformat()}"
     config_hash = hashlib.sha256(config_string.encode()).hexdigest()
     
     # Encrypt shard_c before storing (key derived from heartbeat_token)
     encrypted_shard = encrypt_shard(shard_c, heartbeat_token)
     
-    new_user = User(
-        email=email,
-        beneficiary_email=beneficiary_email,
-        shard_c=encrypted_shard,  # Now actually encrypted!
-        config_hash=config_hash,  # Immutable commitment
-        heartbeat_token=heartbeat_token,
-        last_heartbeat=created_timestamp
-    )
-    db.add(new_user)
+    if not user:
+        user = User(email=email)
+        db.add(user)
+    
+    user.beneficiary_email = beneficiary_email
+    user.shard_c = encrypted_shard
+    user.config_hash = config_hash
+    user.heartbeat_token = heartbeat_token
+    user.last_heartbeat = created_timestamp
+    
     db.commit()
-    db.refresh(new_user)
+    db.refresh(user)
 
     # Track logic removed
 
@@ -732,7 +734,7 @@ async def create_vault(
     cal_date = reminder_dt.strftime('%Y%m%d')
     cal_end = (reminder_dt + timedelta(days=1)).strftime('%Y%m%d')
     cal_title = quote_plus("Deadhand Heartbeat - Reset Your 30-Day Timer")
-    cal_details = quote_plus(f"Time to visit deadhandprotocol.com/heartbeat/{new_user.id}/{heartbeat_token} to reset your watchdog timer.")
+    cal_details = quote_plus(f"Time to visit deadhandprotocol.com/heartbeat/{user.id}/{heartbeat_token} to reset your watchdog timer.")
     welcome_cal_url = f"https://www.google.com/calendar/render?action=TEMPLATE&text={cal_title}&dates={cal_date}/{cal_end}&details={cal_details}&sf=true&output=xml"
 
     # Send human-centered "Chewy-style" welcome email
@@ -782,7 +784,7 @@ async def create_vault(
 
             <p><strong>one critical thing:</strong> to make sure you're still with us, we need a "heartbeat." click the link below once just to verify you can access it. it resets your 90-day timer.</p>
 
-            <a href="https://deadhandprotocol.com/heartbeat/{new_user.id}/{heartbeat_token}" class="heartbeat-link">verify my heartbeat & reset timer</a>
+            <a href="https://deadhandprotocol.com/heartbeat/{user.id}/{heartbeat_token}" class="heartbeat-link">verify my heartbeat & reset timer</a>
 
             <p><strong>pro tip:</strong> set a reminder so you don't forget. <a href="{welcome_cal_url}" target="_blank">add a reminder to my google calendar</a> (for 30 days from now).</p>
 

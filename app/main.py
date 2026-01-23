@@ -13,9 +13,48 @@ import markdown
 from pathlib import Path
 import stripe
 from urllib.parse import quote_plus
+import csv
+import io
+from PIL import Image, ImageDraw, ImageFont
+import random
 
 # Load environment variables from .env file
 load_dotenv()
+
+# Load programmatic SEO topics from CSV
+PSEO_TOPICS = {}
+TOPICS_FILE = Path("app/data/pseo_topics.csv")
+if TOPICS_FILE.exists():
+    try:
+        with open(TOPICS_FILE, mode='r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                PSEO_TOPICS[row['slug']] = row
+    except Exception as e:
+        print(f"Error loading PSEO topics: {e}")
+
+# Dynamic price caching
+PRICE_CACHE = {"btc": 0, "last_updated": datetime.min}
+
+async def get_btc_price():
+    """Fetch current BTC price with simple 10-min cache"""
+    global PRICE_CACHE
+    import httpx
+    if (datetime.now() - PRICE_CACHE["last_updated"]).total_seconds() < 600:
+        return PRICE_CACHE["btc"]
+    
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.get("https://api.coindesk.com/v1/bpi/currentprice/BTC.json", timeout=5)
+            if resp.status_code == 200:
+                price = resp.json()["bpi"]["USD"]["rate_float"]
+                PRICE_CACHE["btc"] = round(price)
+                PRICE_CACHE["last_updated"] = datetime.now()
+                return PRICE_CACHE["btc"]
+    except:
+        pass
+    return PRICE_CACHE["btc"] or 65000 # Fallback
+
 
 from .database import SessionLocal, engine, Base
 from .models import User
@@ -87,14 +126,12 @@ async def sitemap():
         <priority>0.8</priority>
     </url>
     <!-- Programmatic SEO URLs -->
-    <url><loc>https://deadhandprotocol.com/p/bitcoin-inheritance</loc><priority>0.7</priority></url>
-    <url><loc>https://deadhandprotocol.com/p/ethereum-inheritance</loc><priority>0.7</priority></url>
-    <url><loc>https://deadhandprotocol.com/p/solana-inheritance</loc><priority>0.7</priority></url>
-    <url><loc>https://deadhandprotocol.com/p/ledger-inheritance</loc><priority>0.7</priority></url>
-    <url><loc>https://deadhandprotocol.com/p/trezor-inheritance</loc><priority>0.7</priority></url>
-    <url><loc>https://deadhandprotocol.com/p/argentina-crypto-laws</loc><priority>0.7</priority></url>
-    <url><loc>https://deadhandprotocol.com/p/us-crypto-laws</loc><priority>0.7</priority></url>
-    <url><loc>https://deadhandprotocol.com/p/uk-crypto-laws</loc><priority>0.7</priority></url>
+    {"".join([f'''
+    <url>
+        <loc>https://deadhandprotocol.com/p/{slug}</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>''' for slug in PSEO_TOPICS.keys()])}
     {"".join([f'''
     <url>
         <loc>{post}</loc>
@@ -311,95 +348,6 @@ async def terms_page(request: Request):
     return templates.TemplateResponse("terms.html", {"request": request})
 
 # ========== FREE TOOLS ==========
-
-@app.get("/tools/death-calculator", response_class=HTMLResponse)
-async def death_calculator_page(request: Request):
-    """SEO Tool: Actuarial Death Calculator"""
-    return templates.TemplateResponse("tools_death.html", {"request": request, "result": None})
-
-@app.post("/tools/death-calculator", response_class=HTMLResponse)
-async def death_calculator_result(request: Request, age: int = Form(...), gender: str = Form(...)):
-    """Calculate death probability"""
-    # Simple Gompertz-Makeham approximation
-    # M = a + b * c^x
-    # Parameters for US Mortality roughly:
-    if gender == 'male':
-        a, b, c = 0.0003, 0.000043, 1.103
-        life_exp = 76
-    else:
-        a, b, c = 0.0001, 0.000016, 1.112
-        life_exp = 81
-        
-    def get_prob_die_within_years(current_age, years):
-        # Probability of surviving each year product
-        prob_survive = 1.0
-        for y in range(years):
-            x = current_age + y
-            if x >= 110: 
-                q_x = 1.0 # Certain death cap
-            else:
-                q_x = a + b * (c ** x)
-            prob_survive *= (1.0 - min(q_x, 1.0))
-        return (1.0 - prob_survive) * 100
-
-    prob_1y = round(get_prob_die_within_years(age, 1), 2)
-    prob_10y = round(get_prob_die_within_years(age, 10), 1)
-    prob_30y = round(get_prob_die_within_years(age, 30), 1)
-    
-    # Cap at 99.9%
-    if prob_30y > 99.9: prob_30y = 99.9
-    
-    result = {
-        "prob_1y": prob_1y,
-        "prob_10y": prob_10y,
-        "prob_30y": prob_30y,
-        "life_expectancy": round(life_exp - age) if age < life_exp else "Bonus Round"
-    }
-
-    return templates.TemplateResponse("tools_death.html", {
-        "request": request, 
-        "result": result,
-        "age": age,
-        "gender": gender
-    })
-
-@app.get("/tools/crypto-loss-calculator", response_class=HTMLResponse)
-async def crypto_loss_page(request: Request):
-    """SEO Tool: Crypto Loss Calculator"""
-    return templates.TemplateResponse("tools_loss.html", {"request": request, "result": None})
-
-@app.post("/tools/crypto-loss-calculator", response_class=HTMLResponse)
-async def crypto_loss_result(request: Request, amount: float = Form(...), price: float = Form(...), growth_rate: float = Form(...)):
-    """Calculate future lost value"""
-    # Simply compound growth formula: Future Value = P * (1 + r)^t
-    
-    current_value = amount * price
-    
-    # Calculate for 10, 20, 30 years
-    val_10y = current_value * ((1 + (growth_rate/100)) ** 10)
-    val_20y = current_value * ((1 + (growth_rate/100)) ** 20)
-    val_30y = current_value * ((1 + (growth_rate/100)) ** 30)
-    
-    result = {
-        "current_value": f"${current_value:,.2f}",
-        "val_10y": f"${val_10y:,.2f}",
-        "val_20y": f"${val_20y:,.2f}",
-        "val_30y": f"${val_30y:,.2f}",
-        "growth_rate": growth_rate
-    }
-
-    return templates.TemplateResponse("tools_loss.html", {
-        "request": request, 
-        "result": result,
-        "amount": amount,
-        "price": price,
-        "growth_rate": growth_rate
-    })
-
-@app.get("/tools/shamir-playground", response_class=HTMLResponse)
-async def shamir_playground_page(request: Request):
-    """SEO Tool: Shamir Playground"""
-    return templates.TemplateResponse("tools_shamir.html", {"request": request})
 
 @app.get("/tools/visual-crypto", response_class=HTMLResponse)
 async def visual_crypto_page(request: Request):
@@ -675,48 +623,90 @@ async def render_docs(request: Request, doc_name: str):
         "current_doc": "index" if doc_name == "README" else doc_name
     })
 
-@app.get("/p/{topic}", response_class=HTMLResponse)
-async def programmatic_seo_landing(request: Request, topic: str):
-    """Dynamic landing pages for programmatic SEO"""
-    topics = {
-        "bitcoin-inheritance": ("Bitcoin Inheritance Protocol", "How to secure your Bitcoin legacy using Shamir Secret Sharing and Deadhand."),
-        "ethereum-inheritance": ("Ethereum Smart Vault", "Secure your ETH and ERC-20 tokens for the next generation."),
-        "solana-inheritance": ("Solana Death Switch", "The fastest way to ensure your Solana assets aren't lost forever."),
-        "ledger-inheritance": ("Ledger Backup Recovery", "How to split your Ledger seed phrase safely without trusting a third party."),
-        "trezor-inheritance": ("Trezor Seed Splitting", "Advanced security for Trezor users using the Deadhand SSS protocol."),
-        "argentina-crypto-laws": ("Crypto Inheritance in Argentina", "Legal and technical guide to digital asset succession in Argentina."),
-        "us-crypto-laws": ("U.S. Crypto Probate Guide", "Navigating the legal intersection of U.S. probate law and private keys."),
-        "uk-crypto-laws": ("UK Digital Asset Law", "Protecting your UK-based crypto legacy with decentralized tools.")
-    }
-    
-    if topic not in topics:
+@app.get("/p/{slug}", response_class=HTMLResponse)
+async def programmatic_seo_landing(request: Request, slug: str):
+    """Dynamic landing pages for programmatic SEO with God Level injections"""
+    if slug not in PSEO_TOPICS:
         raise HTTPException(status_code=404)
         
-    title, desc = topics[topic]
+    topic = PSEO_TOPICS[slug]
+    btc_price = await get_btc_price()
     
-    # Simple dynamic content template
-    content = f"""
-    <div class='pseo-content'>
-        <h1>{title}</h1>
-        <p class='lead'>{desc}</p>
-        <p>In the world of digital assets, <strong>permanent loss</strong> is the default. If you don't have a plan, your {title.split()[0]} will eventually be lost to a "dead" wallet.</p>
-        <h2>The Technical Solution</h2>
-        <p>Deadhand Protocol uses industry-standard 2-of-3 Shamir's Secret Sharing to ensure your assets are protected while you are alive, and accessible only when you are gone.</p>
-        <div class='cta-box' style='background: #f9f9f9; padding: 30px; border-radius: 8px; margin: 40px 0;'>
-            <h3>Start Your {title.split()[0]} Protection Plan</h3>
-            <p>Deploy your own vault in 5 minutes. No KYC. No credit card required to start.</p>
-            <a href='/tools/dead-switch' class='cta' style='display: inline-block; background: #222; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;'>Protect My Assets</a>
-        </div>
-    </div>
-    """
+    # 1. Transform Body: Dynamic Variables
+    body = topic.get('body', '')
+    body = body.replace("{{ BTC_PRICE }}", f"${btc_price:,}")
     
-    return templates.TemplateResponse("docs.html", {
+    # 2. Transform Body: Inline Internal Linking (God Level SEO)
+    for other_slug, other_topic in PSEO_TOPICS.items():
+        if other_slug == slug: continue
+        # Find parts of the title in the text (e.g., "MetaMask" or "Bitcoin")
+        anchor_text = other_topic['title'].split(' ')[0]
+        if len(anchor_text) > 3: # Avoid linking short words
+             # Use regex for word boundaries to avoid messy overlapping links
+             pattern = re.compile(rf'\b({re.escape(anchor_text)})\b', re.IGNORECASE)
+             # Only link the first occurrence to avoid over-linking
+             body = pattern.sub(f'<a href="/p/{other_slug}" class="underline">\\1</a>', body, count=1)
+
+    # 3. Get Related Topics
+    all_slugs = list(PSEO_TOPICS.keys())
+    other_slugs = [s for s in all_slugs if s != slug]
+    related_slugs = random.sample(other_slugs, min(4, len(other_slugs)))
+    related_topics = [(s, PSEO_TOPICS[s]['title']) for s in related_slugs]
+    
+    return templates.TemplateResponse("pseo.html", {
         "request": request,
-        "content": content,
-        "title": title,
-        "description": desc,
-        "current_doc": "pseo"
+        "title": topic.get('title'),
+        "description": topic.get('description'),
+        "h1": topic.get('h1'),
+        "intro": topic.get('intro'),
+        "body": body,
+        "slug": slug,
+        "related_topics": related_topics,
+        "btc_price": btc_price
     })
+
+@app.get("/api/og/{slug}")
+async def dynamic_og_image(slug: str):
+    """Generate God Level dynamic OG images on the fly"""
+    if slug not in PSEO_TOPICS:
+        # Fallback to default
+        return FileResponse("app/static/og_card.png")
+    
+    topic = PSEO_TOPICS[slug]
+    title = topic['title'].lower()
+    
+    # Image config
+    W, H = 1200, 630
+    img = Image.new('RGB', (W, H), color='#09090b')
+    draw = ImageDraw.Draw(img)
+    
+    try:
+        # Try to find a system font
+        font_main = ImageFont.truetype("arial.ttf", 80)
+        font_sub = ImageFont.truetype("arial.ttf", 40)
+    except:
+        font_main = ImageFont.load_default()
+        font_sub = ImageFont.load_default()
+    
+    # Draw branding
+    draw.text((60, 60), "// DEADHAND PROTOCOL", fill="#10b981", font=font_sub)
+    
+    # Draw title (wrap text if needed)
+    import textwrap
+    lines = textwrap.wrap(title, width=25)
+    y_text = 180
+    for line in lines:
+        draw.text((60, y_text), line, fill="#ffffff", font=font_main)
+        y_text += 100
+    
+    # Draw Signature Quote
+    draw.text((60, 520), '"trust, but verify."', fill="#52525b", font=font_sub)
+    
+    # Save to buffer
+    buf = io.BytesIO()
+    img.save(buf, format='PNG')
+    return Response(content=buf.getvalue(), media_type="image/png")
+
 
 @app.post("/vault/create", response_class=HTMLResponse)
 async def create_vault(
@@ -1046,7 +1036,7 @@ async def check_heartbeats(db: Session = Depends(get_db)):
                         <div class="cta-box">
                             <p style="font-size: 14px;"><strong>protect your own legacy</strong></p>
                             <p style="font-size: 13px; color: #666;">you've just seen how Deadhand works. if you have crypto, don't leave your family in the dark. set up your own trustless switch in 5 minutes.</p>
-                            <a href="https://deadhandprotocol.com/app?ref=beneficiary" class="cta-link">create your vault</a>
+                            <a href="https://deadhandprotocol.com" class="cta-link">create your vault</a>
                         </div>
 
                         <div class="footer">

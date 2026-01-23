@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>{{ title | lower }} | deadhand</title>
+    <meta name="description" content="{{ description | lower }}">
+    <link rel="canonical" href="https://deadhandprotocol.com/p/{{ slug }}">
+    <link rel="icon" type="image/png" href="/static/favicon.png">
+
+    <!-- SEO Meta Tags -->
+    <meta property="og:title" content="{{ title | lower }}">
+    <meta property="og:description" content="{{ description | lower }}">
+    <meta property="og:url" content="https://deadhandprotocol.com/p/{{ slug }}">
+    <meta property="og:site_name" content="deadhand">
+    <meta property="og:image" content="https://deadhandprotocol.com/api/og/{{ slug }}">
+    <meta property="og:type" content="article">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Performance Optimization -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com/">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com/">
+
+    <!-- Non-blocking Font Awesome loading -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    </noscript>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Georgia, serif;
+            font-size: 18px;
+            line-height: 1.8;
+            background: #fafafa;
+            color: #222;
+            -webkit-text-size-adjust: 100%;
+            text-transform: lowercase;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        a {
+            color: #0066cc;
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 0.5em;
+            line-height: 1.1;
+            font-weight: normal;
+        }
+
+        h2 {
+            font-size: 1.5em;
+            margin: 2em 0 0.8em 0;
+            line-height: 1.3;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        p {
+            margin-bottom: 1.5em;
+        }
+
+        ul,
+        ol {
+            margin: 1.5em 0;
+            padding-left: 1.5em;
+        }
+
+        li {
+            margin-bottom: 0.8em;
+            line-height: 1.6;
+        }
+
+        /* Nav */
+        .header {
+            position: sticky;
+            top: 0;
+            background: #fafafa;
+            border-bottom: 1px solid #ddd;
+            z-index: 100;
+            padding: 12px 0;
+        }
+
+        .nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            font-size: 0.9em;
+            justify-content: center;
+        }
+
+        .nav a {
+            text-decoration: none;
+            padding: 8px 4px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            color: #666;
+        }
+
+        .nav a:hover {
+            color: #000;
+        }
+
+        /* CTA */
+        .cta-box {
+            background: #222;
+            color: #fff;
+            padding: 40px;
+            margin: 3em 0;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .cta-box h3 {
+            color: #fff;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .cta-box p {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #fff;
+            color: #222;
+            text-decoration: none;
+            padding: 15px 30px;
+            font-weight: bold;
+            border-radius: 4px;
+            text-transform: lowercase;
+        }
+
+        .btn:hover {
+            background: #eee;
+        }
+
+        .footer {
+            margin-top: 4em;
+            padding-top: 2em;
+            border-top: 1px solid #eee;
+            font-size: 0.8em;
+            color: #888;
+            text-align: center;
+        }
+
+        .breadcrumbs {
+            margin-bottom: 30px;
+            font-family: monospace;
+            font-size: 0.8em;
+            color: #888;
+        }
+
+        .breadcrumbs a {
+            color: #888;
+            text-decoration: none;
+        }
+
+        .related-topics {
+            margin-top: 40px;
+            background: #f9f9f9;
+            padding: 30px;
+            border: 1px solid #eee;
+        }
+
+        .related-topics h4 {
+            font-family: monospace;
+            font-size: 0.8em;
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+        .topic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .topic-link {
+            font-size: 0.85em;
+            text-decoration: none;
+            color: #444;
+            display: block;
+            padding: 10px;
+            border: 1px dashed #ddd;
+        }
+
+        .topic-link:hover {
+            background: #fff;
+            border-style: solid;
+            color: #000;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .container {
+                padding: 30px 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="nav">
+            <a href="/">home</a>
+            <a href="/tools/dead-switch">dead switch</a>
+            <a href="/tools/visual-crypto">visual crypto</a>
+            <a href="/tools/audio-steg">audio steg</a>
+            <a href="/blog">blog</a>
+            <a href="https://github.com/pyoneerC/deadhand">github</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="breadcrumbs">
+            <a href="/">deadhand</a> / <a href="/docs">protocol</a> / {{ slug | replace('-', ' ') }}
+        </div>
+
+        <article>
+            <h1>{{ h1 | default(title) | lower }}</h1>
+
+            <p
+                style="font-size: 1.1em; color: #555; background: #fff; border-left: 3px solid #222; padding: 20px; font-style: italic;">
+                {{ intro | lower }}
+            </p>
+
+            <div style="margin: 2em 0;">
+                {{ body | safe | lower }}
+            </div>
+
+            <hr style="border: none; border-top: 1px solid #eee; margin: 3em 0;">
+
+            <h2>the technical challenge of digital legacy</h2>
+            <p>seed phrases aren't made for humans. they're made for computers. 12 random words you've gotta keep safe
+                forever and somehow pass to your family. it's a terrible system and everyone's just pretending it's
+                fine.</p>
+
+            <p>when you deal with <b>{{ title.split(' ')[0] | lower }}</b>, the stakes are even higher. a single mistake
+                in access or backup means your wealth disappears into the void of the blockchain forever. probate courts
+                can't help you recover a private key.</p>
+
+            <div class="cta-box">
+                <h3>secure your {{ title.split(' ')[0] | lower }} legacy</h3>
+                <p>don't let your digital wealth die with you. set up a trustless dead man's switch in 5 minutes using
+                    industry-standard shamir's secret sharing.</p>
+                <a href="/tools/dead-switch" class="btn">initialize vault</a>
+            </div>
+
+            <h2>why deadhand is the gold standard</h2>
+            <p>unlike centralized exchanges or complicated multi-sig setups, deadhand uses math to protect your family.
+                we split your secret into 3 shards. you keep one, your beneficiary keeps one, and we guard the third.
+            </p>
+            <ul>
+                <li><b>sovereign:</b> only 2 shards can reveal the secret. we can never access your coins.</li>
+                <li><b>open source:</b> you don't have to trust us. you can verify the code on github.</li>
+                <li><b>no lock-in:</b> if our servers disappear, you can recover using any standard SSS tool.</li>
+            </ul>
+
+
+        </article>
+
+        <footer class="footer">
+            <p>© 2026 deadhand protocol. protecting billions in digital inheritance.</p>
+            <p style="margin-top: 10px;">developed with excellence in argentina & switzerland.</p>
+        </footer>
+    </main>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "{{ title | lower }}",
+      "description": "{{ description | lower }}",
+      "author": {
+        "@type": "Organization",
+        "name": "deadhand"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "deadhand",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://deadhandprotocol.com/static/favicon.png"
+        }
+      },
+      "datePublished": "2026-01-23"
+    }
+    </script>
+</body>
+
+</html>

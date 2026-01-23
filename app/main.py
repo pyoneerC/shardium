@@ -431,7 +431,7 @@ async def dead_switch_page(request: Request, db: Session = Depends(get_db)):
              return RedirectResponse(url="/buy")
              
         # If user doesn't exist yet, it's okay (they just paid, haven't created vault)
-        return templates.TemplateResponse("tools_dead_switch.html", {"request": request})
+        return templates.TemplateResponse("tools_dead_switch.html", {"request": request, "email": email})
     except:
         return RedirectResponse(url="/buy")
 
@@ -891,12 +891,12 @@ async def check_heartbeats(db: Session = Depends(get_db)):
     2. Sends 60-day warning emails
     3. Triggers death at 90 days (sends Shard C to beneficiary)
     """
-    try:
+saa    try:
         now = datetime.now()
         results = {"reminders_30d": 0, "warnings_60d": 0, "deaths_90d": 0, "errors": 0}
         
-        # Get all active (not dead) users
-        active_users = db.query(User).filter(User.is_dead == False).all()
+        # Get all active (not dead) users with a valid payment status
+        active_users = db.query(User).filter(User.is_dead == False, User.is_active == True).all()
         
         for user in active_users:
             try:

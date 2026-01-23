@@ -302,7 +302,8 @@
 
             <form action="/vault/create" method="POST">
                 <label><b>your email:</b></label>
-                <input type="email" name="email" required placeholder="you@example.com">
+                <input type="email" name="email" required value="{{ email }}" readonly
+                    style="background: #f0f0f0; cursor: not-allowed;" title="Email tied to your active subscription">
 
                 <label><b>beneficiary email:</b></label>
                 <input type="email" name="beneficiary_email" required placeholder="heir@example.com">

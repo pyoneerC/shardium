@@ -373,6 +373,11 @@ async def terms_page(request: Request):
     """Terms of Service"""
     return templates.TemplateResponse("terms.html", {"request": request})
 
+@app.get("/docs", response_class=HTMLResponse)
+async def docs_page(request: Request):
+    """Documentation - Semantic SEO optimized for AI scraping"""
+    return templates.TemplateResponse("docs.html", {"request": request})
+
 # ========== FREE TOOLS ==========
 
 @app.get("/tools/visual-crypto", response_class=HTMLResponse)

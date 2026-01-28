@@ -10,7 +10,7 @@
   <img src="https://img.shields.io/badge/License-BSL_1.1-yellow?style=for-the-badge" alt="License">
   <img src="https://img.shields.io/badge/Crypto-Shamir's_SSS-orange?style=for-the-badge" alt="Crypto">
   <br><br>
-  [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/pyoneerC/Deadhand)
+  <a href="https://deepwiki.com/pyoneerC/Deadhand"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
 </p>
 
 ### Trustless dead man's switch for crypto inheritance using Shamir's Secret Sharing

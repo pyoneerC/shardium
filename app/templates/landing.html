@@ -101,6 +101,32 @@
             padding: 0;
         }
 
+        /* Skip link - hidden until focused */
+        .skip-link {
+            position: absolute;
+            left: -10000px;
+            top: auto;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            z-index: 9999;
+        }
+
+        .skip-link:focus {
+            position: fixed;
+            left: 10px;
+            top: 10px;
+            width: auto;
+            height: auto;
+            padding: 12px 20px;
+            background: #10b981;
+            color: #fff;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
         body {
             font-family: Georgia, serif;
             font-size: 18px;
@@ -558,10 +584,7 @@
 </head>
 
 <body>
-    <a href="#main-content"
-        style="position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden;"
-        onfocus="this.style.left='0'; this.style.top='0'; this.style.width='auto'; this.style.height='auto'; this.style.backgroundColor='#fff'; this.style.padding='10px'; this.style.zIndex='1000';">skip
-        to content</a>
+    <a href="#main-content" class="skip-link" aria-label="Skip to main content">Skip to main content</a>
 
     <header class="header">
         <div class="container">
@@ -766,19 +789,34 @@
 
         <h2 id="cli">cli utilities (raw python)</h2>
         <p>for the "trust nobody" crowd. zero dependencies. runs offline. single files.</p>
+
+        <div
+            style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 16px; margin: 16px 0;">
+            <strong style="color: #10b981;">How to use:</strong>
+            <ol style="margin: 8px 0 0 20px; color: #a1a1aa;">
+                <li>Click any tool below to view on GitHub</li>
+                <li>Click "Raw" button on GitHub to get the file</li>
+                <li>Save as <code style="background: #27272a; padding: 2px 6px; border-radius: 4px;">.py</code> file
+                </li>
+                <li>Run with: <code
+                        style="background: #27272a; padding: 2px 6px; border-radius: 4px;">python seed_split.py</code>
+                </li>
+            </ol>
+        </div>
+
         <div class="tools-grid">
-            <a href="https://github.com/pyoneerC/deadhand/blob/main/cli/seed_split.py" class="tool-card"
-                target="_blank">
+            <a href="https://github.com/pyoneerC/deadhand/blob/main/cli/seed_split.py" class="tool-card" target="_blank"
+                rel="noopener">
                 <strong>seed_split.py</strong>
                 <span>2-of-3 SSS for seed phrases. console-only.</span>
             </a>
-            <a href="https://github.com/pyoneerC/deadhand/blob/main/cli/audio_steg.py" class="tool-card"
-                target="_blank">
+            <a href="https://github.com/pyoneerC/deadhand/blob/main/cli/audio_steg.py" class="tool-card" target="_blank"
+                rel="noopener">
                 <strong>audio_steg.py</strong>
                 <span>hide seeds in wavs. no internet needed.</span>
             </a>
             <a href="https://github.com/pyoneerC/deadhand/blob/main/cli/visual_split.py" class="tool-card"
-                target="_blank">
+                target="_blank" rel="noopener">
                 <strong>visual_split.py</strong>
                 <span>2-of-2 visual crypto. needs pillow.</span>
             </a>
